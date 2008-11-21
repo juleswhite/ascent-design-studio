@@ -19,12 +19,7 @@ package org.ascent.binpacking;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.ascent.ResourceConsumptionPolicy;
-import org.ascent.configurator.UnsolvableException;
 
 public class FFDCore extends RefreshBinPackingCore {
 
@@ -113,11 +108,11 @@ public class FFDCore extends RefreshBinPackingCore {
 	}
 
 	public Object nextSource() {
-		return queue_.get(current_);
+		return queue_.get(queue_.size()-1);
 	}
 
 	public void removeSource(Object src) {
-		current_--;
+		queue_.remove(src);
 	}
 
 	public void init() {
