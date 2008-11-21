@@ -14,13 +14,34 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
+package org.ascent.binpacking;
 
-package org.ascent.probe;
+public abstract class AbstractItem {
+	private int[] size_;
+	private String name_;
 
-import java.util.List;
-import java.util.Map;
+	public AbstractItem(String name, int[] size) {
+		super();
+		name_ = name;
+		size_ = size;
+	}
+	
+	public AbstractItem(){}
 
-public interface TargetFinder extends Probe{
-	public List getTargets();
-	public Map getTargetProperties(Object target);
+	public int[] getSize() {
+		return size_;
+	}
+
+	public void setSize(int[] size) {
+		size_ = size;
+	}
+
+	public String getName() {
+		return name_;
+	}
+
+	public void setName(String name) {
+		name_ = name;
+	}
+
 }
