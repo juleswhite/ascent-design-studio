@@ -74,6 +74,16 @@ public class FFDCore extends RefreshBinPackingCore {
 	private ArrayList preSelectionQueue_ = new ArrayList();
 	private ArrayList preTargetedQueue_ = new ArrayList();
 	
+	
+	
+	public FFDCore() {
+		super();
+	}
+
+	public FFDCore(BinPackingProblem p) {
+		super(p);
+	}
+
 	@Override
 	public boolean done() {
 		return queue_ != null && (queue_.size() == 0 || current_ == -1);// queue_

@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2008 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -54,6 +54,46 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 			}
 		}
 
+		public List<Interaction> getDisconnections() {
+			return disconnections_;
+		}
+
+		public void setDisconnections(List<Interaction> disconnections) {
+			disconnections_ = disconnections;
+		}
+
+		public List<NetworkLink> getLinkExhaustions() {
+			return linkExhaustions_;
+		}
+
+		public void setLinkExhaustions(List<NetworkLink> linkExhaustions) {
+			linkExhaustions_ = linkExhaustions;
+		}
+
+		public List<Node> getHostExhaustions() {
+			return hostExhaustions_;
+		}
+
+		public void setHostExhaustions(List<Node> hostExhaustions) {
+			hostExhaustions_ = hostExhaustions;
+		}
+
+		public int[][] getNodeResiduals() {
+			return nodeResiduals_;
+		}
+
+		public void setNodeResiduals(int[][] nodeResiduals) {
+			nodeResiduals_ = nodeResiduals;
+		}
+
+		public int[][] getNetworkResiduals() {
+			return networkResiduals_;
+		}
+
+		public void setNetworkResiduals(int[][] networkResiduals) {
+			networkResiduals_ = networkResiduals;
+		}
+
 		public int[] getHostedCount() {
 			return hostedCount_;
 		}
@@ -83,14 +123,15 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 						resid[i] = 0;
 				}
 			}
-//			if(resourcePolicies_ != null){
-//				for(int i = 0; i < resid.length; i++){
-//					if(resourcePolicies_[i] != null){
-//						Node[]
-//						resid[i] = resourcePolicies_[i].getResourceResidual(consumers, producers, avail, consumed)
-//					}
-//				}
-//			}
+			// if(resourcePolicies_ != null){
+			// for(int i = 0; i < resid.length; i++){
+			// if(resourcePolicies_[i] != null){
+			// Node[]
+			// resid[i] = resourcePolicies_[i].getResourceResidual(consumers,
+			// producers, avail, consumed)
+			// }
+			// }
+			// }
 			// nodeResiduals_.put(n, resid);
 			nodeResiduals_[n.id_] = resid;
 		}
@@ -252,6 +293,30 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 			return id_ - o.id_;
 		}
 
+		public int getId() {
+			return id_;
+		}
+
+		public void setId(int id) {
+			id_ = id;
+		}
+
+		public String getLabel() {
+			return label_;
+		}
+
+		public void setLabel(String label) {
+			label_ = label;
+		}
+
+		public int[] getResources() {
+			return resources_;
+		}
+
+		public void setResources(int[] resources) {
+			resources_ = resources;
+		}
+
 		public String toString() {
 			return label_
 					+ " ("
@@ -310,6 +375,23 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 			super(id, label, resources);
 			rate_ = rate;
 		}
+
+		public Component[] getParticipants() {
+			return participants_;
+		}
+
+		public void setParticipants(Component[] participants) {
+			participants_ = participants;
+		}
+
+		public double getRate() {
+			return rate_;
+		}
+
+		public void setRate(double rate) {
+			rate_ = rate;
+		}
+
 	}
 
 	private ValueFunction<VectorSolution> fitnessFunction_ = new ValueFunction<VectorSolution>() {
@@ -346,7 +428,7 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 		networks_ = networks;
 		components_ = components;
 		interactions_ = interactions;
-		
+
 		orderElements();
 	}
 
@@ -600,9 +682,9 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 		System.out.println("----------------------------");
 		System.out.println("Valid:" + resid.valid());
 		System.out.println("Score:" + scoreDeployment(plan));
-		for(Node n : nodes_){
-			if(resid.getHostedCount()[n.id_] == 0){
-				System.out.println("\t"+n.label_+" is free");
+		for (Node n : nodes_) {
+			if (resid.getHostedCount()[n.id_] == 0) {
+				System.out.println("\t" + n.label_ + " is free");
 			}
 		}
 	}

@@ -55,4 +55,23 @@ public class BinPackingProblem {
 		resourcePolicies_ = resourcePolicies;
 	}
 	
+	public int[][] getItemSizes(){
+		return getSizes(items_);
+	}
+	
+	public int[][] getBinSizes(){
+		return getSizes(bins_);
+	}
+	
+	protected int[][] getSizes(List<? extends AbstractItem> items){
+		int[][] sizes = new int[items.size()][items.get(0).getSize().length];
+		for(int i = 0; i < sizes.length; i++){
+			AbstractItem it = items.get(i);
+			int[] size = it.getSize();
+			for(int j = 0; j < sizes[i].length; j++){
+				sizes[i][j] = size[j];
+			}
+		}
+		return sizes;
+	}
 }
