@@ -43,5 +43,8 @@ public abstract class AbstractItem {
 	public void setName(String name) {
 		name_ = name;
 	}
-
+	
+	public String toString(){
+		return getName();
+	}
 }

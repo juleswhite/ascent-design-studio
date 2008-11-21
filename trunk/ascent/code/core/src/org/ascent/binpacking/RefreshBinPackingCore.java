@@ -19,7 +19,6 @@ package org.ascent.binpacking;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +55,30 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 	public RefreshBinPackingCore(){}
 	
 	public RefreshBinPackingCore(BinPackingProblem p){
+		configure(p);
+	}
+	
+	public void configure(BinPackingProblem p){
+		int[][] sres = p.getItemSizes();
+		int[][] tres = p.getBinSizes();
+
+		setSetsToMap(p.getItems(),p.getBins());
+		setResourceConstraints(sres, tres);
+
+		for(Item it : p.getItems()){
+			for(Item ex : it.getExclusions()){
+				addExcludesMappingConstraint(it,ex);
+			}
+			for(Item req : it.getDependencies()){
+				addRequiresMappingConstraint(it, req);
+			}
+		}
 		
+		for(Object key : p.getResourcePolicies().keySet()){
+			getResourcePolicies().put(key, p.getResourcePolicies().get(key));
+		}
+		
+		requireAllMapped();
 	}
 
 	public Dependencies getDependencies(Object st) {
