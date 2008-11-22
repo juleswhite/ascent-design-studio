@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Determining how to allocation hardware resources to software components is a challenging NP-Hard problem. In this example, we show how to use ASCENT's heuristic bin-packing solver with constraint propagation to generate a deployment plan. The example forces the solver to adhere to both a series of hard real-time rate monotonic scheduling bounds (based on Liu & Layland) and memory constraints. Furthermore, we add in a number of co-location restrictions to ensure that specific components are not co-located on the same node (for fault-tolerance reasons).
+Determining how to allocate hardware resources to software components is a challenging NP-Hard problem. In this example, we show how to use ASCENT's heuristic bin-packing solver with constraint propagation to generate a deployment plan. The example forces the solver to adhere to both a series of hard real-time rate monotonic scheduling bounds (based on Liu & Layland) and memory constraints. Furthermore, we add in a number of co-location restrictions to ensure that specific components are not co-located on the same node (for fault-tolerance reasons).
 
 = Details =
 
@@ -93,4 +93,3 @@ Determining how to allocation hardware resources to software components is a cha
 		}
 		
 }}}
-
