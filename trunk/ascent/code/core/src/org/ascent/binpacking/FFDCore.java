@@ -295,7 +295,9 @@ public class FFDCore extends RefreshBinPackingCore {
 	}
 
 	
-
+	public List<Item> getPriorityPackingQueue(){
+		return preSelectionQueue_;
+	}
 	
 	/*
 	 * public List findValidTargets(Object src, SourceState ss, Dependencies
