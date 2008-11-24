@@ -173,7 +173,7 @@ public class BasicBinPacker {
 	
 	public static void main(String args[]){
 		List <ClassicBin> bins = new ArrayList();
-		List <ClassicItem> items = new ArrayList();
+		List <ClassicItem> items = new ArrayList(); 
 		Node p1 = problem.addNode("P1", new int[] { 100 });
 		ClassicBin b1 = new ClassicItem(1,"P1",new int [] {100});
 		bins.add(b1);
