@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.ascent;
+package org.ascent.binpacking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public ClassicBin(){
 		binId_ = binId;
 		
 	}
-	public ClassicBin(String bn, int binId, double [] sl){
+	public ClassicBin(int binId, String bn,  double [] sl){
 		binName_ = bn;
 		//initializeSpaceLeft_();
 		spaceLeft_ = sl;

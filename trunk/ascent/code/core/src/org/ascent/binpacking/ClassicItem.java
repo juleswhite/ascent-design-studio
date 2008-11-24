@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and     *
  * limitations under the License.                                          *
  **************************************************************************/
-package org.ascent;
+package org.ascent.binpacking;
 
 public class ClassicItem extends Element {
     double [] consumedResources_ ;
