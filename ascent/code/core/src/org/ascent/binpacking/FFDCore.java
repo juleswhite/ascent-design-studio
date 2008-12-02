@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2008 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -17,9 +17,12 @@
 package org.ascent.binpacking;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.ascent.ReverseComparator;
 
 public class FFDCore extends RefreshBinPackingCore {
 
@@ -64,13 +67,15 @@ public class FFDCore extends RefreshBinPackingCore {
 
 	};
 
+	
 	private int current_ = 0;
 	private ArrayList queue_;
 	private ArrayList preSelectionQueue_ = new ArrayList();
 	private ArrayList preTargetedQueue_ = new ArrayList();
-	
-	
-	
+	private Comparator itemSortingStrategy_ = new FFDSourceComparator();
+	private Comparator binSortingStrategy_ = new ReverseComparator(new FFDTargetComparator());
+	private WeightUpdateStrategy weightingStrategy_;
+
 	public FFDCore() {
 		super();
 	}
@@ -82,9 +87,9 @@ public class FFDCore extends RefreshBinPackingCore {
 	@Override
 	public boolean done() {
 		return queue_ != null && (queue_.size() == 0 || current_ == -1);// queue_
-																		// !=
-																		// null
-																		// &&
+		// !=
+		// null
+		// &&
 		// queue_.size() == 0;
 	}
 
@@ -108,7 +113,7 @@ public class FFDCore extends RefreshBinPackingCore {
 	}
 
 	public Object nextSource() {
-		return queue_.get(queue_.size()-1);
+		return queue_.get(queue_.size() - 1);
 	}
 
 	public void removeSource(Object src) {
@@ -128,14 +133,24 @@ public class FFDCore extends RefreshBinPackingCore {
 		for (Object o : getTargets())
 			updateItemWeight(getTargetState(o));
 
-		Collections.sort(queue_, new FFDSourceComparator());
-
+		sortItems();
+		
 		current_ = queue_.size() - 1;
 
-		Collections.sort(getTargets(), new FFDTargetComparator());
-		Collections.reverse(getTargets());
+		sortBins();
+		// Collections.reverse(getTargets());
+	}
+	
+	public void sortItems(){
+		if(itemSortingStrategy_ != null && queue_ != null)
+			Collections.sort(queue_, itemSortingStrategy_);
 	}
 
+	public void sortBins(){
+		if(binSortingStrategy_ != null)
+			Collections.sort(getTargets(), binSortingStrategy_);
+	}
+	
 	public void updateTargetSize(Object o) {
 	}
 
@@ -153,8 +168,13 @@ public class FFDCore extends RefreshBinPackingCore {
 	}
 
 	public void updateWeight(ItemState st) {
+		if(weightingStrategy_ == null){
 		updateItemWeight(st, st.getSizeWithDependencies(), (st.getRequired()
 				.size() * st.getRequired().size()));
+		}
+		else {
+			st.setWeight(weightingStrategy_.getWeight(st));
+		}
 	}
 
 	@Override
@@ -214,6 +234,10 @@ public class FFDCore extends RefreshBinPackingCore {
 			collectRequired(deps, all);
 		}
 		return all;
+	}
+	
+	public List getExcluded(Object src) {
+		return getExcluded(Arrays.asList(new Object[]{src}));
 	}
 
 	public List getExcluded(List srcs) {
@@ -294,10 +318,50 @@ public class FFDCore extends RefreshBinPackingCore {
 		getSourceState(src).addTarget(trg);
 	}
 
-	
-	public List<Item> getPriorityPackingQueue(){
+	public List<Item> getPriorityPackingQueue() {
 		return preSelectionQueue_;
 	}
+
+	public Comparator getItemSortingStrategy() {
+		return itemSortingStrategy_;
+	}
+
+	public void setItemSortingStrategy(Comparator itemSortingStrategy) {
+		itemSortingStrategy_ = itemSortingStrategy;
+	}
+
+	public Comparator getBinSortingStrategy() {
+		return binSortingStrategy_;
+	}
+
+	public void setBinSortingStrategy(Comparator binSortingStrategy) {
+		binSortingStrategy_ = binSortingStrategy;
+	}
+
+	public WeightUpdateStrategy getWeightingStrategy() {
+		return weightingStrategy_;
+	}
+
+	public void setWeightingStrategy(WeightUpdateStrategy weightingStrategy) {
+		weightingStrategy_ = weightingStrategy;
+	}
+
+	public ArrayList getPreSelectionQueue() {
+		return preSelectionQueue_;
+	}
+
+	public void setPreSelectionQueue(ArrayList preSelectionQueue) {
+		preSelectionQueue_ = preSelectionQueue;
+	}
+
+	public ArrayList getPreTargetedQueue() {
+		return preTargetedQueue_;
+	}
+
+	public void setPreTargetedQueue(ArrayList preTargetedQueue) {
+		preTargetedQueue_ = preTargetedQueue;
+	}
+
 	
 	/*
 	 * public List findValidTargets(Object src, SourceState ss, Dependencies
@@ -321,7 +385,7 @@ public class FFDCore extends RefreshBinPackingCore {
 	 * all.add(o); } } } } }
 	 * 
 	 * public void insertDependencies(RefreshCore core, Object src, Dependencies
-	 * deps) { SourceState st = getSourceState(src); for (Dependency dep : deps) {
-	 * if (!(dep instanceof Excludes)) dep.apply(core); } }
+	 * deps) { SourceState st = getSourceState(src); for (Dependency dep : deps)
+	 * { if (!(dep instanceof Excludes)) dep.apply(core); } }
 	 */
 }

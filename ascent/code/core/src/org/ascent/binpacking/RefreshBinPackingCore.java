@@ -268,7 +268,10 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 					dep.add(st.getItem());
 				}
 				dep.add(ss.getItem());
-				if(policy.getResourceResidual(dep, ts.getItem(), ts.getSize()[i], getConsumed(ts,i) + ss.getSize()[i]) < 0)
+				Object binitem = ts.getItem();
+				int tsize =  ts.getSize()[i];
+				int cons = getConsumed(ts,i) + ss.getSize()[i];
+				if(policy.getResourceResidual(dep, binitem, tsize, cons) < 0)
 					return false;
 			}
 			else if (ss.getSizeWithDependencies()[i] > ts.getSize()[i])
