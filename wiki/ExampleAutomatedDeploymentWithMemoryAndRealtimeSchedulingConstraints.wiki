@@ -7,7 +7,7 @@ Determining how to allocate hardware resources to software components is a chall
 = Details =
 
 {{{
-//First, we initialize a new BinPackingProblem
+                //First, we initialize a new BinPackingProblem
 		BinPackingProblem bp = new BinPackingProblem();
 		
 		//Next, we add a series of hardware resources that
@@ -73,7 +73,7 @@ Determining how to allocate hardware resources to software components is a chall
 		bp.getResourcePolicies().put(1, new RateMonotonicResource());
 		
 		//Create the solver
-		FFDCore packer = new FFDCore(bp);
+		FFDBinPacker packer = new FFDBinPacker(bp);
 		
 		//Ask the solver for a solution
 		Map<Object,List> dep = packer.nextMapping();
