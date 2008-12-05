@@ -26,7 +26,7 @@ import java.util.Map;
 import org.ascent.configurator.RefreshMatrixCore;
 import org.ascent.configurator.conf.ExpressionParser;
 
-public class RePackCore extends FFDCore {
+public class RePackBinPacker extends FFDBinPacker {
 
 	private class Block {
 		private Object target_;

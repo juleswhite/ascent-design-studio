@@ -18,32 +18,28 @@ package org.ascent.binpacking;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.ascent.ReverseComparator;
-import org.ascent.configurator.ProblemBuilderCore;
-import org.ascent.configurator.RefreshCore;
 
 public class MultiStrategyBinPacker {
 	
-	private FFDCore solver_;
-	
+	private FFDBinPacker solver_;
+	private List<FFDBinPacker> packers_ = new ArrayList<FFDBinPacker>();
 	
 	public MultiStrategyBinPacker() {
+		initPackers();
 	}
 
-	public Map<Object,List> pack(BinPackingProblem p){
-		List<Map<Object,List>> sols = new ArrayList<Map<Object,List>>();
-		FFDCore solver = new FFDCore(p);
-		addSolution(sols, solver.nextMapping());
+	protected void initPackers(){
+		packers_.add(new FFDBinPacker());
 		
-		solver = new FFDCore(p);
+		FFDBinPacker solver = new FFDBinPacker();
 		solver.setItemSortingStrategy(new ReverseComparator(solver.getItemSortingStrategy()));
-		addSolution(sols, solver.nextMapping());
+		packers_.add(solver);
 		
-		solver = new FFDCore(p);
+		solver = new FFDBinPacker();
 		solver.setWeightingStrategy(new WeightUpdateStrategy() {
 		
 			public double getWeight(ItemState st) {
@@ -54,9 +50,9 @@ public class MultiStrategyBinPacker {
 				return Math.sqrt(w);
 			}
 		});
-		addSolution(sols, solver.nextMapping());
+		packers_.add(solver);
 		
-		solver = new FFDCore(p);
+		solver = new FFDBinPacker();
 		solver_ = solver;
 		solver.setWeightingStrategy(new WeightUpdateStrategy() {
 		
@@ -69,9 +65,9 @@ public class MultiStrategyBinPacker {
 			}
 		});
 		
-		addSolution(sols, solver.nextMapping());
+		packers_.add(solver);
 		
-		solver = new FFDCore(p);
+		solver = new FFDBinPacker();
 		solver_ = solver;
 		solver.setBinSortingStrategy(new ReverseComparator(solver.getBinSortingStrategy()));
 		solver.setWeightingStrategy(new WeightUpdateStrategy() {
@@ -84,16 +80,25 @@ public class MultiStrategyBinPacker {
 				return Math.sqrt(w) + (1000 * solver_.getExcluded(Arrays.asList(new Object[]{st.getItem()})).size());
 			}
 		});
-		addSolution(sols, solver.nextMapping());
+		packers_.add(solver);
 		
-		solver = new LeastBoundPacker(p);
-		addSolution(sols, solver.nextMapping());
+		solver = new LeastBoundPacker();
+		packers_.add(solver);
 		
-		solver = new FFDCore(p);
+		solver = new FFDBinPacker();
 		solver.setBinSortingStrategy(new ReverseComparator(solver.getBinSortingStrategy()));
-		addSolution(sols, solver.nextMapping());
+		packers_.add(solver);
 		
-		return sols.get(0);
+	}
+	
+	public List<Map<Object,List>> pack(BinPackingProblem p){
+		List<Map<Object,List>> sols = new ArrayList<Map<Object,List>>();
+		for(FFDBinPacker core : packers_){
+			core.configure(p);
+			addSolution(sols, core.nextMapping());
+		}
+		
+		return sols;
 	}
 	
 	protected void addSolution(List<Map<Object,List>> sols, Map<Object,List> s){

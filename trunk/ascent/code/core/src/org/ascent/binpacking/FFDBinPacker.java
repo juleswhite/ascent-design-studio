@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.ascent.ReverseComparator;
 
-public class FFDCore extends RefreshBinPackingCore {
+public class FFDBinPacker extends RefreshBinPackingCore {
 
 	public class FFDSourceComparator implements Comparator {
 
@@ -76,11 +76,11 @@ public class FFDCore extends RefreshBinPackingCore {
 	private Comparator binSortingStrategy_ = new ReverseComparator(new FFDTargetComparator());
 	private WeightUpdateStrategy weightingStrategy_;
 
-	public FFDCore() {
+	public FFDBinPacker() {
 		super();
 	}
 
-	public FFDCore(BinPackingProblem p) {
+	public FFDBinPacker(BinPackingProblem p) {
 		super(p);
 	}
 
