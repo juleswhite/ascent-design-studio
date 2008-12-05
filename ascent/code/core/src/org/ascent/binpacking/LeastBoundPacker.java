@@ -22,9 +22,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LeastBoundPacker extends FFDCore {
+public class LeastBoundPacker extends FFDBinPacker {
 
 	private Map<Object,Integer> validCount_ = new HashMap<Object, Integer>();
+	
+	public static class BinSorter implements Comparator {
+		private Map<Object, Double> vals_;
+
+		public BinSorter(Map<Object, Double> vals) {
+			super();
+			vals_ = vals;
+		}
+
+		public int compare(Object arg0, Object arg1) {
+			return (int) Math.rint((100 * (vals_.get(arg1) - vals_.get(arg0))));
+		}
+
+	}
 	
 	private class ItemBoundComparator implements Comparator {
 

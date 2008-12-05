@@ -16,76 +16,17 @@
 
 package org.ascent.binpacking;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class LeastBoundMinExcPacker extends LeastBoundPacker {
+public class LeastBoundMinExcPacker extends StrategizedLeastBoundPacker {
 
-	private class BinSorter implements Comparator {
-		private Map<Object, Double> vals_;
-
-		public BinSorter(Map<Object, Double> vals) {
-			super();
-			vals_ = vals;
-		}
-
-		public int compare(Object arg0, Object arg1) {
-			return (int) Math.rint((100 * (vals_.get(arg1) - vals_.get(arg0))));
-		}
-
-	}
+	
 
 	public LeastBoundMinExcPacker() {
-		super();
+		super(new MinExclusionSelector());
 	}
 
 	public LeastBoundMinExcPacker(BinPackingProblem p) {
-		super(p);
-	}
-
-	public Object selectTarget(ItemState ss, List valid) {
-
-		List exc = getExcluded(ss.getItem());
-		if (exc.size() == 0) {
-
-			for (Object t : valid) {
-				BinState ts = getTargetState(t);
-				if (willFit(ss, ts)) {
-					return t;
-				}
-			}
-		} else {
-			List potentials = new ArrayList();
-			for (Object t : valid) {
-				BinState ts = getTargetState(t);
-				if (willFit(ss, ts)) {
-					potentials.add(t);
-				}
-			}
-			if (potentials.size() > 0) {
-				Map<Object, Double> vals = new HashMap<Object, Double>();
-				for (Object t : potentials) {
-					double v = exc.size();
-					for (Object e : exc) {
-						ItemState est = getSourceState(e);
-						if(est.getValid() == null){
-							v -= (1.0 / getTargets().size());
-						}
-						else if (est.getValid().contains(t)) {
-							v -= (1.0 / est.getValid().size());
-						}
-						vals.put(t, v);
-					}
-				}
-				Collections.sort(potentials, new BinSorter(vals));
-				return potentials.get(0);
-			}
-		}
-		return null;
+		super(new MinExclusionSelector(),p);
 	}
 
 }

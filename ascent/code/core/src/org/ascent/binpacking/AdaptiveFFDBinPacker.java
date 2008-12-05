@@ -19,7 +19,7 @@ package org.ascent.binpacking;
 
 import java.util.Collections;
 
-public class AdaptiveFFDCore extends FFDCore {
+public class AdaptiveFFDBinPacker extends FFDBinPacker {
 
 	private int[] totalResources_;
 	private int[] residualResources_;
