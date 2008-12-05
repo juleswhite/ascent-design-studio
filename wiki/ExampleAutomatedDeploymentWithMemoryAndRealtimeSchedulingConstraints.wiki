@@ -40,7 +40,7 @@ Determining how to allocate hardware resources to software components is a chall
 		
 		//We add some more software components that
 		//need to be deployed to the hardware nodes
-	    bp.getItems().add(new Item("C3",new int[]{200,20}));
+	        bp.getItems().add(new Item("C3",new int[]{200,20}));
 		bp.getItems().add(new Item("C4",new int[]{200,20}));
 		bp.getItems().add(new Item("C5",new int[]{200,20}));
 		bp.getItems().add(new Item("C6",new int[]{200,20}));
