@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2008 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -14,39 +14,60 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-
 package org.ascent.deployment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+public abstract class ColocationConstraint implements DeploymentConstraint {
 
+	private Component source_;
+	private List<Component> targets_ = new ArrayList<Component>();
 
-public class Component extends ModelElement implements Schedulable{
-	private Interaction[] interactions_;
-	private List<RealTimeTask> realTimeTasks_ = new ArrayList<RealTimeTask>();
-	
-	public Component(int id, String label, int[] resources) {
-		super(id, label, resources);
-	}
-
-	public Interaction[] getInteractions() {
-		return interactions_;
-	}
-
-	public void setInteractions(Interaction[] interactions) {
-		interactions_ = interactions;
-	}
-
-	public int getTotalTasks() {
-		if(realTimeTasks_.size() > 0)
-			return realTimeTasks_.size();
-		else
-			return 1;
+	public ColocationConstraint(Component source, List<Component> targets) {
+		super();
+		source_ = source;
+		targets_ = targets;
 	}
 	
-	public void addTask(double period, double util){
-		realTimeTasks_.add(new RealTimeTask(period,util));
+	public ColocationConstraint(Component source, Component target) {
+		super();
+		source_ = source;
+		targets_.add(target);
 	}
-	
+
+	public ColocationConstraint(Component source) {
+		super();
+		source_ = source;
+	}
+
+	public Component getSource() {
+		return source_;
+	}
+
+	public void setSource(Component source) {
+		source_ = source;
+	}
+
+	public List<Component> getTargets() {
+		return targets_;
+	}
+
+	public void setTargets(List<Component> targets) {
+		targets_ = targets;
+	}
+
+	public boolean isEnforced(DeploymentPlan plan) {
+		Node host = plan.getHost(source_);
+		if(host != null){
+			for(Component c : targets_){
+				if(!isEnforced(host,plan.getHost(c))){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public abstract boolean isEnforced(Node sourcehost, Node targethost);
 }

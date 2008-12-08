@@ -17,36 +17,7 @@
 
 package org.ascent.deployment;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface DeploymentConstraint {
 
-
-
-public class Component extends ModelElement implements Schedulable{
-	private Interaction[] interactions_;
-	private List<RealTimeTask> realTimeTasks_ = new ArrayList<RealTimeTask>();
-	
-	public Component(int id, String label, int[] resources) {
-		super(id, label, resources);
-	}
-
-	public Interaction[] getInteractions() {
-		return interactions_;
-	}
-
-	public void setInteractions(Interaction[] interactions) {
-		interactions_ = interactions;
-	}
-
-	public int getTotalTasks() {
-		if(realTimeTasks_.size() > 0)
-			return realTimeTasks_.size();
-		else
-			return 1;
-	}
-	
-	public void addTask(double period, double util){
-		realTimeTasks_.add(new RealTimeTask(period,util));
-	}
-	
+	public boolean isEnforced(DeploymentPlan plan);
 }

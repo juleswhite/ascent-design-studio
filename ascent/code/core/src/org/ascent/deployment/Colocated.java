@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2008 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -14,39 +14,26 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-
 package org.ascent.deployment;
 
-import java.util.ArrayList;
 import java.util.List;
 
+public class Colocated extends ColocationConstraint {
 
-
-public class Component extends ModelElement implements Schedulable{
-	private Interaction[] interactions_;
-	private List<RealTimeTask> realTimeTasks_ = new ArrayList<RealTimeTask>();
-	
-	public Component(int id, String label, int[] resources) {
-		super(id, label, resources);
+	public Colocated(Component source, List<Component> targets) {
+		super(source, targets);
 	}
 
-	public Interaction[] getInteractions() {
-		return interactions_;
+	public Colocated(Component source, Component target) {
+		super(source, target);
 	}
 
-	public void setInteractions(Interaction[] interactions) {
-		interactions_ = interactions;
+	public Colocated(Component source) {
+		super(source);
 	}
 
-	public int getTotalTasks() {
-		if(realTimeTasks_.size() > 0)
-			return realTimeTasks_.size();
-		else
-			return 1;
+	public boolean isEnforced(Node sh, Node th) {
+		return sh == th;
 	}
-	
-	public void addTask(double period, double util){
-		realTimeTasks_.add(new RealTimeTask(period,util));
-	}
-	
+
 }

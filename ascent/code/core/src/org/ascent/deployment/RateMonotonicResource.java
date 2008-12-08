@@ -22,6 +22,8 @@ import org.ascent.ResourceConsumptionPolicy;
 
 public class RateMonotonicResource implements
 		ResourceConsumptionPolicy {
+	
+	private boolean assumeComponentTasksAreSchedulable_ = true;
 
 	public int getResourceResidual(List consumers, Object producer,
 			int avail, int consumed) {
@@ -37,7 +39,7 @@ public class RateMonotonicResource implements
 				}
 			}
 		}
-		if(tasks == 1)
+		if(tasks == 1 || (assumeComponentTasksAreSchedulable_ && consumers.size() == 1))
 			return avail - consumed;
 		else {
 			double aavail = 100 * getAvailable(tasks);
@@ -48,4 +50,15 @@ public class RateMonotonicResource implements
 	public double getAvailable(int consumers){
 		return consumers * (Math.pow(2, (1.0/consumers)) - 1);
 	}
+
+	public boolean isAssumeComponentTasksAreSchedulable() {
+		return assumeComponentTasksAreSchedulable_;
+	}
+
+	public void setAssumeComponentTasksAreSchedulable(
+			boolean assumeComponentTasksAreSchedulable) {
+		assumeComponentTasksAreSchedulable_ = assumeComponentTasksAreSchedulable;
+	}
+	
+	
 }
