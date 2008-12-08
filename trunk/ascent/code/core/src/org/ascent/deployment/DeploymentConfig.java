@@ -18,6 +18,7 @@
 package org.ascent.deployment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,6 @@ import org.ascent.ProblemConfigImpl;
 import org.ascent.ResourceConsumptionPolicy;
 import org.ascent.VectorSolution;
 import org.ascent.binpacking.Packer;
-import org.ascent.binpacking.ValueFunction;
 
 public class DeploymentConfig extends ProblemConfigImpl{
 
@@ -38,9 +38,102 @@ public class DeploymentConfig extends ProblemConfigImpl{
 	protected Packer packer_ = new Packer();
 	protected boolean acceptInfeasibleSolutions_ = true;
 	
+	private List<Node> nStart_ = new ArrayList<Node>();
+	private List<Component> cStart_ = new ArrayList<Component>();
+	private List<NetworkLink> nlStart_ = new ArrayList<NetworkLink>();
+	private List<Interaction> iStart_ = new ArrayList<Interaction>();
+
+	public DeploymentConfig(Node[] nodes,
+			NetworkLink[] networks, Component[] components,
+			Interaction[] interactions) {
+		super(components.length, 0, nodes.length - 1);
+		nodes_ = nodes;
+		networks_ = networks;
+		components_ = components;
+		interactions_ = interactions;
+
+		orderElements();
+	}
+	
 	public DeploymentConfig(int positions, int bmin, int bmax) {
 		super(positions, bmin, bmax);
 	}
+	
+	public void init() {
+		nodes_ = nStart_.toArray(new Node[0]);
+		components_ = cStart_.toArray(new Component[0]);
+		networks_ = nlStart_.toArray(new NetworkLink[0]);
+		interactions_ = iStart_.toArray(new Interaction[0]);
+
+		if (boundaries_.length != components_.length) {
+			boundaries_ = new int[components_.length][2];
+			for (int i = 0; i < boundaries_.length; i++) {
+				boundaries_[i] = new int[] { 0, nodes_.length - 1 };
+			}
+		}
+	}
+	
+	protected void orderElements() {
+		Arrays.sort(networks_);
+		Arrays.sort(nodes_);
+		Arrays.sort(components_);
+		Arrays.sort(interactions_);
+	}
+	
+	
+	public Node addNode(String id, int[] res) {
+		Node n = new Node(nStart_.size(), id, res);
+		n.setNetworkLinks(new NetworkLink[0]);
+		nStart_.add(n);
+		return n;
+	}
+
+	public Component addComponent(String id, int[] res) {
+		Component c = new Component(cStart_.size(), id, res);
+		c.setInteractions(new Interaction[0]);
+		cStart_.add(c);
+		return c;
+	}
+
+	public NetworkLink addNetwork(String id, Node[] nodes, int[] res) {
+		NetworkLink nl = new NetworkLink(nlStart_.size(), id, nodes, res);
+		for (Node n : nodes) {
+			NetworkLink[] nets = n.getNetworkLinks();
+			if (nets == null) {
+				nets = new NetworkLink[1];
+				n.setNetworkLinks(nets);
+			} else {
+				NetworkLink[] nints = new NetworkLink[nets.length + 1];
+				System.arraycopy(nets, 0, nints, 0, nets.length);
+				n.setNetworkLinks(nints);
+			}
+			n.getNetworkLinks()[n.getNetworkLinks().length - 1] = nl;
+		}
+		nlStart_.add(nl);
+		return nl;
+	}
+
+	public Interaction addInteraction(String id, int[] res, double rate,
+			Component[] comps) {
+		Interaction i = new Interaction(iStart_.size(), id, res, rate);
+		i.setParticipants(comps);
+
+		iStart_.add(i);
+		for (Component c : comps) {
+			Interaction[] ints = c.getInteractions();
+			if (ints == null) {
+				ints = new Interaction[1];
+				c.setInteractions(ints);
+			} else {
+				Interaction[] nints = new Interaction[ints.length + 1];
+				System.arraycopy(ints, 0, nints, 0, ints.length);
+				c.setInteractions(nints);
+			}
+			c.getInteractions()[c.getInteractions().length - 1] = i;
+		}
+		return i;
+	}
+
 
 	public Map<Object, ResourceConsumptionPolicy> getResourceConsumptionPolicies() {
 		return packer_.getResourceConsumptionPolicies();
@@ -197,7 +290,28 @@ public class DeploymentConfig extends ProblemConfigImpl{
 		return true;
 	}
 	
+	public int scoreDeployment(DeploymentPlan plan){
+		return 0;
+	}
 	
+	public void printSolutionStats(VectorSolution vs) {
+		DeploymentPlan plan = new DeploymentPlan(this, vs);
+		ResourceResidual resid = new ResourceResidual(this);
+		resid.deploy(plan);
+
+		System.out.println("Valid:" + resid.valid());
+		System.out.println("Score:" + scoreDeployment(plan));
+		System.out.println(plan);
+		System.out.println(resid);
+		System.out.println("----------------------------");
+		System.out.println("Valid:" + resid.valid());
+		System.out.println("Score:" + scoreDeployment(plan));
+		for (Node n : nodes_) {
+			if (resid.getHostedCount()[n.id_] == 0) {
+				System.out.println("\t" + n.label_ + " is free");
+			}
+		}
+	}
 
 	public String toString() {
 		String str = "Deployment Problem {\n";
