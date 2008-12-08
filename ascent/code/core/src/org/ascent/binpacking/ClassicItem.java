@@ -16,18 +16,23 @@
 package org.ascent.binpacking;
 
 public class ClassicItem extends Element {
-    double [] consumedResources_ ;
-    
+    private double [] consumedResources_ ;
+    private int numTasks_;
 	public ClassicItem(int id, String name) {
 		super(id, name);
 	}
 	
-	public ClassicItem(int id, String name, double [] cr) {
+	public ClassicItem(int id, String name, double [] cr,int nt) {
 		super(id, name);
 		consumedResources_ = cr;
+		numTasks_ = nt;
 	}
 	public double [] getConsumedResources_(){
 		return consumedResources_;
+	}
+
+	public int getNumTasks_() {
+		return numTasks_;
 	}
 
 }
