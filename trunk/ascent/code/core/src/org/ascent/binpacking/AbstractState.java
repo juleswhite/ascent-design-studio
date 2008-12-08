@@ -16,7 +16,9 @@
 
 package org.ascent.binpacking;
 
-public abstract class AbstractState {
+import org.ascent.HasSize;
+
+public abstract class AbstractState implements HasSize{
 	protected Object item_;
 	protected int[] size_;
 	protected double weight_ = 0;

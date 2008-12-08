@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2008 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ascent.HasSize;
 import org.ascent.ResourceConsumptionPolicy;
 import org.ascent.configurator.AbstractRefreshCore;
 import org.ascent.configurator.RefreshCore;
@@ -31,16 +32,25 @@ import org.ascent.expr.BinaryExpression;
 import org.ascent.expr.Expression;
 import org.ascent.util.ParsingUtil;
 
-
 public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 		implements RefreshCore, StateProvider, DependencyManager {
+	
+	private class AggregateSizeWrapper implements HasSize {
+		private ItemState itemState_;
+		public AggregateSizeWrapper(ItemState is){
+			itemState_ = is;
+		}
+		public int[] getSize() {
+			return itemState_.getSizeWithDependencies();
+		}		
+	}
 
 	public static final String MAPPED_COUNT_RESOURCE = "__mapped";
 
 	private Map<Object, Dependencies> dependencyMap_ = new HashMap<Object, Dependencies>();
 	private Map<Object, ItemState> sourceStates_ = new HashMap<Object, ItemState>();
 	private Map<Object, BinState> targetStates_ = new HashMap<Object, BinState>();
-	private Map<Object,ResourceConsumptionPolicy> resourcePolicies_ = new HashMap<Object, ResourceConsumptionPolicy>();
+	private Map<Object, ResourceConsumptionPolicy> resourcePolicies_ = new HashMap<Object, ResourceConsumptionPolicy>();
 	private boolean resourcesSet_ = false;
 	private List resources_ = new ArrayList();
 	private List sources_ = new ArrayList();
@@ -51,33 +61,35 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 	private double optimalityLowerBound_ = Double.MAX_VALUE;
 	private boolean allowPartialSolutions_ = false;
 	private boolean useMappedCountResource_ = false;
-	
-	public RefreshBinPackingCore(){}
-	
-	public RefreshBinPackingCore(BinPackingProblem p){
+	protected Packer packer_;
+
+	public RefreshBinPackingCore() {
+	}
+
+	public RefreshBinPackingCore(BinPackingProblem p) {
 		configure(p);
 	}
-	
-	public void configure(BinPackingProblem p){
+
+	public void configure(BinPackingProblem p) {
 		int[][] sres = p.getItemSizes();
 		int[][] tres = p.getBinSizes();
 
-		setSetsToMap(p.getItems(),p.getBins());
+		setSetsToMap(p.getItems(), p.getBins());
 		setResourceConstraints(sres, tres);
 
-		for(Item it : p.getItems()){
-			for(Item ex : it.getExclusions()){
-				addExcludesMappingConstraint(it,ex);
+		for (Item it : p.getItems()) {
+			for (Item ex : it.getExclusions()) {
+				addExcludesMappingConstraint(it, ex);
 			}
-			for(Item req : it.getDependencies()){
+			for (Item req : it.getDependencies()) {
 				addRequiresMappingConstraint(it, req);
 			}
 		}
-		
-		for(Object key : p.getResourcePolicies().keySet()){
+
+		for (Object key : p.getResourcePolicies().keySet()) {
 			getResourcePolicies().put(key, p.getResourcePolicies().get(key));
 		}
-		
+
 		requireAllMapped();
 	}
 
@@ -191,9 +203,18 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 		}
 	}
 
+	protected void initPacker() {
+		if (packer_ == null) {
+			packer_ = new Packer();
+			for (Object key : resourcePolicies_.keySet())
+				packer_.getResourceConsumptionPolicies().put(key,
+						resourcePolicies_.get(key));
+		}
+	}
+
 	public Map<Object, List> nextMapping() {
 		try {
-
+			initPacker();
 			preProcess();
 
 			while (!done()) {
@@ -250,31 +271,41 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 			deps.update(target);
 		}
 	}
-	
-	public int getConsumed(BinState ts, int res){
+
+	public int getConsumed(BinState ts, int res) {
 		int cons = 0;
-		for(ItemState st : ts.getSources()){
+		for (ItemState st : ts.getSources()) {
 			cons += st.getSize()[res];
 		}
 		return cons;
 	}
+	
+	public boolean overconsumed(int[] residual){
+		for(int i = 0; i < residual.length; i++){
+			if(residual[i] < 0)
+				return true;
+		}
+		return false;
+	}
 
 	public boolean willFit(ItemState ss, BinState ts) {
-		for (int i = 0; i < ss.getSizeWithDependencies().length; i++){
+	
+//		int[] resid = packer_.insert(new AggregateSizeWrapper(ss), ts.getSources(), ts);
+//		return !overconsumed(resid);
+		for (int i = 0; i < ss.getSizeWithDependencies().length; i++) {
 			ResourceConsumptionPolicy policy = getResourcePolicies().get(i);
-			if(policy != null){
+			if (policy != null) {
 				ArrayList dep = new ArrayList();
-				for(ItemState st : ts.getSources()){
+				for (ItemState st : ts.getSources()) {
 					dep.add(st.getItem());
 				}
 				dep.add(ss.getItem());
 				Object binitem = ts.getItem();
-				int tsize =  ts.getSize()[i];
-				int cons = getConsumed(ts,i) + ss.getSize()[i];
-				if(policy.getResourceResidual(dep, binitem, tsize, cons) < 0)
+				int tsize = ts.getSize()[i];
+				int cons = getConsumed(ts, i) + ss.getSize()[i];
+				if (policy.getResourceResidual(dep, binitem, tsize, cons) < 0)
 					return false;
-			}
-			else if (ss.getSizeWithDependencies()[i] > ts.getSize()[i])
+			} else if (ss.getSizeWithDependencies()[i] > ts.getSize()[i])
 				return false;
 		}
 		return true;
@@ -391,9 +422,10 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 			Object t = getTargets().get(i);
 			Map vals = getTargetVariableValues(t);
 			for (int j = 0; j < resources_.size(); j++) {
-				if(i == 0){
-					ResourceConsumptionPolicy policy = getResourcePolicies().get(resources_.get(j));
-					if(policy != null){
+				if (i == 0) {
+					ResourceConsumptionPolicy policy = getResourcePolicies()
+							.get(resources_.get(j));
+					if (policy != null) {
 						getResourcePolicies().put(j, policy);
 					}
 				}
@@ -520,7 +552,7 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 		}
 		return null;
 	}
-	
+
 	public Map<Object, ResourceConsumptionPolicy> getResourcePolicies() {
 		return resourcePolicies_;
 	}

@@ -18,11 +18,15 @@ package org.ascent.deployment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.ascent.HasSize;
 import org.ascent.ProblemConfigImpl;
 import org.ascent.ResourceConsumptionPolicy;
 import org.ascent.VectorSolution;
+import org.ascent.binpacking.Packer;
 import org.ascent.binpacking.ValueFunction;
 import org.ascent.pso.Pso;
 
@@ -32,6 +36,7 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 		protected List<Interaction> disconnections_ = new ArrayList<Interaction>();
 		protected List<NetworkLink> linkExhaustions_ = new ArrayList<NetworkLink>();
 		protected List<Node> hostExhaustions_ = new ArrayList<Node>();
+		protected Map<Node, List<Component>> hostedMap_ = new HashMap<Node, List<Component>>();
 
 		private int[][] nodeResiduals_;
 		private int[][] networkResiduals_;
@@ -52,6 +57,15 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 				System.arraycopy(n.resources_, 0, resid, 0, resid.length);
 				networkResiduals_[n.id_] = resid;
 			}
+		}
+
+		public List<Component> getHosted(Node n) {
+			List<Component> hosted = hostedMap_.get(n);
+			if (hosted == null) {
+				hosted = new ArrayList<Component>();
+				hostedMap_.put(n, hosted);
+			}
+			return hosted;
 		}
 
 		public List<Interaction> getDisconnections() {
@@ -109,30 +123,8 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 		}
 
 		public void deploy(Component c, Node n) {
-			int[] resid = residuals(getResourceResiduals(n), c.resources_);
-
-			// Since the resources are initd to 69 rather than
-			// 100 we have to deal with the case of a single
-			// app that consumes more than 69 CPU but is
-			// still schedulable
-			if (hostedCount_[n.id_] == 1) {
-				for (int i = 0; i < resid.length; i++) {
-					if (rateMonotonicResourceMap_ != null
-							&& rateMonotonicResourceMap_[i] == 1
-							&& resid[i] < 0)
-						resid[i] = 0;
-				}
-			}
-			// if(resourcePolicies_ != null){
-			// for(int i = 0; i < resid.length; i++){
-			// if(resourcePolicies_[i] != null){
-			// Node[]
-			// resid[i] = resourcePolicies_[i].getResourceResidual(consumers,
-			// producers, avail, consumed)
-			// }
-			// }
-			// }
-			// nodeResiduals_.put(n, resid);
+			int[] resid = packer_.insert(c, getHosted(n), n);
+			getHosted(n).add(c);
 			nodeResiduals_[n.id_] = resid;
 		}
 
@@ -258,18 +250,24 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 			}
 			return hosted.toArray(new Component[0]);
 		}
+		
+		public String toString(){
+			return toString(false);
+		}
 
-		public String toString() {
+		public String toString(boolean showlinks) {
 			String str = "Deployment Plan {\n";
 			for (Component c : components_) {
 				str += "\t\t" + c.label_ + "-->" + getHost(c).label_ + "\n";
 			}
-			for (Interaction inter : interactions_) {
-				NetworkLink l = getChannel(inter);
-				if (l != null) {
-					str += "\t\t" + inter.label_ + "-->" + l.label_ + "\n";
-				} else {
-					str += "\t\t" + inter.label_ + "--> Disconnected\n";
+			if (showlinks) {
+				for (Interaction inter : interactions_) {
+					NetworkLink l = getChannel(inter);
+					if (l != null) {
+						str += "\t\t" + inter.label_ + "-->" + l.label_ + "\n";
+					} else {
+						str += "\t\t" + inter.label_ + "--> Disconnected\n";
+					}
 				}
 			}
 			str += "}\n";
@@ -277,7 +275,7 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 		}
 	}
 
-	public class ModelElement implements Comparable<ModelElement> {
+	public class ModelElement implements Comparable<ModelElement>, HasSize {
 		protected int id_;
 		protected String label_;
 		protected int[] resources_;
@@ -315,6 +313,10 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 
 		public void setResources(int[] resources) {
 			resources_ = resources;
+		}
+
+		public int[] getSize() {
+			return getResources();
 		}
 
 		public String toString() {
@@ -412,7 +414,7 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 	protected Interaction[] interactions_;
 	protected int[] networkResourceCoeffs_;
 	protected ResourceConsumptionPolicy[] resourcePolicies_;
-	protected int[] rateMonotonicResourceMap_;
+	protected Packer packer_ = new Packer();
 	private boolean acceptInfeasibleSolutions_ = true;
 
 	private List<Node> nStart_ = new ArrayList<Node>();
@@ -519,6 +521,7 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 						: networkResourceCoeffs_[i];
 				score += (capacity[i] * coeff);
 			}
+
 			return score;
 		} else {
 			return -1
@@ -689,12 +692,8 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 		}
 	}
 
-	public int[] getRateMonotonicResourceMap() {
-		return rateMonotonicResourceMap_;
-	}
-
-	public void setRateMonotonicResourceMap(int[] rateMonotonicResourceMap) {
-		rateMonotonicResourceMap_ = rateMonotonicResourceMap;
+	public Map<Object, ResourceConsumptionPolicy> getResourceConsumptionPolicies() {
+		return packer_.getResourceConsumptionPolicies();
 	}
 
 	public ValueFunction<VectorSolution> getFitnessFunction() {
@@ -703,6 +702,54 @@ public class DeploymentWithNetworkMinimizationConfig extends ProblemConfigImpl {
 
 	public void setFitnessFunction(ValueFunction<VectorSolution> fitnessFunction) {
 		fitnessFunction_ = fitnessFunction;
+	}
+
+	public NetworkLink[] getNetworks() {
+		return networks_;
+	}
+
+	public void setNetworks(NetworkLink[] networks) {
+		networks_ = networks;
+	}
+
+	public Component[] getComponents() {
+		return components_;
+	}
+
+	public void setComponents(Component[] components) {
+		components_ = components;
+	}
+
+	public Node[] getNodes() {
+		return nodes_;
+	}
+
+	public void setNodes(Node[] nodes) {
+		nodes_ = nodes;
+	}
+
+	public Interaction[] getInteractions() {
+		return interactions_;
+	}
+
+	public void setInteractions(Interaction[] interactions) {
+		interactions_ = interactions;
+	}
+
+	public ResourceConsumptionPolicy[] getResourcePolicies() {
+		return resourcePolicies_;
+	}
+
+	public void setResourcePolicies(ResourceConsumptionPolicy[] resourcePolicies) {
+		resourcePolicies_ = resourcePolicies;
+	}
+
+	public boolean isAcceptInfeasibleSolutions() {
+		return acceptInfeasibleSolutions_;
+	}
+
+	public void setAcceptInfeasibleSolutions(boolean acceptInfeasibleSolutions) {
+		acceptInfeasibleSolutions_ = acceptInfeasibleSolutions;
 	}
 
 	public static void main(String[] args) {
