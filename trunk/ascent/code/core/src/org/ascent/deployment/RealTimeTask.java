@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2008 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -14,39 +14,35 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-
 package org.ascent.deployment;
 
-import java.util.ArrayList;
-import java.util.List;
+public class RealTimeTask {
+	private double period_ = 0;
+	private double utilization_ = 0;
 
-
-
-public class Component extends ModelElement implements Schedulable{
-	private Interaction[] interactions_;
-	private List<RealTimeTask> realTimeTasks_ = new ArrayList<RealTimeTask>();
-	
-	public Component(int id, String label, int[] resources) {
-		super(id, label, resources);
+	public RealTimeTask() {
 	}
 
-	public Interaction[] getInteractions() {
-		return interactions_;
+	public RealTimeTask(double period, double util) {
+		super();
+		period_ = period;
+		utilization_ = util;
 	}
 
-	public void setInteractions(Interaction[] interactions) {
-		interactions_ = interactions;
+	public double getPeriod() {
+		return period_;
 	}
 
-	public int getTotalTasks() {
-		if(realTimeTasks_.size() > 0)
-			return realTimeTasks_.size();
-		else
-			return 1;
+	public void setPeriod(double period) {
+		period_ = period;
 	}
-	
-	public void addTask(double period, double util){
-		realTimeTasks_.add(new RealTimeTask(period,util));
+
+	public double getUtilization() {
+		return utilization_;
 	}
-	
+
+	public void setUtilization(double utilization) {
+		utilization_ = utilization;
+	}
+
 }

@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2008 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -14,20 +14,23 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-
 package org.ascent.deployment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.ascent.ProblemConfigImpl;
 import org.ascent.ResourceConsumptionPolicy;
 import org.ascent.VectorSolution;
+import org.ascent.binpacking.BinPackingProblem;
+import org.ascent.binpacking.FFDBinPacker;
 import org.ascent.binpacking.Packer;
+import org.ascent.binpacking.RandomItemPacker;
 
-public class DeploymentConfig extends ProblemConfigImpl{
+public class DeploymentConfig extends ProblemConfigImpl {
 
 	protected NetworkLink[] networks_;
 	protected Component[] components_;
@@ -37,15 +40,15 @@ public class DeploymentConfig extends ProblemConfigImpl{
 	protected ResourceConsumptionPolicy[] resourcePolicies_;
 	protected Packer packer_ = new Packer();
 	protected boolean acceptInfeasibleSolutions_ = true;
-	
+
 	private List<Node> nStart_ = new ArrayList<Node>();
 	private List<Component> cStart_ = new ArrayList<Component>();
 	private List<NetworkLink> nlStart_ = new ArrayList<NetworkLink>();
 	private List<Interaction> iStart_ = new ArrayList<Interaction>();
+	private List<DeploymentConstraint> constraints_ = new ArrayList<DeploymentConstraint>();
 
-	public DeploymentConfig(Node[] nodes,
-			NetworkLink[] networks, Component[] components,
-			Interaction[] interactions) {
+	public DeploymentConfig(Node[] nodes, NetworkLink[] networks,
+			Component[] components, Interaction[] interactions) {
 		super(components.length, 0, nodes.length - 1);
 		nodes_ = nodes;
 		networks_ = networks;
@@ -54,11 +57,11 @@ public class DeploymentConfig extends ProblemConfigImpl{
 
 		orderElements();
 	}
-	
+
 	public DeploymentConfig(int positions, int bmin, int bmax) {
 		super(positions, bmin, bmax);
 	}
-	
+
 	public void init() {
 		nodes_ = nStart_.toArray(new Node[0]);
 		components_ = cStart_.toArray(new Component[0]);
@@ -72,15 +75,14 @@ public class DeploymentConfig extends ProblemConfigImpl{
 			}
 		}
 	}
-	
+
 	protected void orderElements() {
 		Arrays.sort(networks_);
 		Arrays.sort(nodes_);
 		Arrays.sort(components_);
 		Arrays.sort(interactions_);
 	}
-	
-	
+
 	public Node addNode(String id, int[] res) {
 		Node n = new Node(nStart_.size(), id, res);
 		n.setNetworkLinks(new NetworkLink[0]);
@@ -134,7 +136,6 @@ public class DeploymentConfig extends ProblemConfigImpl{
 		return i;
 	}
 
-
 	public Map<Object, ResourceConsumptionPolicy> getResourceConsumptionPolicies() {
 		return packer_.getResourceConsumptionPolicies();
 	}
@@ -186,7 +187,7 @@ public class DeploymentConfig extends ProblemConfigImpl{
 	public void setAcceptInfeasibleSolutions(boolean acceptInfeasibleSolutions) {
 		acceptInfeasibleSolutions_ = acceptInfeasibleSolutions;
 	}
-	
+
 	public Packer getPacker() {
 		return packer_;
 	}
@@ -213,7 +214,7 @@ public class DeploymentConfig extends ProblemConfigImpl{
 
 		return res;
 	}
-	
+
 	public NetworkLink[] getLinks(Node[] nodes) {
 		if (nodes.length > 1) {
 			ArrayList<NetworkLink> links = new ArrayList<NetworkLink>();
@@ -236,7 +237,7 @@ public class DeploymentConfig extends ProblemConfigImpl{
 					nodes[0], interactions_[0].resources_.length) };
 		}
 	}
-	
+
 	public static String toString(int[] res) {
 		String str = "[";
 		for (int i = 0; i < res.length; i++) {
@@ -248,14 +249,14 @@ public class DeploymentConfig extends ProblemConfigImpl{
 		str += "]";
 		return str;
 	}
-	
+
 	public int[] residuals(ModelElement[] hosted, ModelElement host) {
 		int[] sums = sumResources(hosted);
 		int[] avail = host.resources_;
 		int[] resid = residuals(avail, sums);
 		return resid;
 	}
-	
+
 	public int[] residuals(int[] available, int[] consumed) {
 		if (available.length != consumed.length)
 			throw new DeploymentProblemSpecException(
@@ -267,7 +268,7 @@ public class DeploymentConfig extends ProblemConfigImpl{
 		}
 		return resid;
 	}
-	
+
 	public NetworkLink[] getLinks(Node a, Node b) {
 		List<NetworkLink> links = new ArrayList<NetworkLink>();
 		for (NetworkLink l : a.getNetworkLinks()) {
@@ -289,11 +290,101 @@ public class DeploymentConfig extends ProblemConfigImpl{
 
 		return true;
 	}
-	
-	public int scoreDeployment(DeploymentPlan plan){
+
+	public void requireNotColocated(Component a, Component b) {
+		getConstraints().add(new NotColocated(a, b));
+	}
+
+	public void requireColocated(Component a, Component b) {
+		getConstraints().add(new Colocated(a, b));
+	}
+
+	public List<DeploymentConstraint> getConstraints() {
+		return constraints_;
+	}
+
+	public void setConstraints(List<DeploymentConstraint> constraints) {
+		constraints_ = constraints;
+	}
+
+	public VectorSolution[] createInitialSolutions(int count) {
+
+		Map mapping = new HashMap();
+		BinPackingProblem bp = new BinPackingProblem();
+		bp.getResourcePolicies().putAll(getResourceConsumptionPolicies());
+		for (Node n : getNodes()) {
+			HardwareNode hn = new HardwareNode(n.getLabel(), n.getResources());
+			bp.getBins().add(hn);
+			mapping.put(hn, n);
+		}
+		for (Component c : getComponents()) {
+			SoftwareComponent cn = new SoftwareComponent(c.getLabel(), c
+					.getResources());
+			bp.getItems().add(cn);
+			mapping.put(c, cn);
+		}
+		for (DeploymentConstraint con : constraints_) {
+			if (con instanceof NotColocated) {
+				NotColocated ncon = (NotColocated) con;
+				SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
+						.getSource());
+
+				for (Component c : ncon.getTargets()) {
+					SoftwareComponent tc = (SoftwareComponent) mapping.get(c);
+					sc.getExclusions().add(tc);
+				}
+			}
+			if (con instanceof Colocated) {
+				Colocated ncon = (Colocated) con;
+				SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
+						.getSource());
+
+				for (Component c : ncon.getTargets()) {
+					SoftwareComponent tc = (SoftwareComponent) mapping.get(c);
+					sc.getDependencies().add(tc);
+				}
+			}
+		}
+
+		List<Map<Object, List>> binsols = new ArrayList<Map<Object, List>>();
+		for (int i = 0; i < count - 2; i++) {
+			Map<Object, List> sol = (new RandomItemPacker(bp)).nextMapping();
+			binsols.add(sol);
+		}
+		binsols.add((new FFDBinPacker(bp)).nextMapping());
+
+		int stotal = Math.min(binsols.size(), count);
+		VectorSolution[] sols = new VectorSolution[stotal];
+
+		for (int i = 0; i < stotal; i++) {
+			int[] pos = new int[getComponents().length];
+			Map<Object, List> sol = binsols.get(i);
+
+			for (int j = 0; j < getComponents().length; j++) {
+				SoftwareComponent c = (SoftwareComponent) mapping
+						.get(getComponents()[j]);
+				if (c != null && sol != null && sol.get(c) != null) {
+
+					HardwareNode host = (HardwareNode) sol.get(c).get(0);
+					Node node = (Node) mapping.get(host);
+					for (int k = 0; k < getNodes().length; k++) {
+						if (getNodes()[k] == node) {
+							pos[j] = k;
+							break;
+						}
+					}
+				}
+			}
+			sols[i] = new VectorSolution(pos);
+		}
+
+		return sols;
+	}
+
+	public int scoreDeployment(DeploymentPlan plan) {
 		return 0;
 	}
-	
+
 	public void printSolutionStats(VectorSolution vs) {
 		DeploymentPlan plan = new DeploymentPlan(this, vs);
 		ResourceResidual resid = new ResourceResidual(this);

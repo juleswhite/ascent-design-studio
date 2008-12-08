@@ -74,7 +74,7 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 		int[][] sres = p.getItemSizes();
 		int[][] tres = p.getBinSizes();
 
-		setSetsToMap(p.getItems(), p.getBins());
+		setSetsToMap(new ArrayList(p.getItems()), new ArrayList(p.getBins()));
 		setResourceConstraints(sres, tres);
 
 		for (Item it : p.getItems()) {

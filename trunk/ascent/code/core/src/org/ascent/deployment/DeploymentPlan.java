@@ -68,6 +68,19 @@ public class DeploymentPlan {
 		return hosted.toArray(new Component[0]);
 	}
 	
+	public boolean isValid(){
+		ResourceResidual resid = new ResourceResidual(deploymentConfiguration_);
+		resid.deploy(this);
+		if(!resid.valid())
+			return false;
+		
+		for(DeploymentConstraint con : deploymentConfiguration_.getConstraints())
+			if(!con.isEnforced(this))
+				return false;
+		
+		return true;
+	}
+	
 	public String toString(){
 		return toString(false);
 	}
