@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.ascent.configurator.UnsolvableException;
 
-public class ItemState extends AbstractState{
+public class ItemState extends AbstractState {
 	
 	private Map attributes_;
 	private List currentTargets_;

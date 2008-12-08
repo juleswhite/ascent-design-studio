@@ -26,6 +26,10 @@ public class MinExclusionSelector implements BinSelector {
 
 	public Object selectBin(FFDBinPacker core, Object item, List potentials, ItemState ss,
 			List<BinState> binstates) {
+		
+		if(potentials.size() == 0)
+			return null;
+		
 		List exc = core.getExcluded(ss.getItem());
 		if (exc.size() == 0) {
 			return potentials.get(0);

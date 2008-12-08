@@ -24,24 +24,25 @@ import java.util.Map;
 import org.ascent.ReverseComparator;
 
 public class MultiStrategyBinPacker {
-	
+
 	private FFDBinPacker solver_;
 	private List<FFDBinPacker> packers_ = new ArrayList<FFDBinPacker>();
-	
+
 	public MultiStrategyBinPacker() {
 		initPackers();
 	}
 
-	protected void initPackers(){
+	protected void initPackers() {
 		packers_.add(new FFDBinPacker());
-		
+
 		FFDBinPacker solver = new FFDBinPacker();
-		solver.setItemSortingStrategy(new ReverseComparator(solver.getItemSortingStrategy()));
+		solver.setItemSortingStrategy(new ReverseComparator(solver
+				.getItemSortingStrategy()));
 		packers_.add(solver);
-		
+
 		solver = new FFDBinPacker();
 		solver.setWeightingStrategy(new WeightUpdateStrategy() {
-		
+
 			public double getWeight(ItemState st) {
 				double w = 0;
 				for (int i = 0; i < st.getSize().length; i++) {
@@ -51,58 +52,74 @@ public class MultiStrategyBinPacker {
 			}
 		});
 		packers_.add(solver);
-		
+
 		solver = new FFDBinPacker();
 		solver_ = solver;
 		solver.setWeightingStrategy(new WeightUpdateStrategy() {
-		
+
 			public double getWeight(ItemState st) {
 				double w = 0;
 				for (int i = 0; i < st.getSize().length; i++) {
 					w += st.getSize()[i] * st.getSize()[i];
 				}
-				return Math.sqrt(w) + (1000 * solver_.getExcluded(Arrays.asList(new Object[]{st.getItem()})).size());
+				return Math.sqrt(w)
+						+ (1000 * solver_.getExcluded(
+								Arrays.asList(new Object[] { st.getItem() }))
+								.size());
 			}
 		});
-		
+
 		packers_.add(solver);
-		
+
 		solver = new FFDBinPacker();
 		solver_ = solver;
-		solver.setBinSortingStrategy(new ReverseComparator(solver.getBinSortingStrategy()));
+		solver.setBinSortingStrategy(new ReverseComparator(solver
+				.getBinSortingStrategy()));
 		solver.setWeightingStrategy(new WeightUpdateStrategy() {
-		
+
 			public double getWeight(ItemState st) {
 				double w = 0;
 				for (int i = 0; i < st.getSize().length; i++) {
 					w += st.getSize()[i] * st.getSize()[i];
 				}
-				return Math.sqrt(w) + (1000 * solver_.getExcluded(Arrays.asList(new Object[]{st.getItem()})).size());
+				return Math.sqrt(w)
+						+ (1000 * solver_.getExcluded(
+								Arrays.asList(new Object[] { st.getItem() }))
+								.size());
 			}
 		});
 		packers_.add(solver);
-		
+
 		solver = new LeastBoundPacker();
 		packers_.add(solver);
-		
+
 		solver = new FFDBinPacker();
-		solver.setBinSortingStrategy(new ReverseComparator(solver.getBinSortingStrategy()));
+		solver.setBinSortingStrategy(new ReverseComparator(solver
+				.getBinSortingStrategy()));
 		packers_.add(solver);
-		
+
 	}
-	
-	public List<Map<Object,List>> pack(BinPackingProblem p){
-		List<Map<Object,List>> sols = new ArrayList<Map<Object,List>>();
-		for(FFDBinPacker core : packers_){
+
+	public List<FFDBinPacker> getPackers() {
+		return packers_;
+	}
+
+	public void setPackers(List<FFDBinPacker> packers) {
+		packers_ = packers;
+	}
+
+	public List<Map<Object, List>> pack(BinPackingProblem p) {
+		List<Map<Object, List>> sols = new ArrayList<Map<Object, List>>();
+		for (FFDBinPacker core : packers_) {
 			core.configure(p);
 			addSolution(sols, core.nextMapping());
 		}
-		
+
 		return sols;
 	}
-	
-	protected void addSolution(List<Map<Object,List>> sols, Map<Object,List> s){
-		if(s != null){
+
+	protected void addSolution(List<Map<Object, List>> sols, Map<Object, List> s) {
+		if (s != null) {
 			sols.add(s);
 		}
 	}

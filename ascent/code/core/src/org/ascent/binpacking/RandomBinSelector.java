@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.ascent.Util;
 
-public class RandomSelector implements BinSelector {
+public class RandomBinSelector implements BinSelector {
 
 	public Object selectBin(FFDBinPacker core, Object item, List validbins,
 			ItemState itemstate, List<BinState> binstates) {
