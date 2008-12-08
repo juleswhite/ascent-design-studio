@@ -117,16 +117,28 @@ public class BasicBinPacker {
 	private boolean fitsBin(ClassicItem item, ClassicBin bin){
 		double [] consumedResources  = item.getConsumedResources_();
 		double [] spaceLeft = bin.getSpaceLeft_();
-	//	System.out.println("Spaceleft is " + spaceLeft.length);
-		if(sumItems(bin,item) > getBound(bin,item)){
-		//	System.out.println(item.getName()+ " can't fit " + bin.getBinName_());
-			return false;
+		System.out.println("Spaceleft is " + spaceLeft[0]);
+		
+		if(spaceLeft[0] != 1.0){ // if there is something in the bin
+			
+			System.out.println("There is something in the bin");
+			if(sumItems(bin,item) > getBound(bin,item)){
+				System.out.println(item.getName()+ " can't fit " + bin.getBinName_()+" with other items");
+				//System.out.println("")
+				return false;
+			}
+		}
+		else{//if there is no item in the bin
+			if(item.getConsumedResources_()[0] > 1){//if the item to put in consumes more that 100%
+				System.out.println(" Single item consumes more thatn 100%");
+				return false;
+			}
 		}
 		
 		for(int i = 1; i <spaceLeft.length; i++){
 		//	System.out.println("CR [i] = "+ consumedResources[i] +" & space Left = " +spaceLeft[i] );
 			if(consumedResources[i] > spaceLeft[i]){
-				
+				System.out.println(" Resources overconsumed. Won't fit");
 				return false; // some resource of the item doens't fit that dimension of the bin.
 			}
 			
@@ -152,9 +164,10 @@ public class BasicBinPacker {
 		bin.addItem(item);
 		double [] sl = bin.getSpaceLeft_();
 		double []cr = item.getConsumedResources_();
-		for( int i = 1; i < cr.length; i++){
+		for( int i = 0; i < cr.length; i++){
 			sl[i] = sl[i] - cr[i];
 		}
+		System.out.println(" Space left is now " + sl[0]);
 		bin.setSpaceLeft_(sl);
 		return bin;
 	}
@@ -232,46 +245,46 @@ public class BasicBinPacker {
         bins.add(b14);
         
         
-        ClassicItem i1 = new ClassicItem(1,"App1",new double [] {.31});
+        ClassicItem i1 = new ClassicItem(1,"App1",new double [] {.31},7);
         items.add(i1);
        
-        ClassicItem i2 = new ClassicItem(2,"App2",new double [] {.31});
+        ClassicItem i2 = new ClassicItem(2,"App2",new double [] {.31},7);
         items.add(i2);
         
-        ClassicItem i3 = new ClassicItem(3,"App3",new double [] {.94});
+        ClassicItem i3 = new ClassicItem(3,"App3",new double [] {.94},7);
         items.add(i3);
         
-        ClassicItem i4 = new ClassicItem(4,"App4",new double [] {.35});
+        ClassicItem i4 = new ClassicItem(4,"App4",new double [] {.35},8);
         items.add(i4);
         
-        ClassicItem i5 = new ClassicItem(5,"App5",new double [] {.44});
+        ClassicItem i5 = new ClassicItem(5,"App5",new double [] {.44},5);
         items.add(i5);
         
-        ClassicItem i6 = new ClassicItem(6,"App6",new double [] {.43});
+        ClassicItem i6 = new ClassicItem(6,"App6",new double [] {.43},7);
         items.add(i6);
         
-        ClassicItem i7 = new ClassicItem(7,"App7",new double [] {.30});
+        ClassicItem i7 = new ClassicItem(7,"App7",new double [] {.30},7);
         items.add(i7);
         
-        ClassicItem i8 = new ClassicItem(8,"App8",new double [] {.58});
+        ClassicItem i8 = new ClassicItem(8,"App8",new double [] {.58},3);
         items.add(i8);
        
-        ClassicItem i9 = new ClassicItem(9,"App9",new double [] {.98});
+        ClassicItem i9 = new ClassicItem(9,"App9",new double [] {.98},9);
         items.add(i9);
         
-        ClassicItem i10 = new ClassicItem(10,"App10",new double [] {.27});
+        ClassicItem i10 = new ClassicItem(10,"App10",new double [] {.27},8);
         items.add(i10);
         
-        ClassicItem i11 = new ClassicItem(11,"App11",new double [] {.54});
+        ClassicItem i11 = new ClassicItem(11,"App11",new double [] {.54},6);
         items.add(i11);
         
-        ClassicItem i12 = new ClassicItem(12,"App12",new double [] {.96});
+        ClassicItem i12 = new ClassicItem(12,"App12",new double [] {.96},1);
         items.add(i12);
         
-        ClassicItem i13 = new ClassicItem(13,"App13",new double [] {.41});
+        ClassicItem i13 = new ClassicItem(13,"App13",new double [] {.41},7);
         items.add(i13);
         
-        ClassicItem i14 = new ClassicItem(14,"App14",new double [] {.37});
+        ClassicItem i14 = new ClassicItem(14,"App14",new double [] {.37},7);
         items.add(i14);
 		/*double [] item1Cr = {.05,6.0,3.0};
 		double [] item2Cr = {.20,8.0,3.0};
@@ -323,8 +336,14 @@ public class BasicBinPacker {
 		doneBins = bfp.getBins();
 		System.out.println(" done Bins size is " + doneBins.size());
 		for(ClassicBin b : doneBins){
+			int sumTasks = 0;
+			for(ClassicItem i : b.getItems()){
+				//System.out.println( b.getBinName_() + " has item " + i.getName() + " with " + i.getNumTasks_() + " tasks");
+				sumTasks += i.getNumTasks_();
+			}
+			System.out.println(" BIN " + b.getBinName_() + " has total tasks "+ sumTasks );
 			
-			System.out.println("Bin " + b.getBinName_() + "has items "+ b.getItems().size());
+			//System.out.println("Bin " + b.getBinName_() + "has items "+ b.getItems().size());
 		}
 		
 		
