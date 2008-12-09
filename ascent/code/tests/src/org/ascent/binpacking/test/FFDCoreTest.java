@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import org.ascent.binpacking.Bin;
 import org.ascent.binpacking.BinPackingProblem;
-import org.ascent.binpacking.FFDCore;
+import org.ascent.binpacking.FFDBinPacker;
 import org.ascent.binpacking.Item;
 import org.ascent.binpacking.LeastBoundMinExcPacker;
 import org.ascent.binpacking.LeastBoundPacker;
@@ -150,9 +150,9 @@ public class FFDCoreTest extends TestCase {
 		
 
 		// Ask the solver for a solution
-		Map<Object, List> dep = packer.pack(bp);
+		List<Map<Object, List>> dep = packer.pack(bp);
 		
-		assertNotNull(dep);
+		assertTrue(dep.size() > 0);
 	}
 
 	public void testForcedOrderPacking() {
@@ -223,7 +223,7 @@ public class FFDCoreTest extends TestCase {
 		bp.getResourcePolicies().put(1, new RateMonotonicResource());
 
 		// Create the solver
-		FFDCore packer = new FFDCore(bp);
+		FFDBinPacker packer = new FFDBinPacker(bp);
 		
 		packer.getPriorityPackingQueue().add(c8);
 		packer.getPriorityPackingQueue().add(c8replica);
@@ -303,7 +303,7 @@ public class FFDCoreTest extends TestCase {
 		bp.getResourcePolicies().put(1, new RateMonotonicResource());
 
 		// Create the solver
-		FFDCore packer = new FFDCore(bp);
+		FFDBinPacker packer = new FFDBinPacker(bp);
 
 		// Ask the solver for a solution
 		Map<Object, List> dep = packer.nextMapping();
@@ -342,7 +342,7 @@ public class FFDCoreTest extends TestCase {
 		bp.getItems().add(new Item("C8", new int[] { 200, 20 }));
 		bp.getResourcePolicies().put(1, new RateMonotonicResource());
 
-		packer = new FFDCore(bp);
+		packer = new FFDBinPacker(bp);
 		dep = packer.nextMapping();
 
 		assertNull(dep);
@@ -360,7 +360,7 @@ public class FFDCoreTest extends TestCase {
 		p.reqmax = 1;
 		p.reqmin = 0;
 
-		FFDCore core = new FFDCore();
+		FFDBinPacker core = new FFDBinPacker();
 		core.requireAllMappedExactlyOnce();
 		initProblem(core, p);
 
@@ -388,7 +388,7 @@ public class FFDCoreTest extends TestCase {
 		p.reqmax = 0;
 		p.reqmin = 0;
 
-		FFDCore core = new FFDCore();
+		FFDBinPacker core = new FFDBinPacker();
 		core.requireAllMappedExactlyOnce();
 		initProblem(core, p);
 
@@ -436,7 +436,7 @@ public class FFDCoreTest extends TestCase {
 		tsizes[1] = new int[] { 15, 8, 15 };
 		tsizes[2] = new int[] { 5, 4, 5 };
 
-		FFDCore core = new FFDCore();
+		FFDBinPacker core = new FFDBinPacker();
 		core.setSetsToMap(srcs, trgs);
 		core.requireMapped("a");
 		core.requireMapped("c");
@@ -448,7 +448,7 @@ public class FFDCoreTest extends TestCase {
 	}
 
 	public void testBareResourceConstraintsAndDerivedVariableOpt() {
-		FFDCore core = new FFDCore();
+		FFDBinPacker core = new FFDBinPacker();
 		core.setSetsToMap(new String[] { "a", "b", "c", "d", "e", "f", "g",
 				"h", "i", "j", "k", "l" }, new String[] { "1", "2", "3", "4",
 				"5", "6", "7", "8", "9", "10" });
@@ -516,7 +516,7 @@ public class FFDCoreTest extends TestCase {
 	}
 
 	public void testBareResourceConstraintsAndPostSwap() {
-		FFDCore core = new FFDCore();
+		FFDBinPacker core = new FFDBinPacker();
 		core.setSetsToMap(new String[] { "a", "b", "c", "d", "e", "f", "g",
 				"h", "i", "j", "k", "l" }, new String[] { "1", "2", "3", "4",
 				"5", "6", "7", "8", "9", "10" });
@@ -578,7 +578,7 @@ public class FFDCoreTest extends TestCase {
 				tsizes[i] = new int[] { random(200, 2000), random(200, 2000) };
 			}
 
-			FFDCore core = new FFDCore();
+			FFDBinPacker core = new FFDBinPacker();
 			long start = System.currentTimeMillis();
 			ArrayList targets = new ArrayList(totaltrgs);
 			targets.addAll(Arrays.asList(trgs));
@@ -662,7 +662,7 @@ public class FFDCoreTest extends TestCase {
 				tsizes[i] = new int[] { random(200, 2000), random(200, 2000) };
 			}
 
-			FFDCore core = new FFDCore();
+			FFDBinPacker core = new FFDBinPacker();
 			long start = System.currentTimeMillis();
 			ArrayList targets = new ArrayList(totaltrgs);
 			targets.addAll(Arrays.asList(trgs));

@@ -1,26 +1,24 @@
 package org.ascent.pso.test;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
-import org.ascent.Util;
 import org.ascent.VectorSolution;
 import org.ascent.VectorSolutionComparator;
-import org.ascent.deployment.DeploymentWithNetworkMinimizationConfig;
-import org.ascent.deployment.DeploymentWithNetworkMinimizationConfig.Component;
-import org.ascent.deployment.DeploymentWithNetworkMinimizationConfig.Interaction;
-import org.ascent.deployment.DeploymentWithNetworkMinimizationConfig.NetworkLink;
-import org.ascent.deployment.DeploymentWithNetworkMinimizationConfig.Node;
+import org.ascent.deployment.Component;
+import org.ascent.deployment.Interaction;
+import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
+import org.ascent.deployment.NetworkLink;
+import org.ascent.deployment.Node;
+import org.ascent.deployment.RateMonotonicResource;
 import org.ascent.pso.Pso;
 
 public class LargeDeploymentNetworkOptProblem {
 
 	public static void main(String[] args){
-		LargeProblemNetworkMinConfig problem = new LargeProblemNetworkMinConfig();
+		NetworkBandwidthMinimizingPlanner problem = new NetworkBandwidthMinimizingPlanner();
 
-		problem.setRateMonotonicResourceMap(new int[]{1});
+//		problem.setRateMonotonicResourceMap(new int[]{1});
+//		problem.getResourceConsumptionPolicies().put(0, new RateMonotonicResource());
 		
 		
 		Node p1 = problem.addNode("P1", new int[] { 100 });
