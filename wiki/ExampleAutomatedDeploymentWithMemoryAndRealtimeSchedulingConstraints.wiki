@@ -1,4 +1,5 @@
 #summary This page provides an example of how to use ASCENT to generate a deployment plan to map a series of components to hardware nodes and adhere to real-time scheduling and resource constraints.
+#labels Featured
 
 = Introduction =
 
