@@ -47,7 +47,7 @@ public class Pso {
 	private int totalParticles_ = 20;
 	private int[][] positionBoundaries_;
 	private int particlesPerGroup_ = 5;
-
+	
 
 	public Pso(ProblemConfig config) {
 		super();
@@ -129,7 +129,7 @@ public class Pso {
 
 		int iter = iterations_;
 		while (iter > 0) {
-			
+			preIterate(iter);
 			for (Particle p : particles) {
 				p.update();
 			}
@@ -146,6 +146,7 @@ public class Pso {
 				return globalBest_;
 
 			iter--;
+			postIterate(iter);
 //			printState("Iterations "+iterations_, particles);
 		}
 		
@@ -154,6 +155,10 @@ public class Pso {
 
 		return globalBest_;
 	}
+	
+	protected void preIterate(int inum){}
+	
+	protected void postIterate(int inum){}
 
 	public int getIterations() {
 		return iterations_;
