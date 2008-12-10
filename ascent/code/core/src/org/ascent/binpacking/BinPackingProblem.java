@@ -69,7 +69,11 @@ public class BinPackingProblem {
 			AbstractItem it = items.get(i);
 			int[] size = it.getSize();
 			for(int j = 0; j < sizes[i].length; j++){
-				sizes[i][j] = size[j];
+				if(j <= size.length-1)
+					sizes[i][j] = size[j];
+				else {
+					sizes[i][j] = 0;
+				}
 			}
 		}
 		return sizes;

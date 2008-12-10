@@ -45,4 +45,7 @@ public class RealTimeTask {
 		utilization_ = utilization;
 	}
 
+	public String toString(){
+		return ""+utilization_+"@1/"+period_;
+	}
 }

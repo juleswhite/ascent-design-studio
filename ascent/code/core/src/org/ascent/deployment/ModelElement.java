@@ -62,6 +62,20 @@ public class ModelElement implements Comparable<ModelElement>, HasSize {
 	public int[] getSize() {
 		return getResources();
 	}
+	
+	public void appendResource(int amount){
+		int[] nres = new int[resources_.length+1];
+		System.arraycopy(resources_, 0, nres, 0, resources_.length);
+		nres[nres.length-1] = amount;
+		resources_ = nres;
+	}
+	
+	public void prependResource(int amount){
+		int[] nres = new int[resources_.length+1];
+		System.arraycopy(resources_, 0, nres, 1, resources_.length);
+		nres[0] = amount;
+		resources_ = nres;
+	}
 
 	public String toString() {
 		return label_
