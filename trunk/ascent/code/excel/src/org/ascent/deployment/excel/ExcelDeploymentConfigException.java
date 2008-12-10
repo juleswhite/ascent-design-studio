@@ -71,4 +71,11 @@ public class ExcelDeploymentConfigException extends RuntimeException{
 		column_ = column;
 	}
 
+	@Override
+	public String getMessage() {
+		String row = (row_ > -1)? ""+row_ : "unknown";
+		String col = (column_ > -1)? ""+column_ : "unknown";
+		return super.getMessage() + " [sheet:"+sheet_+", column:"+col+", row:"+row+"]";
+	}
+
 }

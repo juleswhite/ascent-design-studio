@@ -110,14 +110,14 @@ public class ExcelDeploymentConfig {
 				throw new ExcelDeploymentConfigException(
 						"Missing required column:" + ISOURCE
 								+ " from worksheet:" + INTERACTIONS_SHEET,
-						INTERACTIONS_SHEET, i, -1);
+						INTERACTIONS_SHEET, i + 1, -1);
 			}
 			Component sender = comps.get(src);
 			if (sender == null) {
 				throw new ExcelDeploymentConfigException(
 						"Undeclared component ID:" + src + " from worksheet:"
 								+ INTERACTIONS_SHEET + " in " + ISOURCE
-								+ " column", INTERACTIONS_SHEET, i, -1);
+								+ " column", INTERACTIONS_SHEET, i + 1, -1);
 			}
 
 			String trg = row.getData().get(ITARGET);
@@ -125,14 +125,14 @@ public class ExcelDeploymentConfig {
 				throw new ExcelDeploymentConfigException(
 						"Missing required column:" + ITARGET
 								+ " from worksheet:" + INTERACTIONS_SHEET,
-						INTERACTIONS_SHEET, i, -1);
+						INTERACTIONS_SHEET, i + 1, -1);
 			}
 			Component receiver = comps.get(trg);
 			if (receiver == null) {
 				throw new ExcelDeploymentConfigException(
 						"Undeclared component ID:" + trg + " from worksheet:"
 								+ INTERACTIONS_SHEET + " in " + ITARGET
-								+ " column", INTERACTIONS_SHEET, i, -1);
+								+ " column", INTERACTIONS_SHEET, i + 1, -1);
 			}
 
 			double rate = 0;
@@ -143,7 +143,7 @@ public class ExcelDeploymentConfig {
 						"Invalid rate specification (not a number):"
 								+ row.getData().get(IRATE) + " from worksheet:"
 								+ INTERACTIONS_SHEET + " in " + IRATE
-								+ " column", INTERACTIONS_SHEET, i, -1);
+								+ " column", INTERACTIONS_SHEET, i + 1, -1);
 			}
 
 			int size = 0;
@@ -154,7 +154,7 @@ public class ExcelDeploymentConfig {
 						"Invalid size specification (not a number):"
 								+ row.getData().get(ISIZE) + " from worksheet:"
 								+ INTERACTIONS_SHEET + " in " + ISIZE
-								+ " column", INTERACTIONS_SHEET, i, -1);
+								+ " column", INTERACTIONS_SHEET, i + 1, -1);
 			}
 
 			problem.addInteraction(row.getKey(), new int[] { size }, rate,
@@ -174,26 +174,29 @@ public class ExcelDeploymentConfig {
 			int[] bandwidth = null;
 			try {
 				bandwidth = new int[] { getInt(networks, 1, i + 1) };
-				for (int j = 2; j < headers.length; j++) {
-					String val = networks.getCell(j, i + 1).getContents()
-							.trim();
-					if (val.length() > 0) {
-						nodes.add(nodelookup.get(headers[j]));
-					}
-				}
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
-						"Invalid network resource specification in column 1"
-								+ " from worksheet:" + NETWORK_RESOURCES_SHEET,
-						e, NETWORK_RESOURCES_SHEET, i, 1);
+						"Invalid network resource specification", e,
+						NETWORK_RESOURCES_SHEET, i + 2, 2);
 			}
+			for (int j = 2; j < headers.length; j++) {
+				String val = networks.getCell(j, i + 1).getContents().trim();
+				if (val.length() > 0) {
+					Node node = nodelookup.get(headers[j]);
+					if (node == null) {
+						throw new ExcelDeploymentConfigException(
+								"Undeclared node ID:" + headers[j],
+								NETWORK_RESOURCES_SHEET, i + 1, j+2);
+					}
+					nodes.add(node);
+				}
+			}
+
 			String key = getPrimaryKey(networks, i + 1);
 			if (key == null || key.length() < 1) {
 				throw new ExcelDeploymentConfigException(
-						"Invalid network identifier (null or missing):" + key
-								+ " from worksheet:" + NETWORK_RESOURCES_SHEET
-								+ " in first column", NETWORK_RESOURCES_SHEET,
-						i, 0);
+						"Invalid network identifier (null or missing):" + key,
+						NETWORK_RESOURCES_SHEET, i + 2, 1);
 			}
 			links[i] = problem.addNetwork(key, nodes.toArray(new Node[0]),
 					bandwidth);
@@ -210,10 +213,8 @@ public class ExcelDeploymentConfig {
 			Component comp = comps.get(pk);
 			if (comp == null) {
 				throw new ExcelDeploymentConfigException(
-						"Undeclared component ID:" + pk + " from worksheet:"
-								+ COMPONENTS_COLOCATION_SHEET + " in "
-								+ " the first column",
-						COMPONENTS_COLOCATION_SHEET, i, 0);
+						"Undeclared component ID:" + pk,
+						COMPONENTS_COLOCATION_SHEET, i + 1, 1);
 
 			}
 			for (int j = 1; j < headers.length; j++) {
@@ -222,11 +223,8 @@ public class ExcelDeploymentConfig {
 					Component other = comps.get(headers[j - 1]);
 					if (other == null) {
 						throw new ExcelDeploymentConfigException(
-								"Undeclared component ID:" + headers[j - 1]
-										+ " from worksheet:"
-										+ COMPONENTS_COLOCATION_SHEET
-										+ " in column:" + j,
-								COMPONENTS_COLOCATION_SHEET, i, j);
+								"Undeclared component ID:" + headers[j - 1],
+								COMPONENTS_COLOCATION_SHEET, i + 1, j + 1);
 
 					}
 					problem.requireColocated(comp, other);
@@ -234,11 +232,8 @@ public class ExcelDeploymentConfig {
 					Component other = comps.get(headers[j - 1]);
 					if (other == null) {
 						throw new ExcelDeploymentConfigException(
-								"Undeclared component ID:" + headers[j - 1]
-										+ " from worksheet:"
-										+ COMPONENTS_COLOCATION_SHEET
-										+ " in column:" + j,
-								COMPONENTS_COLOCATION_SHEET, i, j);
+								"Undeclared component ID:" + headers[j - 1],
+								COMPONENTS_COLOCATION_SHEET, i + 1, j + 1);
 
 					}
 					problem.requireNotColocated(comp, other);
@@ -259,9 +254,8 @@ public class ExcelDeploymentConfig {
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
 						"Invalid task periodic rate specification:"
-								+ headers[j] + " from worksheet:"
-								+ COMPONENTS_SCHEDULING_SHEET + " in column:"
-								+ j, COMPONENTS_SCHEDULING_SHEET, 0, j);
+								+ headers[j], COMPONENTS_SCHEDULING_SHEET, 1,
+						j + 1);
 			}
 		}
 
@@ -284,10 +278,8 @@ public class ExcelDeploymentConfig {
 					} catch (Exception e) {
 						throw new ExcelDeploymentConfigException(
 								"Invalid task periodic utilization specification:"
-										+ val + " from worksheet:"
-										+ COMPONENTS_SCHEDULING_SHEET
-										+ " in column:" + j,
-								COMPONENTS_SCHEDULING_SHEET, i, j);
+										+ val, COMPONENTS_SCHEDULING_SHEET,
+								i + 1, j + 1);
 					}
 				}
 			}
@@ -309,10 +301,8 @@ public class ExcelDeploymentConfig {
 						getPrimaryKey(comps, i), cres);
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
-						"Invalid resource specification (a non-number is in row:"+i+")"
-								+ " from worksheet:"
-								+ COMPONENTS_RESOURCES_SHEET,
-						COMPONENTS_RESOURCES_SHEET, i, -1);
+						"Invalid resource specification (a non-number is in the row)",
+						COMPONENTS_RESOURCES_SHEET, i + 1, -1);
 			}
 		}
 
@@ -329,16 +319,14 @@ public class ExcelDeploymentConfig {
 		// Load the resources available on each node
 		Node[] ns = new Node[rows - 1];
 		for (int i = 1; i < rows; i++) {
-			try{
-			int[] nres = getIntResources(nodes, i);
-			// Create the node
-			ns[i - 1] = problem.addNode(getPrimaryKey(nodes, i), nres);
+			try {
+				int[] nres = getIntResources(nodes, i);
+				// Create the node
+				ns[i - 1] = problem.addNode(getPrimaryKey(nodes, i), nres);
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
-						"Invalid resource specification (a non-number is in row:"+i+")"
-								+ " from worksheet:"
-								+ NODES_SHEET,
-						NODES_SHEET, i, -1);
+						"Invalid resource specification (a non-number is in the row)",
+						NODES_SHEET, i + 1, -1);
 			}
 		}
 		return ns;
