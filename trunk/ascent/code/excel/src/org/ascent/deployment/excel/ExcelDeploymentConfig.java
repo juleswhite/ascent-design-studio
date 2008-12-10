@@ -1,7 +1,9 @@
 package org.ascent.deployment.excel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jxl.Cell;
@@ -12,6 +14,8 @@ import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.HardwareNode;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
+import org.ascent.deployment.NetworkLink;
+import org.ascent.deployment.Node;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -30,6 +34,7 @@ public class ExcelDeploymentConfig {
 	public static final String COMPONENTS_SCHEDULING_SHEET = "Component Scheduling";
 	public static final String COMPONENTS_COLOCATION_SHEET = "Component Co-location";
 	public static final String COMPONENTS_INTERACTIONS_SHEET = "Component Interactions";
+	public static final String NETWORK_RESOURCES = "Networks";
 	
 	public void load(File f) throws Exception{
 		NetworkBandwidthMinimizingPlanner problem = new NetworkBandwidthMinimizingPlanner();
@@ -37,7 +42,7 @@ public class ExcelDeploymentConfig {
 		Workbook workbook = Workbook.getWorkbook(f);
 		
 		Sheet nodes = workbook.getSheet(NODES_SHEET);
-		loadNodes(problem, nodes);
+		Node[] nodelist = loadNodes(problem, nodes);
 		
 		Sheet compsres = workbook.getSheet(COMPONENTS_RESOURCES_SHEET);
 		Component[] comps = loadComponentResources(problem, compsres);
@@ -50,6 +55,31 @@ public class ExcelDeploymentConfig {
 		
 		Sheet coloc = workbook.getSheet(COMPONENTS_COLOCATION_SHEET);
 		loadComponentColocationRules(complookup, coloc, problem);
+		
+		HashMap<String, Node> nodelookup = new HashMap<String, Node>();
+		for(Node n : nodelist)
+			nodelookup.put(n.getLabel(), n);
+		Sheet networks = workbook.getSheet(NETWORK_RESOURCES);
+		loadNetworks(problem,networks,nodelookup);
+	}
+	
+	public NetworkLink[] loadNetworks(DeploymentConfig problem, Sheet networks, Map<String,Node> nodelookup){
+		String[] headers = getHeaders(networks);
+		int rows = getRowCount(networks);
+		NetworkLink[] links = new NetworkLink[rows-1];
+		
+		for(int i = 0; i < links.length; i++){
+			List<Node> nodes = new ArrayList<Node>();
+			int[] bandwidth = new int[]{getInt(networks,1,i+1)};
+			for(int j = 2; j < headers.length; j++){
+				String val = networks.getCell(j,i+1).getContents().trim();
+				if(val.length() > 0){
+					nodes.add(nodelookup.get(headers[j]));
+				}
+			}		
+			links[i] = problem.addNetwork(getPrimaryKey(networks, i+1), nodes.toArray(new Node[0]), bandwidth);
+		}
+		return links;
 	}
 	
 	public void loadComponentColocationRules(Map<String,Component> comps, Sheet colocation, DeploymentConfig problem){
@@ -112,7 +142,7 @@ public class ExcelDeploymentConfig {
 		return components;
 	}
 	
-	public void loadNodes(DeploymentConfig problem, Sheet nodes){
+	public Node[] loadNodes(DeploymentConfig problem, Sheet nodes){
 		
 		//Find the names of the resource types
 		String[] res = getHeaders(nodes);
@@ -120,11 +150,13 @@ public class ExcelDeploymentConfig {
 		int rows = getRowCount(nodes);
 		
 		//Load the resources available on each node
+		Node[] ns = new Node[rows-1];
 		for(int i = 1; i < rows; i++){
 			int[] nres = getIntResources(nodes, i);
 			//Create the node
-			problem.addNode(getPrimaryKey(nodes, i), nres);
+			ns[i-1] = problem.addNode(getPrimaryKey(nodes, i), nres);
 		}
+		return ns;
 	}
 	
 	public String getPrimaryKey(Sheet sheet, int row){
@@ -172,6 +204,13 @@ public class ExcelDeploymentConfig {
 			}
 		}
 		return real;
+	}
+	
+	public int getInt(Sheet sheet, int col, int row){
+		String val = sheet.getCell(col,row).getContents().trim();
+		if(val.length() < 1)
+			return 0;
+		return Integer.parseInt(val);
 	}
 	
 	public int getRowCount(Sheet sheet){
