@@ -2,6 +2,8 @@ package org.ascent.deployment.excel.test;
 
 import java.io.File;
 
+import org.ascent.deployment.DeploymentConfig;
+import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.excel.ExcelDeploymentConfig;
 
 import junit.framework.TestCase;
@@ -21,7 +23,7 @@ public class ExcelDeploymentConfigTest extends TestCase {
 	public void testWorkbookLoad(){
 		ExcelDeploymentConfig config = new ExcelDeploymentConfig();
 		try{
-			config.load(new File("data/test.xls"));
+			config.load(new File("data/test.xls"), new NetworkBandwidthMinimizingPlanner());
 		}catch (Exception e) {
 			e.printStackTrace();
 			fail("An exception was thrown loading the workbook and should not have been.");
