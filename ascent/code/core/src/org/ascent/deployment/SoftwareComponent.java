@@ -17,12 +17,35 @@
 
 package org.ascent.deployment;
 
+import java.util.List;
+
 import org.ascent.binpacking.Item;
 
-public class SoftwareComponent extends Item {
+public class SoftwareComponent extends Item implements Schedulable{
 
+	private List<RealTimeTask> realTimeTasks_;
+	
 	public SoftwareComponent(String name, int[] size) {
 		super(name, size);
 	}
+	
+	public int getTotalTasks() {
+		if(realTimeTasks_.size() > 0)
+			return realTimeTasks_.size();
+		else
+			return 1;
+	}
+	
+	public void addTask(double period, double util){
+		realTimeTasks_.add(new RealTimeTask(period,util));
+	}
 
+	public List<RealTimeTask> getRealTimeTasks() {
+		return realTimeTasks_;
+	}
+
+	public void setRealTimeTasks(List<RealTimeTask> realTimeTasks) {
+		realTimeTasks_ = realTimeTasks;
+	}
+	
 }
