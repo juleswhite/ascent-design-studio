@@ -320,6 +320,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		for (Component c : getComponents()) {
 			SoftwareComponent cn = new SoftwareComponent(c.getLabel(), c
 					.getResources());
+			cn.setRealTimeTasks(c.getRealTimeTasks());
 			bp.getItems().add(cn);
 			mapping.put(c, cn);
 		}
@@ -348,7 +349,8 @@ public class DeploymentConfig extends ProblemConfigImpl {
 
 		List<Map<Object, List>> binsols = new ArrayList<Map<Object, List>>();
 		for (int i = 0; i < count - 2; i++) {
-			Map<Object, List> sol = (new RandomItemPacker(bp)).nextMapping();
+			RandomItemPacker packer = new RandomItemPacker(bp);
+			Map<Object, List> sol = packer.nextMapping();
 			binsols.add(sol);
 		}
 		binsols.add((new FFDBinPacker(bp)).nextMapping());

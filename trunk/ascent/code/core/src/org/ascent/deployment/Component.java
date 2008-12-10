@@ -48,5 +48,13 @@ public class Component extends ModelElement implements Schedulable{
 	public void addTask(double period, double util){
 		realTimeTasks_.add(new RealTimeTask(period,util));
 	}
+
+	public List<RealTimeTask> getRealTimeTasks() {
+		return realTimeTasks_;
+	}
+
+	public void setRealTimeTasks(List<RealTimeTask> realTimeTasks) {
+		realTimeTasks_ = realTimeTasks;
+	}
 	
 }
