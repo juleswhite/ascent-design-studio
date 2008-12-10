@@ -259,7 +259,8 @@ public class ExcelDeploymentConfig {
 			}
 		}
 
-		for (int i = 1; i < rows; i++) {
+		for (int i = 1; i <= rows; i++) {
+			double tutil = 0;
 			String pk = getPrimaryKey(schedule, i);
 			Component comp = comps.get(pk);
 			for (int j = 1; j < headers.length; j++) {
@@ -274,6 +275,7 @@ public class ExcelDeploymentConfig {
 					double period = rates[j - 1];
 					try {
 						double util = Double.parseDouble(val);
+						tutil += util;
 						comp.addTask(period, util);
 					} catch (Exception e) {
 						throw new ExcelDeploymentConfigException(
@@ -283,6 +285,7 @@ public class ExcelDeploymentConfig {
 					}
 				}
 			}
+			comp.prependResource((int)Math.rint(tutil));
 		}
 	}
 
