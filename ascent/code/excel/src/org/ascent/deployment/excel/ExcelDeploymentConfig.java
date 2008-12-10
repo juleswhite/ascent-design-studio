@@ -6,13 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
-import org.ascent.deployment.HardwareNode;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.NetworkLink;
 import org.ascent.deployment.Node;
@@ -28,13 +26,37 @@ import org.ascent.deployment.Node;
  *    Jules White - initial API and implementation 
  ****************************************************************************/
 public class ExcelDeploymentConfig {
+	
+	public class Row {
+		private String key_;
+		private Map<String,String> data_ = new HashMap<String, String>();
+		
+		public String getKey() {
+			return key_;
+		}
+		public void setKey(String key) {
+			key_ = key;
+		}
+		public Map<String, String> getData() {
+			return data_;
+		}
+		public void setData(Map<String, String> data) {
+			data_ = data;
+		}
+	}
 
 	public static final String NODES_SHEET = "Nodes";
 	public static final String COMPONENTS_RESOURCES_SHEET = "Component Resources";
 	public static final String COMPONENTS_SCHEDULING_SHEET = "Component Scheduling";
 	public static final String COMPONENTS_COLOCATION_SHEET = "Component Co-location";
 	public static final String COMPONENTS_INTERACTIONS_SHEET = "Component Interactions";
-	public static final String NETWORK_RESOURCES = "Networks";
+	public static final String NETWORK_RESOURCES_SHEET = "Networks";
+	public static final String INTERACTIONS_SHEET = "Component Interactions";
+	
+	public static final String ISOURCE = "Sender";
+	public static final String ITARGET = "Receiver";
+	public static final String IRATE = "Transmit Rate";
+	public static final String ISIZE = "Length";
 	
 	public void load(File f) throws Exception{
 		NetworkBandwidthMinimizingPlanner problem = new NetworkBandwidthMinimizingPlanner();
@@ -59,8 +81,28 @@ public class ExcelDeploymentConfig {
 		HashMap<String, Node> nodelookup = new HashMap<String, Node>();
 		for(Node n : nodelist)
 			nodelookup.put(n.getLabel(), n);
-		Sheet networks = workbook.getSheet(NETWORK_RESOURCES);
+		Sheet networks = workbook.getSheet(NETWORK_RESOURCES_SHEET);
 		loadNetworks(problem,networks,nodelookup);
+		
+		Sheet ints = workbook.getSheet(COMPONENTS_INTERACTIONS_SHEET);
+		loadInteractions(problem, ints, complookup);
+		
+		workbook.close();
+	}
+	
+	public void loadInteractions(DeploymentConfig problem, Sheet interacts, Map<String,Component> comps){
+		int rows = getRowCount(interacts);
+		String[] headers = getHeaders(interacts);
+		for(int i = 1; i < rows; i++){
+			Row row = getRow(interacts, headers, i);
+			String src = row.getData().get(ISOURCE);
+			Component sender = comps.get(src);
+			String trg = row.getData().get(ITARGET);
+			Component receiver = comps.get(trg);
+			double rate = Double.parseDouble(row.getData().get(IRATE));
+			int size = Integer.parseInt(row.getData().get(ISIZE));
+			problem.addInteraction(row.getKey(), new int[]{size}, rate, new Component[]{sender,receiver});
+		}
 	}
 	
 	public NetworkLink[] loadNetworks(DeploymentConfig problem, Sheet networks, Map<String,Node> nodelookup){
@@ -181,12 +223,28 @@ public class ExcelDeploymentConfig {
 		return nres;
 	}
 	
+	public Row getRow(Sheet sheet, String[] cols, int row){
+		String pk = getPrimaryKey(sheet, row);
+		Row robj = new Row();
+		robj.setKey(pk);
+		for(int i = 1; i < cols.length; i++){
+			String val = sheet.getCell(i, row).getContents().trim();
+			if(val.length()>0)
+				robj.getData().put(cols[i-1],val);
+		}
+		return robj;
+	}
+	
 	public String[] getHeaders(Sheet sheet){
+		return getHeaders(sheet,1);
+	}
+	
+	public String[] getHeaders(Sheet sheet, int off){
 		//Find the names of the headers
 		int tc = getColumnCount(sheet);
 		int totalres = tc-1;
 		String[] head = new String[totalres];
-		for(int i = 1; i < tc; i++){
+		for(int i = off; i < tc; i++){
 			head[i-1] = sheet.getCell(i,0).getContents().trim();
 		}
 		return head;
