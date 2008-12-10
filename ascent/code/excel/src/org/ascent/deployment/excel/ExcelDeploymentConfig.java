@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jxl.Cell;
+import jxl.CellType;
+import jxl.NumberCell;
 import jxl.Sheet;
 import jxl.Workbook;
 
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
-import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.NetworkLink;
 import org.ascent.deployment.Node;
 
@@ -27,7 +29,7 @@ public class ExcelDeploymentConfig {
 
 	public class Row {
 		private String key_;
-		private Map<String, String> data_ = new HashMap<String, String>();
+		private Map<String, Object> data_ = new HashMap<String, Object>();
 
 		public String getKey() {
 			return key_;
@@ -37,11 +39,11 @@ public class ExcelDeploymentConfig {
 			key_ = key;
 		}
 
-		public Map<String, String> getData() {
+		public Map<String, Object> getData() {
 			return data_;
 		}
 
-		public void setData(Map<String, String> data) {
+		public void setData(Map<String, Object> data) {
 			data_ = data;
 		}
 	}
@@ -105,7 +107,7 @@ public class ExcelDeploymentConfig {
 		String[] headers = getHeaders(interacts);
 		for (int i = 1; i < rows; i++) {
 			Row row = getRow(interacts, headers, i);
-			String src = row.getData().get(ISOURCE);
+			String src = ""+row.getData().get(ISOURCE);
 			if (src == null) {
 				throw new ExcelDeploymentConfigException(
 						"Missing required column:" + ISOURCE
@@ -120,7 +122,7 @@ public class ExcelDeploymentConfig {
 								+ " column", INTERACTIONS_SHEET, i + 1, -1);
 			}
 
-			String trg = row.getData().get(ITARGET);
+			String trg = ""+row.getData().get(ITARGET);
 			if (trg == null) {
 				throw new ExcelDeploymentConfigException(
 						"Missing required column:" + ITARGET
@@ -137,7 +139,7 @@ public class ExcelDeploymentConfig {
 
 			double rate = 0;
 			try {
-				rate = Double.parseDouble(row.getData().get(IRATE));
+				rate = (Double)row.getData().get(IRATE);
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
 						"Invalid rate specification (not a number):"
@@ -148,7 +150,7 @@ public class ExcelDeploymentConfig {
 
 			int size = 0;
 			try {
-				size = Integer.parseInt(row.getData().get(ISIZE));
+				size = (int)Math.rint((Double)(row.getData().get(ISIZE)));
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
 						"Invalid size specification (not a number):"
@@ -186,7 +188,7 @@ public class ExcelDeploymentConfig {
 					if (node == null) {
 						throw new ExcelDeploymentConfigException(
 								"Undeclared node ID:" + headers[j],
-								NETWORK_RESOURCES_SHEET, i + 1, j+2);
+								NETWORK_RESOURCES_SHEET, i + 1, j + 2);
 					}
 					nodes.add(node);
 				}
@@ -285,7 +287,7 @@ public class ExcelDeploymentConfig {
 					}
 				}
 			}
-			comp.prependResource((int)Math.rint(tutil));
+			comp.prependResource((int) Math.rint(tutil));
 		}
 	}
 
@@ -362,9 +364,15 @@ public class ExcelDeploymentConfig {
 		Row robj = new Row();
 		robj.setKey(pk);
 		for (int i = 1; i < cols.length; i++) {
-			String val = sheet.getCell(i, row).getContents().trim();
-			if (val.length() > 0)
-				robj.getData().put(cols[i - 1], val);
+			Cell cell = sheet.getCell(i, row);
+			if (cell.getType() == CellType.NUMBER)
+				robj.getData().put(cols[i - 1], ((NumberCell) cell).getValue());
+			else {
+				String val = cell.getContents().trim();
+
+				if (val.length() > 0)
+					robj.getData().put(cols[i - 1], val);
+			}
 		}
 		return robj;
 	}
