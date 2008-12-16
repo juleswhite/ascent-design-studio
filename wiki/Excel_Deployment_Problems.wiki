@@ -40,24 +40,24 @@ http://ascent-design-studio.googlecode.com/svn/trunk/ascent/docs/core/wiki/tutor
 The following is a code example to load and solve the problem specified in Excel.
 
 {{{
-                NetworkBandwidthMinimizingPlanner problem = 
-                        new NetworkBandwidthMinimizingPlanner();
+		NetworkBandwidthMinimizingPlanner problem = new NetworkBandwidthMinimizingPlanner();
 		ExcelDeploymentConfig config = new ExcelDeploymentConfig();
-		try{
+		try {
 			config.load(new File("your_excel_File.xls"), problem);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		problem.init();
-		
-		double grate = 2;//the global learning rate
-		double lrate = 0.5;//the local learning rate
-		double intertia = 1;//the particle intertia impact
-		int maxv = 4;//the max particle velocity
-		int particles = 20;//the total number of particles
-		int iterations = 20;//the total number of iterations per solver invocation
-			
+
+		double grate = 2;// the global learning rate
+		double lrate = 0.5;// the local learning rate
+		double intertia = 1;// the particle intertia impact
+		int maxv = 4;// the max particle velocity
+		int particles = 20;// the total number of particles
+		int iterations = 20;// the total number of iterations per solver
+							// invocation
+
 		Pso pso = new Pso(problem);
 		pso.setTotalParticles(particles);
 		pso.setVelocityMax(maxv);
@@ -65,19 +65,17 @@ The following is a code example to load and solve the problem specified in Excel
 		pso.setGlobalLearningRate(grate);
 		pso.setIterations(20);
 
-			
-		Comparator<VectorSolution> comp = new   
-                  VectorSolutionComparator(problem.getFitnessFunction());
+		Comparator<VectorSolution> comp = new VectorSolutionComparator(problem
+				.getFitnessFunction());
 		VectorSolution sol = pso.solve(problem.getFitnessFunction());
-		DeploymentPlan plan = new DeploymentPlan(problem,sol);
-                
-                if(plan.isValid(){
-                  for(Component c : problem.getComponents()){
-                    System.out.println("Deploy "+c.getLabel()+" to "+
-                                        plan.getHost(c).getLabel());
-                  }
-                }
-                else {
-                    System.out.println("No solution found.");
-                }
+		DeploymentPlan plan = new DeploymentPlan(problem, sol);
+
+		if (plan.isValid()) {
+			for (Component c : problem.getComponents()) {
+				System.out.println("Deploy " + c.getLabel() + " to "
+						+ plan.getHost(c).getLabel());
+			}
+		} else {
+			System.out.println("No solution found.");
+		}
 }}}
