@@ -72,7 +72,7 @@ The following is a code example to load and solve the problem specified in Excel
 		DeploymentPlan plan = new DeploymentPlan(problem,sol);
                 
                 if(plan.isValid(){
-                  for(Component c : plan.getComponents()){
+                  for(Component c : problem.getComponents()){
                     System.out.println("Deploy "+c.getLabel()+" to "+
                                         plan.getHost(c).getLabel());
                   }
