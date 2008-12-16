@@ -54,7 +54,7 @@ The following is a code example to load and solve the problem specified in Excel
 		double lrate = 0.5;// the local learning rate
 		double intertia = 1;// the particle intertia impact
 		int maxv = 4;// the max particle velocity
-		int particles = 20;// the total number of particles
+		int particles = 200;// the total number of particles
 		int iterations = 20;// the total number of iterations per solver
 							// invocation
 
