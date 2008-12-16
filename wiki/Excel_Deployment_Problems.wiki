@@ -2,12 +2,7 @@
 
 = Introduction =
 
-Add your content here.
-
-
-= Details =
-
-The ASCENT deployment solver can use Excel to capture deployment requirements. To get started, download the latest copy of [Excel_RT_Deployment.xls | ] workbook.
+The ASCENT deployment solver can use Excel to capture deployment requirements. To get started, download the latest copy of [http://ascent-design-studio.googlecode.com/svn/trunk/ascent/code/excel/templates/deployment_problem_template.xls deployment_problem_template.xls] workbook.
 
 = Nodes =
 The "Nodes" worksheet contains a list of the hardware nodes that the software can be deployed to. The first column specifies the available CPU utilization that can be consumed on the node. Currently, only 100% utilization is supported (this will change in future releases). All remaining columns specify consumable resources on each processor. For example, the second column specifies a memory resource on each processor that cannot be exceeded by the components deployed to it. 
@@ -38,3 +33,50 @@ http://ascent-design-studio.googlecode.com/svn/trunk/ascent/docs/core/wiki/tutor
 The "Component Interactions" worksheet specifies messaging or interactions between components. If components are co-located, the interaction takes place locally. If the components are not placed on the same host, they must have a connecting network with sufficient bandwidth to support the interaction. The signal column specifies an ID for the interaction. The transmit rate is the frequency of the interaction. The length column specifies the size of each message sent. The Sender column specifies the ID of the sending component. The Receiver column specifies the receiver. The remaining fields are currently for documentation only (this will eventually change).
 
 http://ascent-design-studio.googlecode.com/svn/trunk/ascent/docs/core/wiki/tutorials/Excel_Deployment_Problems/images/interactions.png 
+
+== Running the Solver on the Excel Problem ==
+
+The following is a code example to load and solve the problem specified in Excel.
+
+{{{
+                NetworkBandwidthMinimizingPlanner problem = 
+                        new NetworkBandwidthMinimizingPlanner();
+		ExcelDeploymentConfig config = new ExcelDeploymentConfig();
+		try{
+			config.load(new File("your_excel_File.xls"), problem);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		problem.init();
+		
+		double grate = 2;//the global learning rate
+		double lrate = 0.5;//the local learning rate
+		double intertia = 1;//the particle intertia impact
+		int maxv = 4;//the max particle velocity
+		int particles = 20;//the total number of particles
+		int iterations = 20;//the total number of iterations per solver invocation
+			
+		Pso pso = new Pso(problem);
+		pso.setTotalParticles(particles);
+		pso.setVelocityMax(maxv);
+		pso.setLocalLearningRate(lrate);
+		pso.setGlobalLearningRate(grate);
+		pso.setIterations(20);
+
+			
+		Comparator<VectorSolution> comp = new   
+                  VectorSolutionComparator(problem.getFitnessFunction());
+		VectorSolution sol = pso.solve(problem.getFitnessFunction());
+		DeploymentPlan plan = new DeploymentPlan(problem,sol);
+                
+                if(plan.isValid(){
+                  for(Component c : plan.getComponents()){
+                    System.out.println("Deploy "+c.getLabel()+" to "+
+                                        plan.getHost(c).getLabel());
+                  }
+                }
+                else {
+                    System.out.println("No solution found.");
+                }
+}}}
