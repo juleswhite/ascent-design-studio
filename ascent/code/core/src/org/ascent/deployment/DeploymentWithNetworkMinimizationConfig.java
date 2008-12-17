@@ -34,6 +34,10 @@ public class DeploymentWithNetworkMinimizationConfig extends DeploymentConfig {
 		}
 	};
 
+	public DeploymentWithNetworkMinimizationConfig(DeploymentConfig toclone) {
+		super(toclone);
+	}
+
 	public DeploymentWithNetworkMinimizationConfig(Node[] nodes,
 			NetworkLink[] networks, Component[] components,
 			Interaction[] interactions) {

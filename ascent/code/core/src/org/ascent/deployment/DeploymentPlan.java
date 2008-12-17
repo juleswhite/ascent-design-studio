@@ -18,11 +18,15 @@
 package org.ascent.deployment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ascent.VectorSolution;
 
 public class DeploymentPlan {
+	private Map<Node,Integer> nodeLookup_;
+	private Map<Component, Integer> componentLookup_;
 	private VectorSolution solution_;
 	private DeploymentConfig deploymentConfiguration_;
 	
@@ -30,11 +34,60 @@ public class DeploymentPlan {
 		super();
 		solution_ = solution;
 		deploymentConfiguration_ = config;
+		
+		initComponentLookup();
+		initNodeLookup();
+	}
+	
+	public DeploymentPlan(DeploymentConfig conf, Map<Component,Node> plan){
+		super();
+		deploymentConfiguration_ = conf;
+		int[] sol = new int[plan.size()];
+		
+		initComponentLookup();
+		initNodeLookup();
+		
+		for(int i = 0; i < conf.getComponents().length; i++)
+			sol[i] = nodeLookup_.get(plan.get(conf.getComponents()[i]));
+		
+		solution_ = new VectorSolution(sol);
+	}
+	
+	protected void initComponentLookup(){
+		componentLookup_ = new HashMap<Component, Integer>();
+		for(int i = 0; i < deploymentConfiguration_.getComponents().length; i++)
+			componentLookup_.put(deploymentConfiguration_.getComponents()[i], i);
+	}
+	
+	protected void initNodeLookup(){
+		nodeLookup_ = new HashMap<Node, Integer>();
+		for(int i = 0; i < deploymentConfiguration_.getNodes().length; i++)
+			nodeLookup_.put(deploymentConfiguration_.getNodes()[i], i);
+	}
+
+	public VectorSolution getSolution() {
+		return solution_;
+	}
+
+	public void setSolution(VectorSolution solution) {
+		solution_ = solution;
+	}
+
+	public DeploymentConfig getDeploymentConfiguration() {
+		return deploymentConfiguration_;
+	}
+
+	public void setDeploymentConfiguration(DeploymentConfig deploymentConfiguration) {
+		deploymentConfiguration_ = deploymentConfiguration;
 	}
 
 	public Node getHost(Component c) {
 		int hostid = solution_.getPosition()[c.id_];
 		return deploymentConfiguration_.getNodes()[hostid];
+	}
+	
+	public void moveTo(Component c, Node host){
+		solution_.getPosition()[componentLookup_.get(c)] = nodeLookup_.get(host);
 	}
 
 	public NetworkLink getChannel(Interaction i) {

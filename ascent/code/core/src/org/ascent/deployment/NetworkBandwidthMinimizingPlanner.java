@@ -5,6 +5,20 @@ public class NetworkBandwidthMinimizingPlanner extends
 		DeploymentWithNetworkMinimizationConfig {
 
 	
+	public NetworkBandwidthMinimizingPlanner() {
+		super();
+	}
+
+	public NetworkBandwidthMinimizingPlanner(DeploymentConfig toclone) {
+		super(toclone);
+	}
+
+	public NetworkBandwidthMinimizingPlanner(Node[] nodes,
+			NetworkLink[] networks, Component[] components,
+			Interaction[] interactions) {
+		super(nodes, networks, components, interactions);
+	}
+
 	public int scoreDeployment(DeploymentPlan plan) {
 		if (plan.isValid()) {
 			int score = 0;

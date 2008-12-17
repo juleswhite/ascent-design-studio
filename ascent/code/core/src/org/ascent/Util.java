@@ -54,4 +54,18 @@ public class Util {
 		double delta = range * rand;
 		return min + delta;
 	}
+	
+	public static boolean allNonNegative(int[] vals){
+		for(int i = 0; i < vals.length; i++)
+			if(vals[i] < 0)
+				return false;
+		return true;
+	}
+	
+	public static boolean allNegative(int[] vals){
+		for(int i = 0; i < vals.length; i++)
+			if(vals[i] > -1)
+				return false;
+		return true;
+	}
 }
