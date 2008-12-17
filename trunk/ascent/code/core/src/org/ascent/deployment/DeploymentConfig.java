@@ -31,7 +31,6 @@ import org.ascent.binpacking.Packer;
 import org.ascent.binpacking.RandomItemPacker;
 
 public class DeploymentConfig extends ProblemConfigImpl {
-
 	protected NetworkLink[] networks_;
 	protected Component[] components_;
 	protected Node[] nodes_;
@@ -56,6 +55,33 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		interactions_ = interactions;
 
 		orderElements();
+	}
+	
+	public DeploymentConfig(){
+		super(0,0,0);
+	}
+	
+	public DeploymentConfig(DeploymentConfig toclone){
+		super(0,0,0);
+		
+		if(toclone.nodes_ == null || toclone.nodes_.length == 0)
+			toclone.init();
+		
+		nodes_ = new Node[toclone.getNodes().length];
+		System.arraycopy(toclone.nodes_, 0, nodes_, 0, nodes_.length);
+		
+		networks_ = new NetworkLink[toclone.networks_.length];
+		System.arraycopy(toclone.networks_, 0, networks_, 0, networks_.length);
+		
+		components_ = new Component[toclone.components_.length];
+		System.arraycopy(toclone.components_, 0, components_, 0, components_.length);
+		
+		interactions_ = new Interaction[toclone.interactions_.length];
+		System.arraycopy(toclone.interactions_, 0, interactions_, 0, interactions_.length);
+		
+		orderElements();
+		
+		init();
 	}
 
 	public DeploymentConfig(int positions, int bmin, int bmax) {
