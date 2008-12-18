@@ -16,6 +16,7 @@ import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.NetworkLink;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.RateMonotonicResource;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -74,7 +75,7 @@ public class ExcelDeploymentConfig {
 			complookup.put(c.getLabel(), c);
 
 		Sheet schedule = getSheet(workbook, COMPONENTS_SCHEDULING_SHEET);
-		loadComponentScheduling(complookup, schedule);
+		loadComponentScheduling(complookup, schedule, problem);
 
 		Sheet coloc = getSheet(workbook, COMPONENTS_COLOCATION_SHEET);
 		loadComponentColocationRules(complookup, coloc, problem);
@@ -245,10 +246,10 @@ public class ExcelDeploymentConfig {
 	}
 
 	public void loadComponentScheduling(Map<String, Component> comps,
-			Sheet schedule) {
+			Sheet schedule, DeploymentConfig problem) {
 		String[] headers = getHeaders(schedule);
 		int rows = getRowCount(schedule) - 1;
-
+		boolean isRT = false;
 		double[] rates = new double[headers.length - 1];
 		for (int j = 0; j < headers.length - 1; j++) {
 			try {
@@ -262,6 +263,7 @@ public class ExcelDeploymentConfig {
 		}
 
 		for (int i = 1; i <= rows; i++) {
+			
 			double tutil = 0;
 			String pk = getPrimaryKey(schedule, i);
 			Component comp = comps.get(pk);
@@ -279,6 +281,7 @@ public class ExcelDeploymentConfig {
 						double util = Double.parseDouble(val);
 						tutil += util;
 						comp.addTask(period, util);
+						isRT = true;
 					} catch (Exception e) {
 						throw new ExcelDeploymentConfigException(
 								"Invalid task periodic utilization specification:"
@@ -288,6 +291,9 @@ public class ExcelDeploymentConfig {
 				}
 			}
 			comp.prependResource((int) Math.rint(tutil));
+		}
+		if(isRT){
+			problem.getResourceConsumptionPolicies().put(0, new RateMonotonicResource());
 		}
 	}
 
