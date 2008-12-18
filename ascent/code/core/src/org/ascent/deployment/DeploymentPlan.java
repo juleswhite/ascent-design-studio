@@ -137,6 +137,14 @@ public class DeploymentPlan {
 	public String toString(){
 		return toString(false);
 	}
+	
+	public DeploymentPlan clonePlan(){
+		int[] pos = solution_.getPosition();
+		int[] cpos = new int[pos.length];
+		System.arraycopy(pos, 0, cpos, 0, cpos.length);
+		DeploymentPlan plan = new DeploymentPlan(deploymentConfiguration_,new VectorSolution(cpos));
+		return plan;
+	}
 
 	public String toString(boolean showlinks) {
 		String str = "Deployment Plan {\n";
