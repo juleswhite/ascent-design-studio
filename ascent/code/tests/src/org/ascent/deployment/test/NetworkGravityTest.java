@@ -121,6 +121,41 @@ public class NetworkGravityTest extends TestCase{
 		assertEquals(change[1], 0);
 	}
 	
+	public void testCalculateNetChangeWithPush(){
+		DeploymentConfig conf = new DeploymentConfig();
+		Node n1 = conf.addNode("n1", new int[]{60});
+		Node n2 = conf.addNode("n2", new int[]{40});
+		Node n3 = conf.addNode("n3", new int[]{20});
+		Component c1 = conf.addComponent("c1", new int[]{20});
+		Component c2 = conf.addComponent("c2", new int[]{20});
+		Component c2a = conf.addComponent("c2a", new int[]{20});
+		Component c3 = conf.addComponent("c3", new int[]{20});
+		Component c4 = conf.addComponent("c4", new int[]{20});
+		conf.addInteraction("c1-->c4", new int[]{20,30}, 1, new Component[]{c1,c4});
+		conf.addInteraction("c1-->c3", new int[]{90,400}, 1, new Component[]{c1,c3});
+		conf.addInteraction("c1-->c1", new int[]{20,30}, 1, new Component[]{c1,c1});
+		conf.addInteraction("c2-->c1", new int[]{100,500}, 1, new Component[]{c2,c1});
+		conf.addInteraction("c2a-->c1", new int[]{100,500}, 1, new Component[]{c2a,c1});
+		conf.init();
+		
+		Map<Component, Node> plan = new HashMap<Component, Node>();
+		plan.put(c1, n1);
+		plan.put(c4, n1);
+		plan.put(c2, n2);
+		plan.put(c2a, n2);
+		plan.put(c3, n3);
+		DeploymentPlan dplan = new DeploymentPlan(conf,plan);
+		
+		Map<Component, Node> swapplan = new HashMap<Component, Node>();
+		swapplan.put(c1, n2);
+		swapplan.put(c2, n1);
+		
+		NetworkGravityOptimizer gravity = new NetworkGravityOptimizer();
+		int[] net = gravity.calculateNetChange(dplan, swapplan);
+		assertEquals(20, net[0]);
+		assertEquals(30, net[0]);
+	}
+	
 	public void testFindInteractionGroups(){
 		DeploymentConfig conf = new DeploymentConfig();
 		Node n1 = conf.addNode("n1", new int[0]);
@@ -242,8 +277,8 @@ public class NetworkGravityTest extends TestCase{
 		conf.addInteraction("c1-->c4", new int[]{20,30}, 1, new Component[]{c1,c4});
 		conf.addInteraction("c1-->c3", new int[]{90,400}, 1, new Component[]{c1,c3});
 		conf.addInteraction("c1-->c1", new int[]{20,30}, 1, new Component[]{c1,c1});
-		conf.addInteraction("c1-->c2", new int[]{80,300}, 1, new Component[]{c1,c2});
-		conf.addInteraction("c1-->c2a", new int[]{80,300}, 1, new Component[]{c1,c2a});
+		conf.addInteraction("c2-->c1", new int[]{100,500}, 1, new Component[]{c2,c1});
+		conf.addInteraction("c2a-->c1", new int[]{100,500}, 1, new Component[]{c2a,c1});
 		conf.init();
 		
 		Map<Component, Node> plan = new HashMap<Component, Node>();
