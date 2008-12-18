@@ -6,6 +6,7 @@ import java.util.Comparator;
 import org.ascent.VectorSolution;
 import org.ascent.VectorSolutionComparator;
 import org.ascent.deployment.DeploymentConfig;
+import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.excel.ExcelDeploymentConfig;
 import org.ascent.pso.Pso;
@@ -48,13 +49,13 @@ public class ExcelDeploymentConfigTest extends TestCase {
 		
 		long time = 0;
 		VectorSolution best = null;
-		for(int i=0; i < 20; i++){
+		for(int i=0; i < 2; i++){
 			long start = System.currentTimeMillis();
 			double grate = 2;//the global learning rate
 			double lrate = 0.5;//the local learning rate
 			double intertia = 1;//the particle intertia impact
 			int maxv = 4;//the max particle velocity
-			int particles = 20;//the total number of particles
+			int particles = 200;//the total number of particles
 			int iterations = 20;//the total number of iterations per solver invocation
 			
 			Pso pso = new Pso(problem);
@@ -67,7 +68,13 @@ public class ExcelDeploymentConfigTest extends TestCase {
 			
 			Comparator<VectorSolution> comp = new VectorSolutionComparator(problem.getFitnessFunction());
 			VectorSolution sol = pso.solve(problem.getFitnessFunction());
+			assertNotNull(sol);
 			time += (System.currentTimeMillis()-start);
+			
+			DeploymentPlan plan = new DeploymentPlan(problem,sol);
+			
+			
+			assertTrue(plan.isValid());
 			
 			boolean better = false;
 			if(best != null){
