@@ -152,8 +152,8 @@ public class NetworkGravityTest extends TestCase{
 		
 		NetworkGravityOptimizer gravity = new NetworkGravityOptimizer();
 		int[] net = gravity.calculateNetChange(dplan, swapplan);
-		assertEquals(20, net[0]);
-		assertEquals(30, net[0]);
+		assertEquals(-80, net[0]);
+		assertEquals(-470, net[1]);
 	}
 	
 	public void testFindInteractionGroups(){
@@ -260,8 +260,8 @@ public class NetworkGravityTest extends TestCase{
 		assertEquals(n1, dplan.getHost(c1));
 		assertEquals(n1, dplan.getHost(c2));
 		assertEquals(n1, dplan.getHost(c2a));
-		assertEquals(n1, dplan.getHost(c4));
-		assertEquals(n3, dplan.getHost(c3));
+		assertEquals(n2, dplan.getHost(c4));
+		assertEquals(n1, dplan.getHost(c3));
 	}
 	
 	public void testDenseOptimizeWithPush(){

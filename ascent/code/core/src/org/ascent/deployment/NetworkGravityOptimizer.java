@@ -147,7 +147,7 @@ public class NetworkGravityOptimizer {
 	private List<Interaction> queue_;
 
 	private boolean allowBidirectionalSwaps_ = true;
-	private boolean allowPushedSwaps_ = false;
+	private boolean allowPushedSwaps_ = true;
 
 	public void optimize(DeploymentPlan plan) {
 
@@ -185,6 +185,8 @@ public class NetworkGravityOptimizer {
 			// Find the current biggest interaction group
 			InteractionGroup g = queue.remove(0);
 
+			if(Util.allNegative(g.getSize()))
+					break;
 			// First, try to eliminate the interaction group
 			// by placing it's source on the target node
 			if (fits(plan, g.getSource(), g.getTarget())) {
@@ -471,10 +473,13 @@ public class NetworkGravityOptimizer {
 			local = intmap.get(host);
 			for (Node n : intmap.keySet()) {
 				if (n != host) {
-					InteractionGroup g = new InteractionGroup(c, n, decrement(
-							intmap.get(n), local));
-					g.setTargetComponents(cmpmap.get(n));
-					groups.add(g);
+					int[] res = intmap.get(n);
+					if(Util.allPositive(res)){
+						InteractionGroup g = new InteractionGroup(c, n, decrement(
+							res, local));
+						g.setTargetComponents(cmpmap.get(n));
+						groups.add(g);
+					}
 				}
 			}
 		}
