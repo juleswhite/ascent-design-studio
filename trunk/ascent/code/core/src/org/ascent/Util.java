@@ -62,6 +62,13 @@ public class Util {
 		return true;
 	}
 	
+	public static boolean allPositive(int[] vals){
+		for(int i = 0; i < vals.length; i++)
+			if(vals[i] <= 0)
+				return false;
+		return true;
+	}
+	
 	public static boolean allNegative(int[] vals){
 		for(int i = 0; i < vals.length; i++)
 			if(vals[i] > -1)
