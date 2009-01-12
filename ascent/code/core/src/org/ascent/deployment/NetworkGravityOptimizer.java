@@ -277,6 +277,9 @@ public class NetworkGravityOptimizer {
 	public List<Component> orderByLocalGravity(List<Component> comps) {
 		Map<Component, Integer> gravity = new HashMap<Component, Integer>();
 		for (Component c : comps) {
+			gravity.put(c,0);
+		}
+		for (Component c : comps) {
 			for (Interaction i : c.getInteractions()) {
 				for (Component t : i.getParticipants()) {
 					int v = (gravity.get(t) != null) ? gravity.get(t) : 0;
@@ -533,6 +536,9 @@ public class NetworkGravityOptimizer {
 		int[] curr = null;
 		int[] moved = null;
 
+		if(c.getInteractions().length == 0)
+			return new int[plan.getDeploymentConfiguration().getNetworks()[0].getResources().length];
+		
 		for (Interaction i : c.getInteractions()) {
 			int[] size = i.getSize();
 
@@ -568,6 +574,8 @@ public class NetworkGravityOptimizer {
 	 * @return the decremented array
 	 */
 	public int[] decrement(int[] todecrement, int[] byamount) {
+		if(todecrement == null || byamount == null)
+			System.out.println();
 		for (int i = 0; i < todecrement.length; i++) {
 			todecrement[i] -= byamount[i];
 		}
