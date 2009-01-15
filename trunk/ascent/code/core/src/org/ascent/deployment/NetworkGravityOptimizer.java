@@ -180,6 +180,11 @@ public class NetworkGravityOptimizer {
 
 		List<InteractionGroup> queue = findInteractionGroups(plan);
 		Collections.sort(queue, new InteractionGroupComparator());
+		
+		// We need to make sure that the deployment problem spec
+		// and the packer we are using have the same set of
+		// resource consumption policies
+		packer_.setResourceConsumptionPolicies(plan.getDeploymentConfiguration().getResourceConsumptionPolicies());
 
 		while (queue.size() > 0) {
 			// Find the current biggest interaction group
@@ -191,6 +196,8 @@ public class NetworkGravityOptimizer {
 			// by placing it's source on the target node
 			if (fits(plan, g.getSource(), g.getTarget())) {
 				plan.moveTo(g.getSource(), g.getTarget());
+				// Update all of the interaction groups to 
+				// reflect the move
 				queue = findInteractionGroups(plan);
 				Collections.sort(queue, new InteractionGroupComparator());
 			} else if (allowBidirectionalSwaps_
@@ -213,6 +220,9 @@ public class NetworkGravityOptimizer {
 					for (Component gc : g.getTargetComponents()) {
 						plan.moveTo(gc, host);
 					}
+					
+					// Update all of the interaction groups to 
+					// reflect the move
 					queue = findInteractionGroups(plan);
 					Collections.sort(queue, new InteractionGroupComparator());
 				}
@@ -238,6 +248,9 @@ public class NetworkGravityOptimizer {
 					for (Component c : pushplan.keySet()) {
 						plan.moveTo(c, pushplan.get(c));
 					}
+					
+					// Update all of the interaction groups to 
+					// reflect the move
 					queue = findInteractionGroups(plan);
 					Collections.sort(queue, new InteractionGroupComparator());
 				} else {
@@ -263,6 +276,9 @@ public class NetworkGravityOptimizer {
 							for (Component c : pushplan.keySet()) {
 								plan.moveTo(c, pushplan.get(c));
 							}
+							
+							// Update all of the interaction groups to 
+							// reflect the move
 							queue = findInteractionGroups(plan);
 							Collections.sort(queue,
 									new InteractionGroupComparator());
@@ -274,6 +290,13 @@ public class NetworkGravityOptimizer {
 
 	}
 
+	
+	/**
+	 * This method sorts the components by their local gravity. 
+	 * Components with less gravity should 
+	 * @param comps
+	 * @return
+	 */
 	public List<Component> orderByLocalGravity(List<Component> comps) {
 		Map<Component, Integer> gravity = new HashMap<Component, Integer>();
 		for (Component c : comps) {
@@ -283,7 +306,14 @@ public class NetworkGravityOptimizer {
 			for (Interaction i : c.getInteractions()) {
 				for (Component t : i.getParticipants()) {
 					int v = (gravity.get(t) != null) ? gravity.get(t) : 0;
-					gravity.put(t, v + i.getSize()[0]);
+					
+					/*
+					 * This should probably allow for more than
+					 * just one integer value from the array. At
+					 * some point, this should be extended to have
+					 * a multi-dimensional view of size.
+					 */
+					gravity.put(t, v + getInteractionSize(i)[0]);
 				}
 			}
 		}
@@ -354,6 +384,20 @@ public class NetworkGravityOptimizer {
 
 				p2.moveTo(pc, alt);
 
+				
+				/*
+				 *  -------------------------------------------
+				 *  This is a BUG
+				 *  The net increase for CPU will be more than
+				 *  just the utilization of the component, it
+				 *  must be recalculated using Liu & Layland, etc.
+				 *  
+				 *  We should probably just call fits(...) with
+				 *  the new allocation and see if it works. That
+				 *  will preserve the black box nature of the
+				 *  algorithm.
+				 *  -------------------------------------------
+				 */
 				// Update the current overconsumed resource count
 				increment(resid, pc.getSize());
 
@@ -365,6 +409,9 @@ public class NetworkGravityOptimizer {
 				}
 			}
 		}
+		
+		// We couldn't push enough stuff off to
+		// make the move feasible...
 		if (!Util.allNonNegative(resid))
 			return null;
 
@@ -460,7 +507,7 @@ public class NetworkGravityOptimizer {
 						Node n = getHost(plan, t);
 						int[] val = (intmap.get(n) != null) ? intmap.get(n)
 								: new int[i.getSize().length];
-						intmap.put(n, increment(val, i.getSize()));
+						intmap.put(n, increment(val, getInteractionSize(i)));
 
 						List<Component> comps = cmpmap.get(n);
 						if (comps == null) {
@@ -540,7 +587,7 @@ public class NetworkGravityOptimizer {
 			return new int[plan.getDeploymentConfiguration().getNetworks()[0].getResources().length];
 		
 		for (Interaction i : c.getInteractions()) {
-			int[] size = i.getSize();
+			int[] size = getInteractionSize(i);
 
 			if (curr == null) {
 				curr = new int[size.length];
@@ -611,7 +658,19 @@ public class NetworkGravityOptimizer {
 	 * @return
 	 */
 	public boolean fits(DeploymentPlan plan, HasSize c, Node n) {
-		return Util.allNonNegative(packer_.insert(c, Arrays.asList(plan
-				.getHostedComponents(n)), n));
+		int[] resid = packer_.insert(c, Arrays.asList(plan
+				.getHostedComponents(n)), n);
+		return Util.allNonNegative(resid);
+	}
+	
+	/**
+	 * This method returns the *size* of an interaction. This
+	 * method can be overridden to calculate the size differently.
+	 * The default is (interaction period) * (size[i]).
+	 * @param i
+	 * @return
+	 */
+	public int[] getInteractionSize(Interaction i){
+		return new int[]{(int)Math.rint(i.getSize()[0] * i.getRate())};
 	}
 }

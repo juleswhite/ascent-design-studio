@@ -40,6 +40,8 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	protected Packer packer_ = new Packer();
 	protected boolean acceptInfeasibleSolutions_ = true;
 
+	private boolean singleNetwork_ = false;
+	private Map<String, NetworkLink[]> linkCache_ = new HashMap<String, NetworkLink[]>();
 	private List<Node> nStart_ = new ArrayList<Node>();
 	private List<Component> cStart_ = new ArrayList<Component>();
 	private List<NetworkLink> nlStart_ = new ArrayList<NetworkLink>();
@@ -56,31 +58,33 @@ public class DeploymentConfig extends ProblemConfigImpl {
 
 		orderElements();
 	}
-	
-	public DeploymentConfig(){
-		super(0,0,0);
+
+	public DeploymentConfig() {
+		super(0, 0, 0);
 	}
-	
-	public DeploymentConfig(DeploymentConfig toclone){
-		super(0,0,0);
-		
-		if(toclone.nodes_ == null || toclone.nodes_.length == 0)
+
+	public DeploymentConfig(DeploymentConfig toclone) {
+		super(0, 0, 0);
+
+		if (toclone.nodes_ == null || toclone.nodes_.length == 0)
 			toclone.init();
-		
+
 		nodes_ = new Node[toclone.getNodes().length];
 		System.arraycopy(toclone.nodes_, 0, nodes_, 0, nodes_.length);
-		
+
 		networks_ = new NetworkLink[toclone.networks_.length];
 		System.arraycopy(toclone.networks_, 0, networks_, 0, networks_.length);
-		
+
 		components_ = new Component[toclone.components_.length];
-		System.arraycopy(toclone.components_, 0, components_, 0, components_.length);
-		
+		System.arraycopy(toclone.components_, 0, components_, 0,
+				components_.length);
+
 		interactions_ = new Interaction[toclone.interactions_.length];
-		System.arraycopy(toclone.interactions_, 0, interactions_, 0, interactions_.length);
-		
+		System.arraycopy(toclone.interactions_, 0, interactions_, 0,
+				interactions_.length);
+
 		orderElements();
-		
+
 		init();
 	}
 
@@ -100,6 +104,19 @@ public class DeploymentConfig extends ProblemConfigImpl {
 				boundaries_[i] = new int[] { 0, nodes_.length - 1 };
 			}
 		}
+		
+		boolean singlenetwork = false;
+		if(networks_.length == 1){
+			
+			singlenetwork = true;
+			for(Node n : nodes_){
+				if(!networks_[0].connectsTo(n)){
+					singlenetwork = false;
+					break;
+				}
+			}
+		}
+		singleNetwork_ = singlenetwork;
 	}
 
 	protected void orderElements() {
@@ -296,13 +313,30 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public NetworkLink[] getLinks(Node a, Node b) {
-		List<NetworkLink> links = new ArrayList<NetworkLink>();
-		for (NetworkLink l : a.getNetworkLinks()) {
-			if (l.connectsTo(b)) {
-				links.add(l);
-			}
+		if(singleNetwork_)
+			return networks_;
+		
+		String k1 = a.getLabel() + "--" + b.getLabel();
+
+		NetworkLink[] links = linkCache_.get(k1);
+		if (links == null) {
+			String k2 = b.getLabel() + "--" + a.getLabel();
+			links = linkCache_.get(k2);
 		}
-		return links.toArray(new NetworkLink[0]);
+		if (links == null) {
+			List<NetworkLink> linksl = new ArrayList<NetworkLink>();
+			for (NetworkLink l : a.getNetworkLinks()) {
+				if (l.connectsTo(b)) {
+					linksl.add(l);
+				}
+			}
+			links = linksl.toArray(new NetworkLink[0]);
+			linkCache_.put(k1, links);
+			String k2 = b.getLabel() + "--" + a.getLabel();
+			linkCache_.put(k2, links);
+		}
+
+		return links;
 	}
 
 	public boolean fits(ModelElement[] hosted, ModelElement host) {
