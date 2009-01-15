@@ -292,6 +292,9 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 	
 //		int[] resid = packer_.insert(new AggregateSizeWrapper(ss), ts.getSources(), ts);
 //		return !overconsumed(resid);
+		if(ss.getSizeWithDependencies() == null)
+			System.out.println();
+		
 		for (int i = 0; i < ss.getSizeWithDependencies().length; i++) {
 			ResourceConsumptionPolicy policy = getResourcePolicies().get(i);
 			if (policy != null) {
