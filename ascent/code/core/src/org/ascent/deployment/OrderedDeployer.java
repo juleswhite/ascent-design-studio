@@ -23,7 +23,6 @@ import java.util.Map;
 import org.ascent.VectorSolution;
 import org.ascent.binpacking.BinPackingProblem;
 import org.ascent.binpacking.FFDBinPacker;
-import org.ascent.binpacking.LeastBoundMinExcPacker;
 
 /**
  * This class provides a method to setup a bin-packer to
