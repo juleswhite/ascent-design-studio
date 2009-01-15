@@ -23,9 +23,13 @@ import org.ascent.VectorSolution;
 import org.ascent.VectorSolutionComparator;
 import org.ascent.pso.Pso;
 
-public class DeploymentPlanner {
+public class BandwidthMinimizingPSODeploymentPlanner implements DeploymentPlanner{
 
 	
+	public DeploymentPlan deploy(DeploymentConfig conf) {
+		return solveForMinimalBandwidthConsumption(conf);
+	}
+
 	public static DeploymentPlan solveForMinimalBandwidthConsumption(DeploymentConfig conf){
 		NetworkBandwidthMinimizingPlanner problem = new NetworkBandwidthMinimizingPlanner(conf);
 		
