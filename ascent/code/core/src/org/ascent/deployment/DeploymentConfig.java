@@ -449,6 +449,10 @@ public class DeploymentConfig extends ProblemConfigImpl {
 
 	public void printSolutionStats(VectorSolution vs) {
 		DeploymentPlan plan = new DeploymentPlan(this, vs);
+		printSolutionStats(plan);
+	}
+	
+	public void printSolutionStats(DeploymentPlan plan) {
 		ResourceResidual resid = new ResourceResidual(this);
 		resid.deploy(plan);
 

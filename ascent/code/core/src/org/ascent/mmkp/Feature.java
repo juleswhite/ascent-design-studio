@@ -191,10 +191,21 @@ public class Feature implements Serializable {
 
 		for (Feature f : xorChildren_) {
 			core.addRequiresMappingConstraint(f, this);
+			for(Feature g : xorChildren_){
+				if(g != f){
+					core.addExcludesMappingConstraint(f, g);
+				}
+			}
 		}
 		if (xorChildren_.size() > 0) {
 			core.addSelectMappingConstraint(this, xorChildren_, 1);
 		}
+		if (getConsumedResources() != null){
+			for(int i = 0; i < getConsumedResources().length; i++){
+				core.getSourceVariableValues(this).put(""+i, getConsumedResources()[i]);
+			}
+		}
+		core.getSourceVariableValues(this).put("value", getValue());
 
 		ArrayList<Feature> all = new ArrayList<Feature>();
 		all.addAll(xorChildren_);
@@ -393,7 +404,7 @@ public class Feature implements Serializable {
 	}
 
 	public String toString() {
-		return getName();
+		return getName();//+" MCV:"+getMaxConfValue();
 	}
 
 	public String consumedResourcesToString(){
@@ -413,7 +424,7 @@ public class Feature implements Serializable {
 	
 	public void printTree(String pred, String indent) {
 		String post = (isTransparent()) ? "_T" : "";
-		post += consumedResourcesToString() + " v:"+value_ ;
+		post += consumedResourcesToString() + " v:"+value_+" MCV:"+getMaxConfValue();
 		if(tag_ != null){post += " tag:"+tag_;}
 		
 		System.out.println(indent + pred + getName() + post);
@@ -497,4 +508,60 @@ public class Feature implements Serializable {
 		consumedResources_ = consumedResources;
 	}
 
+	public int getMaxConfValue(){
+		int v = getValue();
+		for(Feature f : getRequiredChildren()){
+			v += f.getMaxConfValue();
+		}
+		for(Feature f : getOptionalChildren()){
+			v += f.getMaxConfValue();
+		}
+		
+		int max = 0;
+		for(Feature f : getXorChildren()){
+			if(max < f.getMaxConfValue())
+				max = f.getMaxConfValue();
+		}
+		v += max;
+		return v;
+	}
+	
+	public int getTotalDescendants(){
+		int d= 0;
+		for(Feature f : getRequiredChildren()){
+			d += f.getTotalDescendants() + 1;
+		}
+		for(Feature f : getOptionalChildren()){
+			d += f.getTotalDescendants() + 1;
+		}
+		for(Feature f : getXorChildren()){
+			d += f.getTotalDescendants() + 1;
+		}
+		return d;
+	}
+	
+	public Feature cloneTree(){
+		
+		Feature f = new Feature(getName(),id_);
+		f.setValue(getValue());
+		f.setTag(getTag());
+		f.setTransparent(isTransparent());
+		f.setConsumedResources(getConsumedResources());
+		for(Feature c : requiredChildren_){
+			Feature nc = c.cloneTree();
+			f.getRequiredChildren().add(nc);
+			nc.setParent(f);
+		}
+		for(Feature c : xorChildren_){
+			Feature nc = c.cloneTree();
+			f.getXorChildren().add(nc);
+			nc.setParent(f);
+		}
+		for(Feature c : optionalChildren_){
+			Feature nc = c.cloneTree();
+			f.getOptionalChildren().add(nc);
+			nc.setParent(f);
+		}
+		return f;
+	}
 }

@@ -108,7 +108,8 @@ public class ProblemParser {
 			
 			List vals = (List)featureconf.get(directive);
 			for(Object o : vals){
-				handler.handle(problem, context.trim(), directive, ""+o);
+				if(handler != null)
+					handler.handle(problem, context.trim(), directive, ""+o);
 			}
 		}
 	}
