@@ -182,8 +182,8 @@ public class ExcelDeploymentConfig {
 						"Invalid network resource specification", e,
 						NETWORK_RESOURCES_SHEET, i + 2, 2);
 			}
-			for (int j = 2; j < headers.length; j++) {
-				String val = networks.getCell(j, i + 1).getContents().trim();
+			for (int j = 1; j < headers.length; j++) {
+				String val = networks.getCell(j+1, i + 1).getContents().trim();
 				if (val.length() > 0) {
 					Node node = nodelookup.get(headers[j]);
 					if (node == null) {
