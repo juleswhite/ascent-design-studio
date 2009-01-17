@@ -10,7 +10,7 @@ import org.ascent.VectorSolutionComparator;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.DeploymentPlan;
-import org.ascent.deployment.DeploymentPlanner;
+import org.ascent.deployment.BandwidthMinimizingPSODeploymentPlanner;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.excel.ExcelDeploymentConfig;
 import org.ascent.pso.Pso;
@@ -36,7 +36,7 @@ public class WikiExcelDeploymentProblems extends TestCase {
 		problem.init();
 
 		
-		DeploymentPlan plan = DeploymentPlanner.solveForMinimalBandwidthConsumption(problem);
+		DeploymentPlan plan = BandwidthMinimizingPSODeploymentPlanner.solveForMinimalBandwidthConsumption(problem);
 
 		
 		assertTrue(plan.isValid());
