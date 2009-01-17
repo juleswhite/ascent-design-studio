@@ -106,9 +106,13 @@ public class FFDBinPacker extends RefreshBinPackingCore {
 		if (queue_ == null)
 			init();
 
-		if (preSelectionQueue_.size() > 0)
-			return preSelectionQueue_.remove(preSelectionQueue_.size() - 1);
-
+		while (preSelectionQueue_.size() > 0){
+			Object src = preSelectionQueue_.remove(preSelectionQueue_.size() - 1);
+			if(queue_.contains(src)){
+				return src;
+			}
+		}
+		
 		return nextSource();
 	}
 
