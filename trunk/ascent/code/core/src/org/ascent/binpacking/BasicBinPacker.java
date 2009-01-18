@@ -22,12 +22,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class BasicBinPacker {
-	List<ClassicItem> itemsToPack_;
+	protected List<ClassicItem> itemsToPack_;
 	/*
 	 * Item has :
 	 * consumedResources
 	 */
-	List<ClassicBin> bins_;
+	protected List<ClassicBin> bins_;
 	int boundType_;//0 = 69.4%, 1 = LL bound, 2 = Harmonic (100%)
 	/*
 	 * bins has: 
@@ -40,6 +40,8 @@ public class BasicBinPacker {
 		itemsToPack_ = items; //Need to sort the items here
 		bins_ = bins;
 		boundType_ = bt;
+		//sortBins();
+		//sortItems();
 		Comparator <ClassicBin> binComp = new Comparator<ClassicBin>(){
 		
 			
@@ -94,7 +96,7 @@ public class BasicBinPacker {
 		return true;
 	}
 	
-	private boolean placeItem(ClassicItem item){
+	protected boolean placeItem(ClassicItem item){
 		for(ClassicBin bin : bins_){
 			
 			if( fitsBin(item, bin)){
@@ -114,7 +116,7 @@ public class BasicBinPacker {
 		return false;
 	}
 	
-	private boolean fitsBin(ClassicItem item, ClassicBin bin){
+	protected boolean fitsBin(ClassicItem item, ClassicBin bin){
 		double [] consumedResources  = item.getConsumedResources_();
 		double [] spaceLeft = bin.getSpaceLeft_();
 		System.out.println("Spaceleft is " + spaceLeft[0]);
@@ -147,7 +149,7 @@ public class BasicBinPacker {
 		
 	}
 	
-	private double getBound(ClassicBin bin,ClassicItem item){
+	protected double getBound(ClassicBin bin,ClassicItem item){
 		if( boundType_ == 0){
 			return .694;
 		}
@@ -159,7 +161,7 @@ public class BasicBinPacker {
 		}
 		return -1;
 	}
-	private ClassicBin putInBin(ClassicItem item, ClassicBin bin){
+	protected ClassicBin putInBin(ClassicItem item, ClassicBin bin){
 		//System.out.println("About to add an item to Bin");
 		bin.addItem(item);
 		double [] sl = bin.getSpaceLeft_();
@@ -172,7 +174,7 @@ public class BasicBinPacker {
 		return bin;
 	}
 	
-	private double sumItems(ClassicBin bin, ClassicItem item){
+	protected double sumItems(ClassicBin bin, ClassicItem item){
 		List<ClassicItem>Bitems = bin.getItems();
 		double sum  = 0;
 		for(ClassicItem bitem : Bitems){
@@ -182,7 +184,7 @@ public class BasicBinPacker {
 		return sum+=item.getConsumedResources_()[0];
 	}
 	
-	private double getLLBound(ClassicBin LLbin, ClassicItem item){
+	protected double getLLBound(ClassicBin LLbin, ClassicItem item){
 		List<ClassicItem> hypotheticalItems = LLbin.getItems();
 		//double [] cr = {100.0,100.0,100.0};
 		//Item decoy = new Item(100,"100",cr);
