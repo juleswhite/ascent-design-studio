@@ -34,5 +34,10 @@ public class ClassicItem extends Element {
 	public int getNumTasks_() {
 		return numTasks_;
 	}
+	
+	public String toString(){
+		String rs = "" + name_;
+		return rs;
+	}
 
 }
