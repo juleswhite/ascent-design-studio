@@ -3,7 +3,7 @@ package org.ascent.binpacking;
 public class Element {
 
 	private int id_;
-	private String name_;
+	protected String name_;
 
 	public Element(int id, String name) {
 		super();
