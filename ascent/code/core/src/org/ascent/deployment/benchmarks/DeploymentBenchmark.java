@@ -17,10 +17,13 @@
 
 package org.ascent.deployment.benchmarks;
 
+import org.ascent.deployment.DeploymentConfig;
+import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.DeploymentPlanner;
 
 public class DeploymentBenchmark {
 
+	protected DeploymentConfig config_;
 	/**
 	 * This method takes a DeploymentPlanner as input and
 	 * runs a suite of deployment benchmarks on it. The
@@ -30,8 +33,19 @@ public class DeploymentBenchmark {
 	 * @return
 	 */
 	public BenchmarkData test(DeploymentPlanner planner){
+		long start = System.currentTimeMillis();
+		DeploymentPlan plan = planner.deploy(config_);
+		long finish = System.currentTimeMillis();
+		
+		BenchmarkData data = new BenchmarkData();
+		data.setAlg(planner.getClass().getName());
+		//data.setBandwidthUsed(plan.getSolution());
 		
 		
 		return null;
+	}
+	
+	public DeploymentBenchmark (DeploymentConfig conf){
+		config_ = conf;
 	}
 }
