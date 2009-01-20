@@ -19,7 +19,43 @@ package org.ascent.deployment.benchmarks;
 
 public class BenchmarkData {
 
+	private int numNodes_;
+	private long bandwidthUsed_;
+	private long time_;
+	private String alg_;
 	
+	
+	public BenchmarkData(){
+		
+	}
+	
+	public int getNumNodes() {
+		return numNodes_;
+	}
+
+
+
+	public void setNumNodes(int numNodes) {
+		this.numNodes_ = numNodes;
+	}
+	
+	
+	public long getBandwidthUsed() {
+		return bandwidthUsed_;
+	}
+
+	public void setBandwidthUsed(long bandwidthUsed) {
+		this.bandwidthUsed_ = bandwidthUsed;
+	}
+
+	public String getAlg() {
+		return alg_;
+	}
+
+	public void setAlg(String alg) {
+		this.alg_ = alg;
+	}
+
 	
 	/**
 	 * Chris, make sure and provide
