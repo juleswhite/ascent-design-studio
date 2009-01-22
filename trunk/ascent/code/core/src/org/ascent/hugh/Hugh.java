@@ -218,9 +218,21 @@ public class Hugh {
 			System.out.println(bettor);
 		}
 		Bettor jason = bettors.get(0);
-		State testState = testHugh.placeBet(jason);
-		testHugh.spinWheel(testState);
-		System.out.println("Test state is " + testState);
+		jason.setBankroll(100.00);
+		State testState ;
+		Bet jasonsBet;
+		double wagerAmount = 10;
+		double betCount = 0;
+		
+		
+		Double jasonsBankroll =  jason.getBankroll();
+		while(jasonsBankroll >0){
+			testState = testHugh.placeBet(jason);
+			jasonsBet = new Bet(testState,wagerAmount);
+			jasonsBankroll -= wagerAmount;
+			jasonsBankroll += testHugh.spinWheel(testState);
+		    System.out.println("Jasons BankRoll is " + jasonsBankroll);
+		}
 		
 		
 		

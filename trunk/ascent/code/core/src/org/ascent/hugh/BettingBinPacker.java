@@ -38,7 +38,14 @@ public class BettingBinPacker extends BasicBinPacker{
 		bets_ = bets;
 		packItems();
 		State betState = new State(madeBet_);
-		betState.setNumBins(bins_.size());
+		int numBins =0;
+		for(ClassicBin b : bins_){
+			//System.out.println("on bin " + b.getBinName_() +" which hs this many items: " + b.getItems().size());
+			if(b.getItems().size()>0){
+				numBins++;
+			}
+		}
+		betState.setNumBins(numBins);
 		return betState;
 		
 	}

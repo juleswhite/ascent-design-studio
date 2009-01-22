@@ -31,6 +31,7 @@ public class TheHouse {
 		for(Bet wager : wagers){
 			if(evaluateBet(wager.getBetState_())){
 				winnings += payout(wager);
+				System.out.println("WIIIINNNNNNEEEEERRRR! Bet of " + wager.getBetAmount_()+" paid " + winnings);
 			}
 		}
 		return winnings;
@@ -42,6 +43,7 @@ public class TheHouse {
 		//ArrayList<ClassicItem> stateItems = state.getStateArray_();
 		if(state.getNumBins() < pastBest_){
 			pastBest_ = state.getNumBins();
+			
 			System.out.println("Winning bet with bins reduced to " + pastBest_);
 			return true; // we won. yay.
 		}
