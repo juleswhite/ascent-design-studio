@@ -38,7 +38,7 @@ public class State {
 	}
 	
 	public String toString(){
-		String sa = "State is  " + getStateArray_();
+		String sa = "State:  " + getStateArray_();
 		return sa;
 	}
 	
