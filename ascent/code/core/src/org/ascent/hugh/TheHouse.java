@@ -22,16 +22,24 @@ public class TheHouse {
 	
 	private double pastBest_ = Double.MAX_VALUE;
 	private ArrayList<ClassicItem> items_;
+	
 	public TheHouse(){//ArrayList<ClassicItem> items){
 		//items_ = items;
 	}
 	
-	public double spinWheel( ArrayList<Bet> wagers){
+	public double spinWheel(ArrayList<Bet> wagers){
 		double winnings = 0;
+		System.out.println("num wagers is "+ wagers.size());
 		for(Bet wager : wagers){
+			System.out.println("about to evaluate bet");
 			if(evaluateBet(wager.getBetState_())){
-				winnings += payout(wager);
+				winnings = winnings + wager.getBetAmount_()+payout(wager);
+				wager.setPayout(winnings);
+				wager.setStatus(1);
 				System.out.println("WIIIINNNNNNEEEEERRRR! Bet of " + wager.getBetAmount_()+" paid " + winnings);
+			}
+			else{
+				wager.setStatus(-1);
 			}
 		}
 		return winnings;

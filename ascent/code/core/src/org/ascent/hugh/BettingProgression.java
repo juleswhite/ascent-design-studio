@@ -21,51 +21,53 @@ import com.sun.source.tree.BinaryTree;
 
 public class BettingProgression {
 	String name_;
-	ArrayList<Double> multipliers_;
+	//ArrayList<Double> multipliers_;
+	ArrayList<Double> winMultipliers_;
+	ArrayList<Double> lossMultipliers_;
 	//BinaryTree multiTree_ = new BinaryTree();
-	int currentIndex_;
+
+	int winIndex = -1;
+	int lossIndex =-1;
+	double startMultiplier = 1.0;
+	
 	public BettingProgression(){
 		
 	}
 	
-	public BettingProgression(String name, ArrayList<Double> multipliers ){
+	public BettingProgression(String name, ArrayList<Double> winMultipliers,  ArrayList<Double> lossMultipliers){
 		name_ = name;
-		multipliers_ = multipliers;
+		winMultipliers_ = winMultipliers;
+		lossMultipliers_ = lossMultipliers;
+		
 	}
 	
 	public double getWin(){
-		if (currentIndex_ %2 == 0 || currentIndex_ ==1){ // First step in progression, or we've been winning
-			if( ((currentIndex_*2) + 1) <= multipliers_.size()){
-				Double wm=  multipliers_.get(((currentIndex_*2) + 1));
-				currentIndex_ = (currentIndex_*2) + 1;
-				return wm.doubleValue();
-			}
-			else{
-				Double wm=  multipliers_.get(currentIndex_);
-				return wm.doubleValue();
-			}
+		lossIndex = 0;
+		if(winIndex < winMultipliers_.size()-1){
+			winIndex++;
 		}
-		else{ // been losing
-			currentIndex_ = 1;
-			return multipliers_.get(currentIndex_).doubleValue();
-		}
+		Double wm = winMultipliers_.get(winIndex).doubleValue();
+		System.out.println("Passing win multiplier " + wm);
+		return wm.doubleValue();
 	}
 	
 	public double getLoss(){
-		if (currentIndex_ %2 == 1 || currentIndex_ ==1){ // First step in progression, or we've been winning
-			if( ((currentIndex_*2)) <= multipliers_.size()){
-				Double wm=  multipliers_.get(((currentIndex_*2)));
-				currentIndex_ = (currentIndex_*2);
-				return wm.doubleValue();
-			}
-			else{
-				Double wm=  multipliers_.get(currentIndex_);
-				return wm.doubleValue();
-			}
+		winIndex = 0;
+		if(lossIndex < lossMultipliers_.size()-1){
+			lossIndex++;
 		}
-		else{ // been winning
-			currentIndex_ = 1;
-			return multipliers_.get(currentIndex_).doubleValue();
-		}
+		System.out.println("Passing lost multiplier " + lossMultipliers_.get(lossIndex).doubleValue() );
+		return lossMultipliers_.get(lossIndex).doubleValue();
 	}
+
+	public double getStartMultiplier() {
+		return startMultiplier;
+	}
+
+	public void setStartMultiplier(double startMultiplier) {
+		this.startMultiplier = startMultiplier;
+	}
+		
+	
+	
 }

@@ -27,7 +27,7 @@ import org.ascent.binpacking.ClassicItem;
 public class Hugh {
 	TheHouse th_ = new TheHouse();
 	ArrayList<Bettor> playerList_ = new ArrayList();
-	ArrayList<BettingProgression> bpList_;
+	ArrayList<BettingProgression> bpList_ =new ArrayList();
 	List <ClassicBin> bins_ = new ArrayList();
 	List <ClassicItem> items_ = new ArrayList();
 	ArrayList<Personality> personalityList_ = new ArrayList();
@@ -49,12 +49,25 @@ public class Hugh {
 	
 	private void makeBettingProgressions(){
 		double [] test = {1.0,2.0,1.0};
+		double []martinWin = {1.0,2.0,2.0,1.5};
+		double [] martinLoss = {1.0,2.0};
 		// Collection <Double> test2 =   new Collection(test);
 		//bpList= new ArrayList(Arrays.asList(test));
-		ArrayList<Double>  testList =new ArrayList(Arrays.asList(test));
+		ArrayList<Double>  testMartinWin= new ArrayList();
+		ArrayList<Double>  testMartinLoss = new ArrayList(Arrays.asList(martinLoss));
+		for(int i = 0; i < martinWin.length; i++){
+			testMartinWin.add(new Double(martinWin[i]));
+		}
+		for(int i = 0; i < martinLoss.length; i++){
+			testMartinLoss.add(new Double(martinLoss[i]));
+		}
+		
+		
+		
 	//	bpList_.ad //(0, -1);
 		
-		BettingProgression bp1 = new BettingProgression("MartingaleProgression", testList);
+		BettingProgression bp1 = new BettingProgression("MartingaleProgression", testMartinWin, testMartinLoss);
+		bpList_.add(bp1);
 	}
 	private void makePersonalities(){
 		Personality persona1 = new Personality(8.5, 7, 5,2,"Jason- The College Student");
@@ -78,6 +91,7 @@ public class Hugh {
 				System.out.println("pd is " + pd.getName());
 				ArrayList<Integer> fakeNums = makeFakeNums(p.getSpread_());
 				Bettor player = new Bettor(p, fakeNums, pd);
+			    player.setBp_(bpList_.get(0));
 				System.out.println("player is " + player);
 				playerList_.add(player);
 				numBettors--;
@@ -90,7 +104,7 @@ public class Hugh {
 		ArrayList<Integer> favNums = new ArrayList();
 		System.out.println("Spread factor is " + spread);
 		for(int i = 0; i < spreadFactor; i++){
-			int favNum = (int) (Math.round((Math.random()) * items_.size()));// Math.random(items_.size());
+			int favNum = (int) (Math.round((Math.random()) * (items_.size()-1)));// Math.random(items_.size());
 			System.out.println("Items size is " + items_.size());
 			System.out.println("favNum is " + favNum);
 			if(!favNums.contains(new Integer(favNum))){
@@ -103,14 +117,19 @@ public class Hugh {
 					favNum = (int) (Math.round((Math.random()) * items_.size()));
 				}
 				favNums.add(new Integer(favNum));
+				
 			}
-			//System.out.println("added " + favNum + "to favNums");
+			System.out.println("added " + favNum + "to favNums");
 		}
 		return favNums;
 		
 	}
 	
-	private void prepareBP(){
+	public TheHouse getTh(){
+		return th_;
+	}
+	
+	public void prepareBP(){
 		 bins_ = new ArrayList();
 		items_ = new ArrayList(); 
 		
@@ -212,7 +231,9 @@ public class Hugh {
 	public static void main(String args[]){
 		Hugh testHugh = new Hugh();
 		testHugh.makePersonalities();
+		testHugh.makeBettingProgressions();
 		testHugh.makeBettors();
+		
 		ArrayList<Bettor> bettors = testHugh.getPlayerList_();
 		for(Bettor bettor : bettors){
 			System.out.println(bettor);
@@ -220,21 +241,50 @@ public class Hugh {
 		Bettor jason = bettors.get(0);
 		jason.setBankroll(100.00);
 		State testState ;
-		Bet jasonsBet;
+		Bet jasonsBet = new Bet();
 		double wagerAmount = 10;
 		double betCount = 0;
-		
-		
+		TheHouse testHughHouse = testHugh.getTh();
+		ArrayList<Bet> jasonsBets;
 		Double jasonsBankroll =  jason.getBankroll();
+		int numBetsTillGone = 0;
+		boolean win;
 		while(jasonsBankroll >0){
+			numBetsTillGone ++;
+			jasonsBets = new ArrayList();
 			testState = testHugh.placeBet(jason);
-			jasonsBet = new Bet(testState,wagerAmount);
+			if(jasonsBet.getStatus() == 0){
+				wagerAmount = wagerAmount * jason.getBp_().getStartMultiplier();
+			}
+			
+			else if(jasonsBet.getStatus() == 1){
+				wagerAmount = wagerAmount * jason.getBp_().getWin();
+			}
+			
+			else{
+				wagerAmount = wagerAmount * jason.getBp_().getLoss();
+			}
+			
+			if(wagerAmount > jasonsBankroll){
+				wagerAmount = jasonsBankroll;
+			}
+			System.out.println("My name is Jason, and I am betting "+ wagerAmount + " on " + testState);
+			
+			jasonsBet.setBetAmount_(wagerAmount);
+			jasonsBet.setBetState_(testState);
+			
+			
+			System.out.println("jasons bet status : " + jasonsBet.getStatus());
 			jasonsBankroll -= wagerAmount;
-			jasonsBankroll += testHugh.spinWheel(testState);
+			jasonsBets.add(jasonsBet);
+			
+			jasonsBankroll += testHughHouse.spinWheel(jasonsBets);
+			System.out.println("jasons bet status : " + jasonsBet.getStatus());
 		    System.out.println("Jasons BankRoll is " + jasonsBankroll);
+		    testHugh.prepareBP();
 		}
 		
-		
+		System.out.println("It took " + numBetsTillGone +"bets to blow the entire bankroll");
 		
 	}
 
