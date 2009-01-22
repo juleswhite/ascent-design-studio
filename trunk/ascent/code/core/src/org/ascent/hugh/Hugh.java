@@ -25,7 +25,7 @@ import org.ascent.binpacking.ClassicBin;
 import org.ascent.binpacking.ClassicItem;
 
 public class Hugh {
-	TheHouse th_;
+	TheHouse th_ = new TheHouse();
 	ArrayList<Bettor> playerList_ = new ArrayList();
 	ArrayList<BettingProgression> bpList_;
 	List <ClassicBin> bins_ = new ArrayList();
@@ -42,8 +42,8 @@ public class Hugh {
 		return betToPlace;
 	}
 	
-	private double spinWheel( State st){
-	//	th.evaluateBet();
+	public double spinWheel( State st){
+		th_.evaluateBet(st);
 		return 0;
 	}
 	
@@ -219,6 +219,7 @@ public class Hugh {
 		}
 		Bettor jason = bettors.get(0);
 		State testState = testHugh.placeBet(jason);
+		testHugh.spinWheel(testState);
 		System.out.println("Test state is " + testState);
 		
 		
