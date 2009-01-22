@@ -17,33 +17,53 @@ package org.ascent.hugh;
 
 import java.util.ArrayList;
 
+import org.ascent.binpacking.ClassicItem;
+
 public class State {
 	
-	private ArrayList<Integer> stateArray_;//Ordered List of chosen Components
-	
+	private ArrayList<ClassicItem> stateArray_;//Ordered List of chosen Components
+	private int numBins_=0;
 	
 	public State(){
 		
 	}
 	
+
 	public State(int numComps){
 		initializeArray(numComps);
 	}
 	
-	public State(ArrayList<Integer> stateArray){
-		stateArray_ = stateArray;
+	public State(ArrayList<ClassicItem> stateArray){
+		setStateArray_(stateArray);
 	}
 	
 	public String toString(){
-		String sa = "State is  " + stateArray_;
+		String sa = "State is  " + getStateArray_();
 		return sa;
 	}
 	
+	
 	private void initializeArray(int size){
-		stateArray_= new ArrayList(size);
-		for(int i =0; i < size; i++){
-			stateArray_.set(i, new Integer(-1));
-		}
+		setStateArray_(new ArrayList(size));
+	//	for(int i =0; i < size; i++){
+		//	stateArray_.set(i, new Integer(-1));
+	//	}
+	}
+
+	public ArrayList<ClassicItem> getStateArray_() {
+		return stateArray_;
+	}
+
+	public void setNumBins(int nb) {
+		numBins_ = nb;
+	}
+	
+	public int getNumBins(){
+		return numBins_;
+	}
+
+	public void setStateArray_(ArrayList<ClassicItem> stateArray_) {
+		this.stateArray_ = stateArray_;
 	}
 	
 }

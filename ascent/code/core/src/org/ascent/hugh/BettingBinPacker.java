@@ -24,9 +24,9 @@ import org.ascent.binpacking.ClassicItem;
 
 public class BettingBinPacker extends BasicBinPacker{
 	private ArrayList<Integer> bets_; // pack in this order, change up the rest if not in here
-	private ArrayList<ArrayList<Integer>> madeBets_ = new ArrayList();
+	private ArrayList<ArrayList<ClassicItem>> madeBets_ = new ArrayList();
 	private ArrayList<ClassicItem>originalItems_;
-	private ArrayList<Integer> madeBet_;
+	private ArrayList<ClassicItem> madeBet_;
 	public BettingBinPacker(List<ClassicItem> items, List<ClassicBin> bins, int bt){
 		super(items,bins,bt);
 		originalItems_ = new ArrayList(items);
@@ -38,6 +38,7 @@ public class BettingBinPacker extends BasicBinPacker{
 		bets_ = bets;
 		packItems();
 		State betState = new State(madeBet_);
+		betState.setNumBins(bins_.size());
 		return betState;
 		
 	}
@@ -46,16 +47,17 @@ public class BettingBinPacker extends BasicBinPacker{
 	public boolean packItems(){
 		boolean success;
 		madeBet_= new ArrayList();
+
 		for(Integer bet: bets_){
 			ClassicItem item = itemsToPack_.get(bet.intValue());
 			success =placeItem(item);
 			
 			if(success == false){
-				System.out.println("Unsuccessful. Failed on " + item);
+				System.out.println("Unsuccessful. Failed on " + bet);
 				
 				return false;
 			}
-			madeBet_.add(item.getId());
+			madeBet_.add(item);
 			itemsToPack_.remove(item);
 			
 		}
@@ -66,7 +68,7 @@ public class BettingBinPacker extends BasicBinPacker{
 				
 				return false;
 			}
-			madeBet_.add(item.getId());
+			madeBet_.add(item);
 		}
 		madeBets_.add(madeBet_);
 		itemsToPack_= originalItems_;

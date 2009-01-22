@@ -14,20 +14,51 @@
  * limitations under the License.                                          *
  **************************************************************************/
 package org.ascent.hugh;
+import java.util.ArrayList;
+
+import org.ascent.binpacking.ClassicItem;
 
 public class TheHouse {
 	
-	public TheHouse(){
+	private double pastBest_ = Double.MAX_VALUE;
+	private ArrayList<ClassicItem> items_;
+	public TheHouse(){//ArrayList<ClassicItem> items){
+		//items_ = items;
+	}
+	
+	public double spinWheel( ArrayList<Bet> wagers){
+		double winnings = 0;
+		for(Bet wager : wagers){
+			if(evaluateBet(wager.getBetState_())){
+				winnings += payout(wager);
+			}
+		}
+		return winnings;
+		
 		
 	}
 	
 	public boolean evaluateBet(State state){
+		//ArrayList<ClassicItem> stateItems = state.getStateArray_();
+		if(state.getNumBins() < pastBest_){
+			pastBest_ = state.getNumBins();
+			System.out.println("Winning bet with bins reduced to " + pastBest_);
+			return true; // we won. yay.
+		}
+		
 		return false;
+		
 		
 	}
 	
-	public double payout(){
-		return 0;
+	public double payout(Bet wager){
+		double odds = getOdds(wager.getBetState_());
+		return   wager.getBetAmount_()* odds;
 		
 	}
+	
+	private double getOdds(State state){
+		return 2.0;
+	}
+	
 }
