@@ -20,7 +20,7 @@ package org.ascent.deployment.benchmarks;
 public class BenchmarkData {
 
 	private int numNodes_;
-	private long bandwidthUsed_;
+	private int bandwidthUsed_;
 	private long time_;
 	private String alg_;
 	
@@ -40,11 +40,11 @@ public class BenchmarkData {
 	}
 	
 	
-	public long getBandwidthUsed() {
+	public int getBandwidthUsed() {
 		return bandwidthUsed_;
 	}
 
-	public void setBandwidthUsed(long bandwidthUsed) {
+	public void setBandwidthUsed(int bandwidthUsed) {
 		this.bandwidthUsed_ = bandwidthUsed;
 	}
 
@@ -64,7 +64,11 @@ public class BenchmarkData {
 	 */
 	public String toString(){
 		
+		String output = "Benchmark Data for " + alg_ + "\n";
+		output += "----------------------------------\n\n";
+		output += "Bandwidth Used: " +  bandwidthUsed_ + "\n";
+		output += "Nodes: " + numNodes_ + "\n";
 		
-		return "";
+		return output;
 	}
 }

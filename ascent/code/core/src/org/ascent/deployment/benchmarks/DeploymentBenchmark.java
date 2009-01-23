@@ -20,6 +20,8 @@ package org.ascent.deployment.benchmarks;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.DeploymentPlanner;
+import org.ascent.deployment.Interaction;
+import org.ascent.deployment.LocalHostLink;
 
 public class DeploymentBenchmark {
 
@@ -37,12 +39,24 @@ public class DeploymentBenchmark {
 		DeploymentPlan plan = planner.deploy(config_);
 		long finish = System.currentTimeMillis();
 		
+		//Jakarta Monitoring library profiling
+		
 		BenchmarkData data = new BenchmarkData();
 		data.setAlg(planner.getClass().getName());
-		//data.setBandwidthUsed(plan.getSolution());
+		
+		int score = 0;
+		
+		//There is a bug in the following loop for the rate calculation
+        for (Interaction i : plan.getDeploymentConfiguration().getInteractions()) {
+                if (plan.getChannel(i) instanceof LocalHostLink) {
+                        score += (i.getResources()[0] * i.getRate());
+                }
+        }
+        
+        data.setBandwidthUsed(score);
 		
 		
-		return null;
+		return data;
 	}
 	
 	public DeploymentBenchmark (DeploymentConfig conf){
