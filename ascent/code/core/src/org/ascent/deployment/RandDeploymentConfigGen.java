@@ -20,16 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 public class RandDeploymentConfigGen{
-	private int numComponents_=5;//check
+	private int numComponents_;//check
 	private int numNodes_;//check
-	private int numResources_ =5 ;//check
+	private int numResources_ ;//check
 	private int numExConstraints_; //check
 	private int numReqConstraints_;//check
 	private int numTasksPerComponent_;//seeMakeComponents
 	private int numNetworks_;
 	private int numComponentInteractions_;
-	private double minResConsumption_=100;//check
-	private double maxResConsumption_=200; //checkmaxvalue not inclusive
+	private double minResConsumption_;//check
+	private double maxResConsumption_; //checkmaxvalue not inclusive
 	private double minCompUtilization_; //see makeComponents;
 	private double maxCompUtilization_;
 	private double minAvailResValue_;//check
