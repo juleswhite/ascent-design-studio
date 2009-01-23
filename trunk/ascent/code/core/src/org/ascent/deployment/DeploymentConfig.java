@@ -497,4 +497,8 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		str += "}";
 		return str;
 	}
+	
+	public double getScore(VectorSolution vs){
+		return scoreDeployment(new DeploymentPlan(this,vs));
+	}
 }
