@@ -485,6 +485,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		}
 		for (Component c : components_) {
 			str += "\t" + c + "\n";
+			//System.out.println("Might Get that null" + c.getInteractions().length);
 			if (c.getInteractions().length > 0) {
 				str += "\t\tinteractions-->[\n";
 				for (Interaction inter : c.getInteractions()) {

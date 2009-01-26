@@ -30,29 +30,36 @@ public class RandDeploymentConfigGen{
 	private int numComponentInteractions_;
 	private double minResConsumption_;//check
 	private double maxResConsumption_; //checkmaxvalue not inclusive
-	private double minCompUtilization_; //see makeComponents;
+	private double minCompUtilization_; //total utilization of each comp
 	private double maxCompUtilization_;
 	private double minAvailResValue_;//check
 	private double maxAvailResValue_;//check
-	private double minBwidthPerInteraction_;
+	private double minBwidthPerInteraction_;//inteaction size[0]
 	private double maxBwidthPerInteraction_;
-	private double minInteractionPeriod_;// see makeComponents
+	private double minInteractionPeriod_;//should go to interaction rate
 	private double maxInteractionPeriod_;
-	private double minNetworkBandwidth_;
+	private double minNetworkBandwidth_;//neworkLink siz[0]
 	private double maxNetworkBandwidth_;
+	private double minTaskRate_;//check = comp task period
+	private double maxTaskRate_;// check
+	private double minCpuUtilPerTask_;//check = comp task util
+	private double maxCpuUtilPerTask_;
 	private NetworkLink[] networks_;
 	private Component[] components_;
 	private Node[] nodes_;
 	private Interaction[] interactions_;
 	private List<DeploymentConstraint> constraints_ = new ArrayList<DeploymentConstraint>();
+	private DeploymentConfig dc_;
 	public RandDeploymentConfigGen(){}
+	
 	
 	public RandDeploymentConfigGen(int numComponents, int numNodes, int numResources, int numExConstraints, int numReqConstraints,
 			int numTasksPerComponent, int numNetworks, int numComponentInteractions,double minResConsumption,
 			double maxResConsumption, double minCompUtilization, double maxCompUtilization,
 			double minAvailResValue, double maxAvailResValue, double minBwidthPerInteraction, 
 			double maxBwidthPerInteraction, double minInteractionPeriod, double maxInteractionPeriod,
-			double minNetworkBandwidth, double maxNetworkBandwidth){
+			double minNetworkBandwidth, double maxNetworkBandwidth, double minTaskRate, double maxTaskRate,
+			double minCpuUtilPerTask, double maxCpuUtilPerTask){
 		
 		numComponents_=numComponents;
 		numNodes_=numNodes;
@@ -74,8 +81,25 @@ public class RandDeploymentConfigGen{
 		maxInteractionPeriod_=maxInteractionPeriod;
 		minNetworkBandwidth_=minNetworkBandwidth;
 		maxNetworkBandwidth_=maxNetworkBandwidth;
+		minTaskRate_ = minTaskRate;
+		maxTaskRate_=maxTaskRate;
+		minCpuUtilPerTask_= minCpuUtilPerTask;
+		maxCpuUtilPerTask_=maxCpuUtilPerTask;
+		networks_ = new NetworkLink[numNetworks_];
+		interactions_ = new Interaction[numComponentInteractions_];
+		makeComponents();
+		makeNodes();
+		addExConstraints();
+		addReqConstraints();
+		makeInteractionsAndNetowrkLinks();
+		System.out.println("Interactions is " + interactions_.length);
+		dc_ =makeDeploymentConfig();
+		dc_.setConstraints(constraints_);
+	}
+	
+	public DeploymentConfig makeDeploymentConfig(){
 		
-		
+		return new DeploymentConfig(nodes_,networks_, components_, interactions_);
 	}
 	
 	public void makeComponents(){
@@ -123,20 +147,20 @@ public class RandDeploymentConfigGen{
 				}
 				util = util * RandomRes;
 				
-				availPer= 1 - (minInteractionPeriod_/maxInteractionPeriod_);
-				avDPer = availPer * maxInteractionPeriod_;
+				availPer= 1 - (minTaskRate_/maxTaskRate_);
+				avDPer = availPer * maxTaskRate_;
 				intavDPer = (int) Math.round(avDPer); // available utilization ;
-				RandomPer = r.nextInt(intavD) +(int) Math.round(maxInteractionPeriod_);
+				RandomPer = r.nextInt(intavD) +(int) Math.round(maxTaskRate_);
 				newComponent.addTask(RandomPer, RandomRes);
 				RandomRes -= util;
 			}
 			
-			availPer= 1 - (minInteractionPeriod_/maxInteractionPeriod_);
-			avDPer = availPer * maxInteractionPeriod_;
+			availPer= 1 - (minTaskRate_/maxTaskRate_);
+			avDPer = availPer * maxTaskRate_;
 			intavDPer = (int) Math.round(avDPer); // available utilization ;
-			RandomPer = r.nextInt(intavD) +(int) Math.round(maxInteractionPeriod_);
+			RandomPer = r.nextInt(intavD) +(int) Math.round(maxTaskRate_);
 			newComponent.addTask(RandomPer, RandomRes);
-
+			
 			System.out.println("Component is " + newComponent);
 			components_[i] = newComponent;
 		}
@@ -236,19 +260,89 @@ public class RandDeploymentConfigGen{
 		}
 	}
 	
+	public void makeInteractionsAndNetowrkLinks(){
+		int numInteractions = 0;// numComponentInteractions_;
+		int numNetworkLinks=0;
+		Random r = new Random();
+		while(numNetworkLinks <numNetworks_){
+			
+			 double entry = Math.random();
+			 if(entry > .2){
+				int node1 = r.nextInt(nodes_.length-1);
+				int node2 =r.nextInt(nodes_.length-1);
+				while(node2 == node1){
+					node2 =r.nextInt(nodes_.length-1);
+				}
+				
+				Node [] nlNodes = new Node[2];
+				nlNodes[0] = nodes_[node1];
+				nlNodes[1] = nodes_[node2];
+				makeNetwork(nlNodes,numNetworkLinks);
+				numNetworkLinks++;
+			 }
+				
+		}
+		
+		while(numInteractions<numComponentInteractions_){
+			double entry = Math.random();
+			 if(entry > .2){
+				int comp1 = r.nextInt(components_.length-1);
+				int comp2 =r.nextInt(components_.length-1);
+				while(comp2 == comp1){
+					comp2 =r.nextInt(components_.length-1);
+				}
+				
+				Component [] interComponents = new Component[2];
+				interComponents[0] = components_[comp1];
+				interComponents[1] = components_[comp2];
+				makeInteraction(numInteractions, interComponents);
+				numInteractions++;
+			 }
+		}
+		
+	}
 	
-	public void makeInteractions(){
-	
+	public void makeInteraction(int id, Component[] comps){
+		Random r = new Random();
+		double availFraction = 1 - (minInteractionPeriod_/maxInteractionPeriod_);
+		double availDifference = availFraction * maxInteractionPeriod_;
+		//int intDifference = (int)Math.round(availDifference);
+		r = new Random();
+		double availBwidthPerFraction = 1 - (minBwidthPerInteraction_/maxBwidthPerInteraction_);
+		double availBwidthPerDifference = availBwidthPerFraction * maxBwidthPerInteraction_;
+		int intBwidthPerDifference = (int)Math.round(availBwidthPerDifference);
+		int [] inerRes = new int[1];
+		inerRes[0] = intBwidthPerDifference;
+		String interString = "Inteaction " + id;
+		Interaction interaction = new Interaction(id,interString, inerRes,availDifference);
+		interaction.setParticipants(comps);
+		interactions_[id] = interaction;		
+		
 	}
 
-	public void makeNetworks(){
+	public void makeNetwork(Node [] nodes, int id){
+		Random r = new Random();
+		double availFraction = 1 - (minNetworkBandwidth_/maxNetworkBandwidth_);
+		double availDifference = availFraction * maxNetworkBandwidth_;
+		//int intDifference = (int)Math.round(availDifference);
+		
+		int intBwidthPerDifference = (int)Math.round(availDifference);
+		int [] inerRes = new int[1];
+		inerRes[0] = intBwidthPerDifference;
+		String interString = "Network " + id;
+		NetworkLink nl= new NetworkLink(id,interString,nodes, inerRes);
+	
+		networks_[id] = nl;
 		
 	}
 	
+	public DeploymentConfig getDc(){
+		return dc_;
+	}
 	public static void main(String args[]){
-		RandDeploymentConfigGen rdcg = new RandDeploymentConfigGen();
-		rdcg.makeComponents();
-		
+		RandDeploymentConfigGen rdcg = new RandDeploymentConfigGen(10,5,3,2,3,4,2,3,5,20,14,30,10,40,3,10,4,14,5,12,1,4,2,8);
+		DeploymentConfig dc = rdcg.getDc();
+		System.out.println("DC = " + dc);
 	}
 	public void requireNotColocated(Component a, Component b) {
 		getConstraints().add(new NotColocated(a, b));
