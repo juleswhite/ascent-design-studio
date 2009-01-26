@@ -23,7 +23,7 @@ import java.util.List;
 
 
 public class Component extends ModelElement implements Schedulable{
-	private Interaction[] interactions_;
+	private Interaction[] interactions_ = new Interaction[0];
 	private List<RealTimeTask> realTimeTasks_ = new ArrayList<RealTimeTask>();
 	
 	public Component(int id, String label, int[] resources) {
