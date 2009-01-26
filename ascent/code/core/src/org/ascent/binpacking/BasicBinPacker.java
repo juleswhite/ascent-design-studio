@@ -88,7 +88,7 @@ public class BasicBinPacker {
 		for( ClassicItem item : itemsToPack_){
 			success =placeItem(item);
 			if(success == false){
-				System.out.println("Unsuccessful. Failed on " + item.getName());
+				//System.out.println("Unsuccessful. Failed on " + item.getName());
 				
 				return false;
 			}
@@ -103,7 +103,7 @@ public class BasicBinPacker {
 				// put it in the bin
 				
 			
-			//System.out.println(" " + bin.getBinName_() +" can hold item " + item.getName());
+			////System.out.println(" " + bin.getBinName_() +" can hold item " + item.getName());
 			bin = putInBin(item, bin); // this will change in the original bin right?
 			
 		//	bins_.remove(bin.getBinId_());
@@ -119,28 +119,28 @@ public class BasicBinPacker {
 	protected boolean fitsBin(ClassicItem item, ClassicBin bin){
 		double [] consumedResources  = item.getConsumedResources_();
 		double [] spaceLeft = bin.getSpaceLeft_();
-		System.out.println("Spaceleft is " + spaceLeft[0]);
+		//System.out.println("Spaceleft is " + spaceLeft[0]);
 		
 		if(spaceLeft[0] != 1.0){ // if there is something in the bin
 			
-			System.out.println("There is something in the bin");
+			//System.out.println("There is something in the bin");
 			if(sumItems(bin,item) > getBound(bin,item)){
-				System.out.println(item.getName()+ " can't fit " + bin.getBinName_()+" with other items");
-				//System.out.println("")
+				//System.out.println(item.getName()+ " can't fit " + bin.getBinName_()+" with other items");
+				////System.out.println("")
 				return false;
 			}
 		}
 		else{//if there is no item in the bin
 			if(item.getConsumedResources_()[0] > 1){//if the item to put in consumes more that 100%
-				System.out.println(" Single item consumes more thatn 100%");
+				//System.out.println(" Single item consumes more thatn 100%");
 				return false;
 			}
 		}
 		
 		for(int i = 1; i <spaceLeft.length; i++){
-		//	System.out.println("CR [i] = "+ consumedResources[i] +" & space Left = " +spaceLeft[i] );
+		//	//System.out.println("CR [i] = "+ consumedResources[i] +" & space Left = " +spaceLeft[i] );
 			if(consumedResources[i] > spaceLeft[i]){
-				System.out.println(" Resources overconsumed. Won't fit");
+				//System.out.println(" Resources overconsumed. Won't fit");
 				return false; // some resource of the item doens't fit that dimension of the bin.
 			}
 			
@@ -162,14 +162,14 @@ public class BasicBinPacker {
 		return -1;
 	}
 	protected ClassicBin putInBin(ClassicItem item, ClassicBin bin){
-		//System.out.println("About to add an item to Bin");
+		////System.out.println("About to add an item to Bin");
 		bin.addItem(item);
 		double [] sl = bin.getSpaceLeft_();
 		double []cr = item.getConsumedResources_();
 		for( int i = 0; i < cr.length; i++){
 			sl[i] = sl[i] - cr[i];
 		}
-		System.out.println(" Space left is now " + sl[0]);
+		//System.out.println(" Space left is now " + sl[0]);
 		bin.setSpaceLeft_(sl);
 		return bin;
 	}
@@ -180,7 +180,7 @@ public class BasicBinPacker {
 		for(ClassicItem bitem : Bitems){
 			sum += bitem.getConsumedResources_()[0];
 		}
-		//System.out.println(" bin has " + bin.getItems().size() + " items");
+		////System.out.println(" bin has " + bin.getItems().size() + " items");
 		return sum+=item.getConsumedResources_()[0];
 	}
 	
@@ -329,23 +329,23 @@ public class BasicBinPacker {
 		 * 0 = .694, 1 = LLBound, 2= 1 (Harmonic 100 %)
 		 */
 		List<ClassicBin> doneBins = bfp.getBins();
-		System.out.println("doneBins size is " + doneBins.size());
+		////System.out.println("doneBins size is " + doneBins.size());
 		for(ClassicBin b : doneBins){
 			
-			System.out.println("Bin " + b.getBinName_() + "has items "+ b.getItems().size());
+			////System.out.println("Bin " + b.getBinName_() + "has items "+ b.getItems().size());
 		}
 		bfp.packItems();
 		doneBins = bfp.getBins();
-		System.out.println(" done Bins size is " + doneBins.size());
+		//System.out.println(" done Bins size is " + doneBins.size());
 		for(ClassicBin b : doneBins){
 			int sumTasks = 0;
 			for(ClassicItem i : b.getItems()){
-				//System.out.println( b.getBinName_() + " has item " + i.getName() + " with " + i.getNumTasks_() + " tasks");
+				////System.out.println( b.getBinName_() + " has item " + i.getName() + " with " + i.getNumTasks_() + " tasks");
 				sumTasks += i.getNumTasks_();
 			}
-			System.out.println(" BIN " + b.getBinName_() + " has total tasks "+ sumTasks );
+			//System.out.println(" BIN " + b.getBinName_() + " has total tasks "+ sumTasks );
 			
-			//System.out.println("Bin " + b.getBinName_() + "has items "+ b.getItems().size());
+			////System.out.println("Bin " + b.getBinName_() + "has items "+ b.getItems().size());
 		}
 		
 		
