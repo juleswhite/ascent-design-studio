@@ -33,7 +33,16 @@ public class Component extends ModelElement implements Schedulable{
 	public Interaction[] getInteractions() {
 		return interactions_;
 	}
-
+	
+	public void addInteraction(Interaction newInteraction){
+		Interaction [] oldInteractions = interactions_;
+		interactions_ = new Interaction[oldInteractions.length+1];
+		for(int i= 0 ; i < oldInteractions.length; i ++){
+			interactions_[i] = oldInteractions[i]; 
+		}
+		interactions_[oldInteractions.length] = newInteraction;
+		
+	}
 	public void setInteractions(Interaction[] interactions) {
 		interactions_ = interactions;
 	}

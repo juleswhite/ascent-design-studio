@@ -300,21 +300,34 @@ public class RandDeploymentConfigGen{
 			 }
 		}
 		
+		for(Interaction inter : interactions_){
+			for(Component comp : inter.getParticipants()){
+				comp.addInteraction(inter);
+			}
+		}
+		for(NetworkLink nl : networks_){
+			for(Node node : nl.getNodes()){
+				node.addNetworkLink(nl);
+			}
+		}
+		
+		
 	}
 	
 	public void makeInteraction(int id, Component[] comps){
 		Random r = new Random();
 		double availFraction = 1 - (minInteractionPeriod_/maxInteractionPeriod_);
 		double availDifference = availFraction * maxInteractionPeriod_;
-		//int intDifference = (int)Math.round(availDifference);
+		int intDifference = (int) (r.nextInt(((int)Math.round(availDifference))) + minInteractionPeriod_);
 		r = new Random();
 		double availBwidthPerFraction = 1 - (minBwidthPerInteraction_/maxBwidthPerInteraction_);
 		double availBwidthPerDifference = availBwidthPerFraction * maxBwidthPerInteraction_;
-		int intBwidthPerDifference = (int)Math.round(availBwidthPerDifference);
+		int intBwidthPerDifference = (int)(r.nextInt(((int)Math.round(availBwidthPerDifference)))+minBwidthPerInteraction_);
 		int [] inerRes = new int[1];
 		inerRes[0] = intBwidthPerDifference;
 		String interString = "Inteaction " + id;
-		Interaction interaction = new Interaction(id,interString, inerRes,availDifference);
+		System.out.println(" interaction has " + inerRes +" and " + availDifference);
+		Interaction interaction = new Interaction(id,interString, inerRes,intDifference);
 		interaction.setParticipants(comps);
 		interactions_[id] = interaction;		
 		
@@ -324,11 +337,11 @@ public class RandDeploymentConfigGen{
 		Random r = new Random();
 		double availFraction = 1 - (minNetworkBandwidth_/maxNetworkBandwidth_);
 		double availDifference = availFraction * maxNetworkBandwidth_;
-		//int intDifference = (int)Math.round(availDifference);
+		int intDifference = (int) (r.nextInt(((int)Math.round(availDifference))) + minNetworkBandwidth_);
 		
-		int intBwidthPerDifference = (int)Math.round(availDifference);
+		//int intBwidthPerDifference = (int)Math.round(availDifference);
 		int [] inerRes = new int[1];
-		inerRes[0] = intBwidthPerDifference;
+		inerRes[0] = intDifference;//intBwidthPerDifference;
 		String interString = "Network " + id;
 		NetworkLink nl= new NetworkLink(id,interString,nodes, inerRes);
 	
