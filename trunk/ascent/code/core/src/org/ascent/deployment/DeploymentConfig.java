@@ -93,10 +93,12 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public void init() {
-		nodes_ = nStart_.toArray(new Node[0]);
-		components_ = cStart_.toArray(new Component[0]);
-		networks_ = nlStart_.toArray(new NetworkLink[0]);
-		interactions_ = iStart_.toArray(new Interaction[0]);
+		if (nodes_ == null){
+			nodes_ = nStart_.toArray(new Node[0]);
+			components_ = cStart_.toArray(new Component[0]);
+			networks_ = nlStart_.toArray(new NetworkLink[0]);
+			interactions_ = iStart_.toArray(new Interaction[0]);			
+		}
 
 		if (boundaries_.length != components_.length) {
 			boundaries_ = new int[components_.length][2];
