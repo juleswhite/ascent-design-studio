@@ -22,6 +22,8 @@ import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.DeploymentPlanner;
 import org.ascent.deployment.Interaction;
 import org.ascent.deployment.LocalHostLink;
+import org.ascent.deployment.Node;
+import org.ascent.deployment.ResourceResidual;
 
 public class DeploymentBenchmark {
 
@@ -54,6 +56,17 @@ public class DeploymentBenchmark {
         }
         
         data.setBandwidthUsed(score);
+        int nodesFree = 0;
+        ResourceResidual resid = new ResourceResidual(config_);
+        
+        resid.deploy(plan);
+        for (Node n : plan.getDeploymentConfiguration().getNodes()) {
+			if (resid.getHostedCount()[n.getId()] == 0) {
+				++nodesFree;
+			}
+        }
+        
+        data.setNumNodes(plan.getDeploymentConfiguration().getNodes().length - nodesFree);
 		
 		
 		return data;
