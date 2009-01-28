@@ -78,25 +78,5 @@ public class DeploymentBenchmark {
 	public DeploymentBenchmark (DeploymentConfig conf){
 		config_ = conf;
 	}
-	
-	public static void main(String args[]){
-		BandwidthMinimizingPSODeploymentPlanner planner = new BandwidthMinimizingPSODeploymentPlanner();
-		DeploymentConfig conf = new DeploymentConfig();
-		Node n1 = conf.addNode("n1", new int[0]);
-		Node n2 = conf.addNode("n2", new int[0]);
-		Node n3 = conf.addNode("n3", new int[0]);
-		Component c1 = conf.addComponent("c1", new int[0]);
-		Component c2 = conf.addComponent("c2", new int[0]);
-		Component c3 = conf.addComponent("c3", new int[0]);
-		conf.addInteraction("c1-->c2", new int[]{20}, 1, new Component[]{c1,c2});
-		conf.addInteraction("c1-->c3", new int[]{30}, 1, new Component[]{c1,c3});
-		conf.addInteraction("c1-->c1", new int[]{20}, 1, new Component[]{c1,c1});
-		conf.addNetwork("n1", new Node[] {n1, n2, n3}, new int[]{Integer.MAX_VALUE});
 
-		
-		DeploymentBenchmark dbm = new DeploymentBenchmark(conf);
-		System.out.println(dbm.test(planner).toString());
-		
-		
-	}
 }
