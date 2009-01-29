@@ -28,22 +28,41 @@ public class RandDeploymentConfigGen{
 	private int numTasksPerComponent_;//seeMakeComponents
 	private int numNetworks_;
 	private int numComponentInteractions_;
+	
+	//Range of resource consumption for components
 	private double minResConsumption_;//check
 	private double maxResConsumption_; //checkmaxvalue not inclusive
+	
+	//Range of component proc utilization
 	private double minCompUtilization_; //total utilization of each comp
 	private double maxCompUtilization_;
+	
+	//Range of resources available from the nodes
 	private double minAvailResValue_;//check
 	private double maxAvailResValue_;//check
+	
+	//Range of the resource 0 for each interaction (bandwidth)
+	//Each interaction consists of one of more components
 	private double minBwidthPerInteraction_;//inteaction size[0]
 	private double maxBwidthPerInteraction_;
+	
+	//Range for the rate at which the components interact
 	private double minInteractionPeriod_;//should go to interaction rate
 	private double maxInteractionPeriod_;
+	
+	//Range of the network bandwidth between nodes
 	private double minNetworkBandwidth_;//neworkLink siz[0]
 	private double maxNetworkBandwidth_;
+	
+	//Each component has tasks.  Period at which tasks arrive at the CPU
 	private double minTaskRate_;//check = comp task period
 	private double maxTaskRate_;// check
+	
+	//Range of CPU utiliation for each task
 	private double minCpuUtilPerTask_;//check = comp task util
 	private double maxCpuUtilPerTask_;
+	
+	
 	private NetworkLink[] networks_;
 	private Component[] components_;
 	private Node[] nodes_;
