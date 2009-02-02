@@ -17,6 +17,11 @@
 
 package org.ascent.deployment.benchmarks;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.ascent.deployment.BandwidthMinimizingPSODeploymentPlanner;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
@@ -77,6 +82,31 @@ public class DeploymentBenchmark {
 	
 	public DeploymentBenchmark (DeploymentConfig conf){
 		config_ = conf;
+	}
+	
+	public static void writeToFile(BenchmarkData[] data){
+		File file = new File("data.csv");
+		
+		try {
+			file.createNewFile();
+			FileWriter fw = new FileWriter(file);
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			bw.write("Algorithm, Nodes, Bandwidth");
+			bw.newLine();
+			
+			for (int i = 0; i < data.length; ++i){
+				bw.write(data[i].getAlg() + ", " + data[i].getNumNodes() + ", " + data[i].getBandwidthUsed());
+				bw.newLine();
+			}
+			bw.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 	}
 
 }
