@@ -19,6 +19,14 @@ package org.ascent.deployment;
 import org.ascent.VectorSolution;
 import org.ascent.binpacking.ValueFunction;
 
+/**
+ * NetMinConfig is a DeploymentConfiguration that represents a solution
+ * as a packing order for components. NetMinConfig generally performs
+ * much better than representing actual deployment locations.
+ * 
+ * @author jules
+ *
+ */
 public class NetMinConfig extends DeploymentConfig {
 
 	private ValueFunction<VectorSolution> fitnessFunction_ = new ValueFunction<VectorSolution>() {
@@ -64,6 +72,16 @@ public class NetMinConfig extends DeploymentConfig {
 		for (int i = 0; i < boundaries_.length; i++) {
 			boundaries_[i] = new int[] { 0, components_.length - 1 };
 		}
+	}
+	
+	public void printSolutionStats(VectorSolution vs) {
+		DeploymentPlan plan = deployer_.deploy(vs);
+		printSolutionStats(plan);
+	}
+	
+	public int scoreDeployment(VectorSolution vs) {
+		DeploymentPlan plan = deployer_.deploy(vs);
+		return scoreDeployment(plan);
 	}
 
 	public int scoreDeployment(DeploymentPlan plan) {

@@ -23,6 +23,7 @@ public class Item extends AbstractItem {
 	private int value_;
 	private List<Item> dependencies_ = new ArrayList<Item>();
 	private List<Item> exclusions_ = new ArrayList<Item>();
+	private List<Bin> validBins_;
 
 	public Item(String name, int[] size) {
 		super(name, size);
@@ -50,6 +51,14 @@ public class Item extends AbstractItem {
 
 	public void setExclusions(List<Item> exclusions) {
 		exclusions_ = exclusions;
+	}
+
+	public List<Bin> getValidBins() {
+		return validBins_;
+	}
+
+	public void setValidBins(List<Bin> validBins) {
+		validBins_ = validBins;
 	}
 
 	

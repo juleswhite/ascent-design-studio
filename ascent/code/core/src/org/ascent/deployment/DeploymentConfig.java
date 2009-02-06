@@ -25,6 +25,7 @@ import java.util.Map;
 import org.ascent.ProblemConfigImpl;
 import org.ascent.ResourceConsumptionPolicy;
 import org.ascent.VectorSolution;
+import org.ascent.binpacking.Bin;
 import org.ascent.binpacking.BinPackingProblem;
 import org.ascent.binpacking.FFDBinPacker;
 import org.ascent.binpacking.Packer;
@@ -378,6 +379,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 			HardwareNode hn = new HardwareNode(n.getLabel(), n.getResources());
 			bp.getBins().add(hn);
 			mapping.put(hn, n);
+			mapping.put(n, hn);
 		}
 		for (Component c : getComponents()) {
 			SoftwareComponent cn = new SoftwareComponent(c.getLabel(), c
@@ -405,6 +407,17 @@ public class DeploymentConfig extends ProblemConfigImpl {
 				for (Component c : ncon.getTargets()) {
 					SoftwareComponent tc = (SoftwareComponent) mapping.get(c);
 					sc.getDependencies().add(tc);
+				}
+			}
+			
+			if (con instanceof PlacementConstraint){
+				PlacementConstraint pcon = (PlacementConstraint)con;
+				SoftwareComponent sc = (SoftwareComponent) mapping.get(pcon
+						.getSource());
+				sc.setValidBins(new ArrayList<Bin>());
+				for (Node n : pcon.getValidHosts()) {
+					HardwareNode hn = (HardwareNode) mapping.get(n);
+					sc.getValidBins().add(hn);
 				}
 			}
 		}
