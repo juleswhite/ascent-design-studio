@@ -17,7 +17,6 @@ package org.ascent.hugh;
 
 import java.util.ArrayList;
 
-import com.sun.source.tree.BinaryTree;
 
 public class BettingProgression {
 	String name_;

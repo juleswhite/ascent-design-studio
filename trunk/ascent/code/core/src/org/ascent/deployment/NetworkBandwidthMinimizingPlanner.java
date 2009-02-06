@@ -1,5 +1,7 @@
 package org.ascent.deployment;
 
+import org.ascent.VectorSolution;
+
 
 public class NetworkBandwidthMinimizingPlanner extends
 		DeploymentWithNetworkMinimizationConfig {
@@ -36,6 +38,10 @@ public class NetworkBandwidthMinimizingPlanner extends
 							+ residual.getHostExhaustions().size() + residual
 							.getDisconnections().size());
 		}
+	}
+	
+	public int scoreDeployment(VectorSolution sol){
+		return scoreDeployment(new DeploymentPlan(this,sol));
 	}
 
 }

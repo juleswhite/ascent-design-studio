@@ -84,6 +84,10 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 			for (Item req : it.getDependencies()) {
 				addRequiresMappingConstraint(it, req);
 			}
+			List<Bin> vbins = it.getValidBins();
+			if(vbins != null){
+				setValidTargets(it, vbins);
+			}
 		}
 
 		for (Object key : p.getResourcePolicies().keySet()) {
