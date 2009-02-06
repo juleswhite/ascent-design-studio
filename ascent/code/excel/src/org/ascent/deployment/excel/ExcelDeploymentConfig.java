@@ -44,7 +44,8 @@ public class ExcelDeploymentConfig extends WorksheetManipulator {
 			for (WorksheetHandler handler : handlers_) {
 				Sheet sheet = getSheet(workbook, handler.getWorksheetName(),
 						handler.isOptionalWorksheet());
-				handler.handleSheet(problem, sheet, complookup, nodelookup);
+				if(sheet != null)
+					handler.handleSheet(problem, sheet, complookup, nodelookup);
 			}
 			
 		} finally {
