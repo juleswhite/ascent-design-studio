@@ -23,6 +23,7 @@ import java.util.Map;
 import org.ascent.VectorSolution;
 import org.ascent.binpacking.BinPackingProblem;
 import org.ascent.binpacking.FFDBinPacker;
+import org.ascent.binpacking.LeastBoundPacker;
 
 /**
  * This class provides a method to setup a bin-packer to
@@ -99,7 +100,7 @@ public class OrderedDeployer {
 	 * @return
 	 */
 	public DeploymentPlan deploy(VectorSolution order) {
-		return deploy(new FFDBinPacker(),order);
+		return deploy(new LeastBoundPacker(),order);
 	}
 
 	/**\
