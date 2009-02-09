@@ -40,19 +40,14 @@ public class ResponseTimeAnalysis {
 	public boolean schedulable(List<RealTimeTask> tasks){
 		Collections.sort(tasks,RTM_PRIORITY_SORTER);
 		
-		for(int i = 0; i < tasks.size(); i++){
-			if(!schedulable(tasks.subList(0, i),tasks.get(i))){
-				return false;
-			}
-		}
-		return true;
+		return schedulable(tasks.subList(0, tasks.size()-1),tasks.get(tasks.size()-1));
 	}
 
-	public boolean schedulable(List<RealTimeTask> tasks, RealTimeTask ti) {
+	public static boolean schedulable(List<RealTimeTask> tasks, RealTimeTask ti) {
 		return rt(tasks,ti) <= ti.getPeriod();
 	}
 
-	public double rt(List<RealTimeTask> tasks, RealTimeTask task) {
+	public static double rt(List<RealTimeTask> tasks, RealTimeTask task) {
 		double ci = task.getPeriod() * task.getUtilization();
 		double rtprev = ci;
 		double rt = -1;
@@ -65,7 +60,7 @@ public class ResponseTimeAnalysis {
 		return rt;
 	}
 
-	public double rt(double rtprev, List<RealTimeTask> tasks, double ci) {
+	public static double rt(double rtprev, List<RealTimeTask> tasks, double ci) {
 		double rt = ci;
 
 		for (int i = 0; i < tasks.size(); i++) {

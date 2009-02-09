@@ -34,15 +34,17 @@ import org.ascent.util.ParsingUtil;
 
 public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 		implements RefreshCore, StateProvider, DependencyManager {
-	
+
 	private class AggregateSizeWrapper implements HasSize {
 		private ItemState itemState_;
-		public AggregateSizeWrapper(ItemState is){
+
+		public AggregateSizeWrapper(ItemState is) {
 			itemState_ = is;
 		}
+
 		public int[] getSize() {
 			return itemState_.getSizeWithDependencies();
-		}		
+		}
 	}
 
 	public static final String MAPPED_COUNT_RESOURCE = "__mapped";
@@ -85,7 +87,7 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 				addRequiresMappingConstraint(it, req);
 			}
 			List<Bin> vbins = it.getValidBins();
-			if(vbins != null){
+			if (vbins != null) {
 				setValidTargets(it, vbins);
 			}
 		}
@@ -283,22 +285,23 @@ public abstract class RefreshBinPackingCore extends AbstractRefreshCore
 		}
 		return cons;
 	}
-	
-	public boolean overconsumed(int[] residual){
-		for(int i = 0; i < residual.length; i++){
-			if(residual[i] < 0)
+
+	public boolean overconsumed(int[] residual) {
+		for (int i = 0; i < residual.length; i++) {
+			if (residual[i] < 0)
 				return true;
 		}
 		return false;
 	}
 
 	public boolean willFit(ItemState ss, BinState ts) {
-	
-//		int[] resid = packer_.insert(new AggregateSizeWrapper(ss), ts.getSources(), ts);
-//		return !overconsumed(resid);
-		if(ss.getSizeWithDependencies() == null)
+
+		// int[] resid = packer_.insert(new AggregateSizeWrapper(ss),
+		// ts.getSources(), ts);
+		// return !overconsumed(resid);
+		if (ss.getSizeWithDependencies() == null)
 			System.out.println();
-		
+
 		for (int i = 0; i < ss.getSizeWithDependencies().length; i++) {
 			ResourceConsumptionPolicy policy = getResourcePolicies().get(i);
 			if (policy != null) {
