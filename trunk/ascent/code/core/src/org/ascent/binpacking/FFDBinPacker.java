@@ -83,6 +83,22 @@ public class FFDBinPacker extends RefreshBinPackingCore {
 	public FFDBinPacker(BinPackingProblem p) {
 		super(p);
 	}
+	
+	
+
+	@Override
+	public void configure(BinPackingProblem p) {
+		super.configure(p);
+		
+		//This takes care of any items that are specified
+		//to be preallocated to bins
+		for (Item it : p.getPreAllocations().keySet()) {
+			Bin bin = p.getPreAllocations().get(it);
+			
+			preSelectionQueue_.add(it);
+			preTargetedQueue_.add(bin);
+		}
+	}
 
 	@Override
 	public boolean done() {

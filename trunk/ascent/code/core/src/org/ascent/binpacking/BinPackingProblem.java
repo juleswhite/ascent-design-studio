@@ -27,6 +27,7 @@ public class BinPackingProblem {
 
 	private List<Bin> bins_ = new ArrayList<Bin>();
 	private List<Item> items_ = new ArrayList<Item>();
+	private Map<Item, Bin> preAllocations_ = new HashMap<Item, Bin>();
 	
 	private Map<Object,ResourceConsumptionPolicy> resourcePolicies_ = new HashMap<Object,ResourceConsumptionPolicy>();
 
@@ -63,6 +64,14 @@ public class BinPackingProblem {
 		return getSizes(bins_);
 	}
 	
+	public Map<Item, Bin> getPreAllocations() {
+		return preAllocations_;
+	}
+
+	public void setPreAllocations(Map<Item, Bin> preAllocations) {
+		preAllocations_ = preAllocations;
+	}
+
 	protected int[][] getSizes(List<? extends AbstractItem> items){
 		int[][] sizes = new int[items.size()][items.get(0).getSize().length];
 		for(int i = 0; i < sizes.length; i++){
