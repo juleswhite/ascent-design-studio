@@ -15,12 +15,15 @@
  **************************************************************************/
 package org.ascent.deployment.test;
 
+
 import org.ascent.deployment.BandwidthMinimizingPSODeploymentPlanner;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.benchmarks.BenchmarkData;
 import org.ascent.deployment.benchmarks.DeploymentBenchmark;
+import org.ascent.deployment.RandDeploymentConfigGen;
 
 import junit.framework.TestCase;
 
@@ -57,6 +60,27 @@ public class DeploymentBenchmarkTest extends TestCase {
 		
 		NetworkBandwidthMinimizingPlanner pl2 = new NetworkBandwidthMinimizingPlanner();
 		
+		
+	}
+	
+	public void testDeploymentBenchmarks(){
+		//We'll see if this works
+		
+		
+		
+		//Let's run 10 of these
+		BenchmarkData bd[] = new BenchmarkData[10];
+		BandwidthMinimizingPSODeploymentPlanner planner = new BandwidthMinimizingPSODeploymentPlanner();
+		
+		for (int i = 0; i < 10; ++i){
+			RandDeploymentConfigGen rdcg = new RandDeploymentConfigGen(10,5,0,0,3,4,2,3,5,20,14,30,10,40,3,10,4,14,5,12,1,4,2,8);
+			DeploymentBenchmark db = new DeploymentBenchmark(rdcg.makeDeploymentConfig());
+			bd[i] = db.test(planner);
+			
+		}
+		
+		//Write the results
+		DeploymentBenchmark.writeToFile(bd);
 		
 	}
 
