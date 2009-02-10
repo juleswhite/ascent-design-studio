@@ -51,8 +51,8 @@ public class DeploymentBenchmark {
 		
 		//Jakarta Monitoring library profiling
 		
-		BenchmarkData data = new BenchmarkData();
-		data.setAlg(planner.getClass().getName());
+		BenchmarkData data = new BenchmarkData(config_);
+		data.setAlg(planner.getClass().getName().substring(planner.getClass().getName().lastIndexOf('.') + 1));
 		
 		int score = 0;
 		
@@ -92,11 +92,11 @@ public class DeploymentBenchmark {
 			FileWriter fw = new FileWriter(file);
 			BufferedWriter bw = new BufferedWriter(fw);
 			
-			bw.write("Algorithm, Nodes, Bandwidth");
+			bw.write("Components, Interactions, Algorithm, Nodes, Bandwidth");
 			bw.newLine();
 			
 			for (int i = 0; i < data.length; ++i){
-				bw.write(data[i].getAlg() + ", " + data[i].getNumNodes() + ", " + data[i].getBandwidthUsed());
+				bw.write(data[i].getComponents() + ", " + data[i].getInteractions() + ", " + data[i].getAlg() + ", " + data[i].getNumNodes() + ", " + data[i].getBandwidthUsed());
 				bw.newLine();
 			}
 			bw.close();

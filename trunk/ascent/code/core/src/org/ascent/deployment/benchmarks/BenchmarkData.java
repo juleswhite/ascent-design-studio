@@ -17,16 +17,19 @@
 
 package org.ascent.deployment.benchmarks;
 
+import org.ascent.deployment.DeploymentConfig;
+
 public class BenchmarkData {
 
-	private int numNodes_;
-	private int bandwidthUsed_;
-	private long time_;
-	private String alg_;
+	private int numNodes_ = 0;
+	private int bandwidthUsed_ = 0;
+	private long time_ = 0;
+	private String alg_ = "";
+	private DeploymentConfig config_;
 	
 	
-	public BenchmarkData(){
-		
+	public BenchmarkData(DeploymentConfig config){
+		config_ = config;
 	}
 	
 	public int getNumNodes() {
@@ -36,7 +39,7 @@ public class BenchmarkData {
 
 
 	public void setNumNodes(int numNodes) {
-		this.numNodes_ = numNodes;
+		numNodes_ = numNodes;
 	}
 	
 	
@@ -45,7 +48,7 @@ public class BenchmarkData {
 	}
 
 	public void setBandwidthUsed(int bandwidthUsed) {
-		this.bandwidthUsed_ = bandwidthUsed;
+		bandwidthUsed_ = bandwidthUsed;
 	}
 
 	public String getAlg() {
@@ -53,8 +56,18 @@ public class BenchmarkData {
 	}
 
 	public void setAlg(String alg) {
-		this.alg_ = alg;
+		alg_ = alg;
 	}
+	
+	public int getComponents(){
+		return config_.getComponents().length;
+	}
+	
+	public int getInteractions(){
+		return config_.getInteractions().length;
+	}
+	
+
 
 	
 	/**
