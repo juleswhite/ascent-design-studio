@@ -48,6 +48,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	private List<NetworkLink> nlStart_ = new ArrayList<NetworkLink>();
 	private List<Interaction> iStart_ = new ArrayList<Interaction>();
 	private List<DeploymentConstraint> constraints_ = new ArrayList<DeploymentConstraint>();
+	private Map<Component, Node> prePlacedComponents_ = new HashMap<Component, Node>();
 
 	public DeploymentConfig(Node[] nodes, NetworkLink[] networks,
 			Component[] components, Interaction[] interactions) {
@@ -94,11 +95,11 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public void init() {
-		if (nodes_ == null){
+		if (nodes_ == null) {
 			nodes_ = nStart_.toArray(new Node[0]);
 			components_ = cStart_.toArray(new Component[0]);
 			networks_ = nlStart_.toArray(new NetworkLink[0]);
-			interactions_ = iStart_.toArray(new Interaction[0]);			
+			interactions_ = iStart_.toArray(new Interaction[0]);
 		}
 
 		if (boundaries_.length != components_.length) {
@@ -107,13 +108,13 @@ public class DeploymentConfig extends ProblemConfigImpl {
 				boundaries_[i] = new int[] { 0, nodes_.length - 1 };
 			}
 		}
-		
+
 		boolean singlenetwork = false;
-		if(networks_.length == 1){
-			
+		if (networks_.length == 1) {
+
 			singlenetwork = true;
-			for(Node n : nodes_){
-				if(!networks_[0].connectsTo(n)){
+			for (Node n : nodes_) {
+				if (!networks_[0].connectsTo(n)) {
 					singlenetwork = false;
 					break;
 				}
@@ -316,9 +317,9 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public NetworkLink[] getLinks(Node a, Node b) {
-		if(singleNetwork_)
+		if (singleNetwork_)
 			return networks_;
-		
+
 		String k1 = a.getLabel() + "--" + b.getLabel();
 
 		NetworkLink[] links = linkCache_.get(k1);
@@ -388,6 +389,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 			bp.getItems().add(cn);
 			mapping.put(c, cn);
 		}
+
 		for (DeploymentConstraint con : constraints_) {
 			if (con instanceof NotColocated) {
 				NotColocated ncon = (NotColocated) con;
@@ -409,9 +411,9 @@ public class DeploymentConfig extends ProblemConfigImpl {
 					sc.getDependencies().add(tc);
 				}
 			}
-			
-			if (con instanceof PlacementConstraint){
-				PlacementConstraint pcon = (PlacementConstraint)con;
+
+			if (con instanceof PlacementConstraint) {
+				PlacementConstraint pcon = (PlacementConstraint) con;
 				SoftwareComponent sc = (SoftwareComponent) mapping.get(pcon
 						.getSource());
 				sc.setValidBins(new ArrayList<Bin>());
@@ -458,6 +460,14 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		return sols;
 	}
 
+	public Map<Component, Node> getPrePlacedComponents() {
+		return prePlacedComponents_;
+	}
+
+	public void setPrePlacedComponents(Map<Component, Node> prePlacedComponents) {
+		prePlacedComponents_ = prePlacedComponents;
+	}
+
 	public int scoreDeployment(DeploymentPlan plan) {
 		return 0;
 	}
@@ -466,7 +476,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		DeploymentPlan plan = new DeploymentPlan(this, vs);
 		printSolutionStats(plan);
 	}
-	
+
 	public void printSolutionStats(DeploymentPlan plan) {
 		ResourceResidual resid = new ResourceResidual(this);
 		resid.deploy(plan);
@@ -500,7 +510,8 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		}
 		for (Component c : components_) {
 			str += "\t" + c + "\n";
-			//System.out.println("Might Get that null" + c.getInteractions().length);
+			// System.out.println("Might Get that null" +
+			// c.getInteractions().length);
 			if (c.getInteractions().length > 0) {
 				str += "\t\tinteractions-->[\n";
 				for (Interaction inter : c.getInteractions()) {
@@ -513,8 +524,8 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		str += "}";
 		return str;
 	}
-	
-	public double getScore(VectorSolution vs){
-		return scoreDeployment(new DeploymentPlan(this,vs));
+
+	public double getScore(VectorSolution vs) {
+		return scoreDeployment(new DeploymentPlan(this, vs));
 	}
 }

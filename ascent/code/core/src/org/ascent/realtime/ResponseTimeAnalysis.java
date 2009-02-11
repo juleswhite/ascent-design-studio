@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.ascent.deployment.RealTimeTask;
+import org.ascent.deployment.SchedulingException;
 
 public class ResponseTimeAnalysis {
 
@@ -37,7 +38,7 @@ public class ResponseTimeAnalysis {
 
 	};
 	
-	public boolean schedulable(List<RealTimeTask> tasks){
+	public static boolean schedulable(List<RealTimeTask> tasks){
 		Collections.sort(tasks,RTM_PRIORITY_SORTER);
 		
 		return schedulable(tasks.subList(0, tasks.size()-1),tasks.get(tasks.size()-1));
@@ -48,12 +49,13 @@ public class ResponseTimeAnalysis {
 	}
 
 	public static double rt(List<RealTimeTask> tasks, RealTimeTask task) {
-		double ci = task.getPeriod() * task.getUtilization();
+		double ci = task.getPeriod() * (task.getUtilization()/100);
+		double max = task.getPeriod();
 		double rtprev = ci;
 		double rt = -1;
 		while(true){
 			rt = rt(rtprev,tasks,ci);
-			if(rt == rtprev)
+			if(rt == rtprev || rt > max)
 				break;
 			rtprev = rt;
 		}
@@ -65,8 +67,15 @@ public class ResponseTimeAnalysis {
 
 		for (int i = 0; i < tasks.size(); i++) {
 			RealTimeTask hp = tasks.get(i);
+			
+			if(hp.getPeriod() <= 0)
+				throw new SchedulingException("Invalid period specification. The task with utilization:"+hp.getUtilization()+" has a period of zero.");
+			
+			if(hp.getUtilization() <= 0)
+				throw new SchedulingException("Invalid utilization specification. The task with period:"+hp.getPeriod()+" has a utilization of zero.");
+			
 			rt += Math.ceil(rtprev / hp.getPeriod())
-					* (hp.getPeriod() * hp.getUtilization());
+					* (hp.getPeriod() * (hp.getUtilization()/100));
 
 		}
 		return rt;
