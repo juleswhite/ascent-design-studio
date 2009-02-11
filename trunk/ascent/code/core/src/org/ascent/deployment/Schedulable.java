@@ -16,6 +16,9 @@
 
 package org.ascent.deployment;
 
+import java.util.List;
+
 public interface Schedulable {
 	public int getTotalTasks();
+	public List<RealTimeTask> getRealTimeTasks();
 }
