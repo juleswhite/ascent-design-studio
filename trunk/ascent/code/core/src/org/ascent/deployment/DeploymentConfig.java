@@ -30,8 +30,21 @@ import org.ascent.binpacking.BinPackingProblem;
 import org.ascent.binpacking.FFDBinPacker;
 import org.ascent.binpacking.Packer;
 import org.ascent.binpacking.RandomItemPacker;
+import org.ascent.binpacking.ValueFunction;
 
 public class DeploymentConfig extends ProblemConfigImpl {
+	
+	private ValueFunction<VectorSolution> scoringFunction_ = new ValueFunction<VectorSolution>() {
+
+		public double getValue(VectorSolution src) {
+			if (src.getArtifact() == null) {
+				int score = scoreDeployment(new DeploymentPlan(DeploymentConfig.this,src));
+				src.setArtifact(score);
+			}
+			return (Integer) src.getArtifact();
+		}
+	};
+	
 	protected NetworkLink[] networks_;
 	protected Component[] components_;
 	protected Node[] nodes_;
@@ -523,6 +536,10 @@ public class DeploymentConfig extends ProblemConfigImpl {
 
 		str += "}";
 		return str;
+	}
+	
+	public ValueFunction<VectorSolution> getFitnessFunction(){
+		return scoringFunction_;
 	}
 
 	public double getScore(VectorSolution vs) {
