@@ -1,4 +1,4 @@
-package org.ascent.deployment.excel;
+package org.ascent.deployment.excel.handlers;
 
 import java.util.Map;
 
@@ -7,6 +7,7 @@ import jxl.Sheet;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.excel.ExcelDeploymentConfigException;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -16,34 +17,34 @@ import org.ascent.deployment.Node;
  * 
  * Contributors: Jules White - initial API and implementation
  ******************************************************************************/
-public class ComponentHandler extends AbstractWorksheetHandler {
+public class NodeHandler extends AbstractWorksheetHandler {
 
-	public static final String COMPONENTS_RESOURCES_SHEET = "Component Resources";
+	public static final String NODES_SHEET = "Nodes";
 
 	public String getWorksheetName() {
-		return COMPONENTS_RESOURCES_SHEET;
+		return NODES_SHEET;
 	}
 
 	@Override
-	public void handleSheet(DeploymentConfig problem, Sheet comps,
-			Map<String, Component> complookup, Map<String, Node> nodes) {
+	public void handleSheet(DeploymentConfig problem, Sheet nodes,
+			Map<String, Component> comps, Map<String, Node> nodemap) {
 
-		int rows = getRowCount(comps);
-		
+		int rows = getRowCount(nodes);
+
+		// Load the resources available on each node
 		for (int i = 1; i < rows; i++) {
 			try {
-				int[] cres = getIntResources(comps, i);
-				Component c = problem.addComponent(getPrimaryKey(comps, i),
-						cres);
+				int[] nres = getIntResources(nodes, i);
+				// Create the node
+				Node n = problem.addNode(getPrimaryKey(nodes, i), nres);
 
-				complookup.put(c.getLabel(), c);
+				nodemap.put(n.getLabel(), n);
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
 						"Invalid resource specification (a non-number is in the row)",
-						COMPONENTS_RESOURCES_SHEET, i + 1, -1);
+						NODES_SHEET, i + 1, -1);
 			}
 		}
-
 	}
 
 }

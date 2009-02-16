@@ -1,4 +1,4 @@
-package org.ascent.deployment.excel;
+package org.ascent.deployment.excel.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.Node;
 import org.ascent.deployment.PlacementConstraint;
+import org.ascent.deployment.excel.ExcelDeploymentConfigException;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -50,11 +51,13 @@ public class ValidHostsHandler extends AbstractWorksheetHandler {
 						VALID_HOSTS_SHEET, i + 1, 1);
 
 			}
-			for (int j = 1; j < headers.length; j++) {
-				String val = validhosts.getCell(j, i).getContents().trim();
-				List<Node> valid = new ArrayList<Node>();
+			
+			List<Node> valid = new ArrayList<Node>();
+			for (int j = 0; j < headers.length; j++) {
+				String val = validhosts.getCell(j+1, i).getContents().trim();
+				
 				if (val.equalsIgnoreCase(VALID_HOST)) {
-					Node other = nodes.get(headers[j - 1]);
+					Node other = nodes.get(headers[j]);
 					if (other == null) {
 						throw new ExcelDeploymentConfigException(
 								"Undeclared node ID:" + headers[j - 1],
@@ -63,8 +66,8 @@ public class ValidHostsHandler extends AbstractWorksheetHandler {
 					}
 					valid.add(other);					
 				}
-				problem.getConstraints().add(new PlacementConstraint(comp,valid));
 			}
+			problem.getConstraints().add(new PlacementConstraint(comp,valid));
 		}
 		
 	}

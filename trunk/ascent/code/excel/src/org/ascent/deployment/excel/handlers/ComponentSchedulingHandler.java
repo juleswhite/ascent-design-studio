@@ -1,13 +1,17 @@
-package org.ascent.deployment.excel;
+package org.ascent.deployment.excel.handlers;
 
 import java.util.Map;
 
+import jxl.Cell;
+import jxl.CellType;
+import jxl.NumberCell;
 import jxl.Sheet;
 
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.Node;
 import org.ascent.deployment.RateMonotonicResource;
+import org.ascent.deployment.excel.ExcelDeploymentConfigException;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -35,6 +39,11 @@ public class ComponentSchedulingHandler extends AbstractWorksheetHandler {
 		for (int j = 0; j < headers.length - 1; j++) {
 			try {
 				rates[j] = Double.parseDouble(headers[j]);
+
+				if (rates[j] == 0)
+					throw new ExcelDeploymentConfigException(
+							"A task cannot have a rate of zero:" + headers[j],
+							COMPONENTS_SCHEDULING_SHEET, 1, j + 1);
 			} catch (Exception e) {
 				throw new ExcelDeploymentConfigException(
 						"Invalid task periodic rate specification:"
@@ -49,26 +58,38 @@ public class ComponentSchedulingHandler extends AbstractWorksheetHandler {
 			String pk = getPrimaryKey(schedule, i);
 			Component comp = comps.get(pk);
 			for (int j = 1; j < headers.length; j++) {
-				String val = schedule.getCell(j, i).getContents().trim();
-				if (val.length() > 0) {
-					if (val.endsWith("%")) {
-						val = val.substring(0, val.length() - 1);
+
+				Cell c = schedule.getCell(j, i);
+				double period = rates[j - 1];
+				double util = 0;
+				if (c.getType() == CellType.NUMBER) {
+					NumberCell nc = (NumberCell) c;
+					util = nc.getValue() * 100;
+				} else {
+					String val = schedule.getCell(j, i).getContents().trim();
+					if (val.length() > 0) {
+						if (val.endsWith("%")) {
+							val = val.substring(0, val.length() - 1);
+						}
+						if (val.startsWith("%")) {
+							val = val.substring(1);
+						}
+
+						try {
+							util = Double.parseDouble(val);
+						} catch (Exception e) {
+							throw new ExcelDeploymentConfigException(
+									"Invalid task periodic utilization specification:"
+											+ val, COMPONENTS_SCHEDULING_SHEET,
+									i + 1, j + 1);
+						}
 					}
-					if (val.startsWith("%")) {
-						val = val.substring(1);
-					}
-					double period = rates[j - 1];
-					try {
-						double util = Double.parseDouble(val);
-						tutil += util;
-						comp.addTask(period, util);
-						isRT = true;
-					} catch (Exception e) {
-						throw new ExcelDeploymentConfigException(
-								"Invalid task periodic utilization specification:"
-										+ val, COMPONENTS_SCHEDULING_SHEET,
-								i + 1, j + 1);
-					}
+				}
+
+				if (util > 0 && period > 0) {
+					tutil += util;
+					comp.addTask(period, util);
+					isRT = true;
 				}
 			}
 			comp.prependResource((int) Math.rint(tutil));

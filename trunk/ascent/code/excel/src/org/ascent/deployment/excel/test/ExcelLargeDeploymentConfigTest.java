@@ -7,6 +7,7 @@ import org.ascent.VectorSolution;
 import org.ascent.VectorSolutionComparator;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.DeploymentPlan;
+import org.ascent.deployment.NetMinConfig;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.NetworkGravityOptimizer;
 import org.ascent.deployment.excel.ExcelDeploymentConfig;
@@ -37,7 +38,8 @@ public class ExcelLargeDeploymentConfigTest extends TestCase {
 	}
 	
 	public void testRunProblem(){
-		NetworkBandwidthMinimizingPlanner problem = new NetworkBandwidthMinimizingPlanner();
+//		NetworkBandwidthMinimizingPlanner problem = new NetworkBandwidthMinimizingPlanner();
+		NetMinConfig problem = new NetMinConfig();
 		ExcelDeploymentConfig config = new ExcelDeploymentConfig();
 		try{
 			config.load(new File("../ascent-data/xls/large.xls"), problem);
@@ -97,14 +99,14 @@ public class ExcelLargeDeploymentConfigTest extends TestCase {
 			
 		}
 		
-		System.out.println("### Network Gravity from Scratch ###");
-		int[] sol = new int[problem.getComponents().length];
-		for(int i = 0; i < sol.length; i++){
-			sol[i] = i;
-		}
-		DeploymentPlan plan = new DeploymentPlan(problem, new VectorSolution(sol));
-		NetworkGravityOptimizer opt = new NetworkGravityOptimizer();
-		opt.optimize(plan);
-		problem.printSolutionStats(plan.getSolution());
+//		System.out.println("### Network Gravity from Scratch ###");
+//		int[] sol = new int[problem.getComponents().length];
+//		for(int i = 0; i < sol.length; i++){
+//			sol[i] = i;
+//		}
+//		DeploymentPlan plan = new DeploymentPlan(problem, new VectorSolution(sol));
+//		NetworkGravityOptimizer opt = new NetworkGravityOptimizer();
+//		opt.optimize(plan);
+//		problem.printSolutionStats(plan.getSolution());
 	}
 }
