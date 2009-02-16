@@ -75,4 +75,16 @@ public class Util {
 				return false;
 		return true;
 	}
+	
+	public static String toString(int[] res) {
+		String str = "[";
+		for (int i = 0; i < res.length; i++) {
+			if (i != 0) {
+				str += ",";
+			}
+			str += res[i];
+		}
+		str += "]";
+		return str;
+	}
 }
