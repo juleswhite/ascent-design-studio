@@ -52,16 +52,16 @@ public class DeploymentBenchmark {
 		BenchmarkData data = new BenchmarkData(config_);
 		data.setAlg(planner.getClass().getName().substring(planner.getClass().getName().lastIndexOf('.') + 1));
 		
-		int score = 0;
+		int bw = 0;
 		
 		//There is a bug in the following loop for the rate calculation
         for (Interaction i : plan.getDeploymentConfiguration().getInteractions()) {
                 if (!(plan.getChannel(i) instanceof LocalHostLink)) {
-                        score += (i.getResources()[0] * i.getRate());
+                        bw += (i.getResources()[0] * i.getRate());
                 }
         }
         
-        data.setBandwidthUsed(score);
+        data.setBandwidthUsed(bw);
         int nodesFree = 0;
         ResourceResidual resid = new ResourceResidual(config_);
         
@@ -72,8 +72,10 @@ public class DeploymentBenchmark {
 			}
         }
         
+        data.setScore(config_.scoreDeployment(plan));
+        data.setTime(finish-start);
         data.setNumNodes(plan.getDeploymentConfiguration().getNodes().length - nodesFree);
-		
+		data.setDeploymentPlan(plan);
 		
 		return data;
 	}

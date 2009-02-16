@@ -74,14 +74,9 @@ public class NetMinConfig extends DeploymentConfig {
 		}
 	}
 	
-	public void printSolutionStats(VectorSolution vs) {
-		DeploymentPlan plan = deployer_.deploy(vs);
-		printSolutionStats(plan);
-	}
-	
-	public int scoreDeployment(VectorSolution vs) {
-		DeploymentPlan plan = deployer_.deploy(vs);
-		return scoreDeployment(plan);
+
+	public DeploymentPlan getDeploymentPlan(VectorSolution vs) {
+		return deployer_.deploy(vs);
 	}
 
 	public int scoreDeployment(DeploymentPlan plan) {

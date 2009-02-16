@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2009 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -14,35 +14,35 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-
 package org.ascent.deployment.benchmarks;
 
+import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
+import org.ascent.deployment.DeploymentPlan;
+import org.ascent.deployment.Node;
 
 public class BenchmarkData {
 
 	private int numNodes_ = 0;
 	private int bandwidthUsed_ = 0;
 	private long time_ = 0;
+	private int score_;
 	private String alg_ = "";
 	private DeploymentConfig config_;
-	
-	
-	public BenchmarkData(DeploymentConfig config){
+	private DeploymentPlan deploymentPlan_;
+
+	public BenchmarkData(DeploymentConfig config) {
 		config_ = config;
 	}
-	
+
 	public int getNumNodes() {
 		return numNodes_;
 	}
 
-
-
 	public void setNumNodes(int numNodes) {
 		numNodes_ = numNodes;
 	}
-	
-	
+
 	public int getBandwidthUsed() {
 		return bandwidthUsed_;
 	}
@@ -58,30 +58,72 @@ public class BenchmarkData {
 	public void setAlg(String alg) {
 		alg_ = alg;
 	}
-	
-	public int getComponents(){
+
+	public int getComponents() {
 		return config_.getComponents().length;
 	}
-	
-	public int getInteractions(){
+
+	public int getInteractions() {
 		return config_.getInteractions().length;
 	}
-	
 
+	public long getTime() {
+		return time_;
+	}
 
-	
+	public void setTime(long time) {
+		time_ = time;
+	}
+
+	public DeploymentConfig getConfig() {
+		return config_;
+	}
+
+	public void setConfig(DeploymentConfig config) {
+		config_ = config;
+	}
+
+	public DeploymentPlan getDeploymentPlan() {
+		return deploymentPlan_;
+	}
+
+	public void setDeploymentPlan(DeploymentPlan deploymentPlan) {
+		deploymentPlan_ = deploymentPlan;
+	}
+
+	public int getScore() {
+		return score_;
+	}
+
+	public void setScore(int score) {
+		score_ = score;
+	}
+
 	/**
-	 * Chris, make sure and provide
-	 * a nice implementation of this
-	 * method.
+	 * Chris, make sure and provide a nice implementation of this method.
 	 */
-	public String toString(){
-		
+	public String toString() {
+
 		String output = "Benchmark Data for " + alg_ + "\n";
-		output += "----------------------------------\n\n";
-		output += "Bandwidth Used: " +  bandwidthUsed_ + "\n";
+		output += "----------------------------------\n";
+		output += "Planning Time: " + time_ + "(ms)\n";
+		output += "Score: "+score_+"\n";
+		output += "Bandwidth Used: " + bandwidthUsed_ + "\n";
 		output += "Nodes: " + numNodes_ + "\n";
-		
+		output += "----------------------------------\n";
+		output += "Deployment Plan:\n";
+		if (!deploymentPlan_.isValid())
+			output += "!!! Invalid Deployment Plan !!!\n";
+		for (Node n : config_.getNodes()) {
+			output += n.getLabel() + " {";
+			Component[] hosted = deploymentPlan_.getHostedComponents(n);
+			for (int i = 0; i < hosted.length; i++) {
+				output += "\n  " + hosted[i];
+				if (i == hosted.length - 1)
+					output += "\n";
+			}
+			output += "}\n";
+		}
 		return output;
 	}
 }

@@ -41,7 +41,7 @@ public class PSODeployer implements DeploymentPlanner {
 		
 		VectorSolution sol = pso.solve(problem.getFitnessFunction());
 		
-		DeploymentPlan plan = new DeploymentPlan(problem,sol);
+		DeploymentPlan plan = problem.getDeploymentPlan(sol);
 		
 		if(useNetworkGravity_){
 			NetworkGravityOptimizer opt = new NetworkGravityOptimizer();
