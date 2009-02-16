@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.ascent.ProblemConfigImpl;
 import org.ascent.ResourceConsumptionPolicy;
+import org.ascent.Util;
 import org.ascent.VectorSolution;
 import org.ascent.binpacking.Bin;
 import org.ascent.binpacking.BinPackingProblem;
@@ -299,15 +300,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public static String toString(int[] res) {
-		String str = "[";
-		for (int i = 0; i < res.length; i++) {
-			if (i != 0) {
-				str += ",";
-			}
-			str += res[i];
-		}
-		str += "]";
-		return str;
+		return Util.toString(res);
 	}
 
 	public int[] residuals(ModelElement[] hosted, ModelElement host) {

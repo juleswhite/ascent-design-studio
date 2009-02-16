@@ -16,10 +16,12 @@
 
 package org.ascent.deployment.benchmarks;
 
+import org.ascent.Util;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.ResourceResidual;
 
 public class BenchmarkData {
 
@@ -103,6 +105,9 @@ public class BenchmarkData {
 	 * Chris, make sure and provide a nice implementation of this method.
 	 */
 	public String toString() {
+		
+		ResourceResidual resid = new ResourceResidual(config_);
+		resid.deploy(deploymentPlan_);
 
 		String output = "Benchmark Data for " + alg_ + "\n";
 		output += "----------------------------------\n";
@@ -115,7 +120,7 @@ public class BenchmarkData {
 		if (!deploymentPlan_.isValid())
 			output += "!!! Invalid Deployment Plan !!!\n";
 		for (Node n : config_.getNodes()) {
-			output += n.getLabel() + " {";
+			output += n.getLabel() + " Residuals:"+ Util.toString(resid.getResourceResiduals(n))+" {";
 			Component[] hosted = deploymentPlan_.getHostedComponents(n);
 			for (int i = 0; i < hosted.length; i++) {
 				output += "\n  " + hosted[i];
