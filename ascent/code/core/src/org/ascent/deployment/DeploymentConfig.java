@@ -38,7 +38,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 
 		public double getValue(VectorSolution src) {
 			if (src.getArtifact() == null) {
-				int score = scoreDeployment(new DeploymentPlan(DeploymentConfig.this,src));
+				int score = scoreDeployment(getDeploymentPlan(src));
 				src.setArtifact(score);
 			}
 			return (Integer) src.getArtifact();
@@ -486,8 +486,12 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public void printSolutionStats(VectorSolution vs) {
-		DeploymentPlan plan = new DeploymentPlan(this, vs);
+		DeploymentPlan plan = getDeploymentPlan(vs);
 		printSolutionStats(plan);
+	}
+	
+	public DeploymentPlan getDeploymentPlan(VectorSolution sol){
+		return new DeploymentPlan(this,sol);
 	}
 
 	public void printSolutionStats(DeploymentPlan plan) {
@@ -543,6 +547,6 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public double getScore(VectorSolution vs) {
-		return scoreDeployment(new DeploymentPlan(this, vs));
+		return scoreDeployment(getDeploymentPlan(vs));
 	}
 }

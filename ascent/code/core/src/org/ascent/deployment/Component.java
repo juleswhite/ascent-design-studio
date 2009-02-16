@@ -66,4 +66,12 @@ public class Component extends ModelElement implements Schedulable{
 		realTimeTasks_ = realTimeTasks;
 	}
 	
+	public String toString() {
+		return label_
+				+ " id:"
+				+ id_
+				+ " Resources:"
+				+ DeploymentWithNetworkMinimizationConfig
+						.toString(resources_) + " RT_Tasks:" + realTimeTasks_;
+	}
 }
