@@ -606,6 +606,7 @@ public class BenchmarkTest extends TestCase {
 		DeploymentBenchmark bm = new DeploymentBenchmark(problem);
 		assertNotNull(bm.test(deployer));
 		
+		System.out.println(bm.test(deployer));
 		
 	}
 }
