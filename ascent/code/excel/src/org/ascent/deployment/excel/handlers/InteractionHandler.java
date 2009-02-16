@@ -1,4 +1,4 @@
-package org.ascent.deployment.excel;
+package org.ascent.deployment.excel.handlers;
 
 import java.util.Map;
 
@@ -7,6 +7,9 @@ import jxl.Sheet;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.excel.ExcelDeploymentConfigException;
+import org.ascent.deployment.excel.WorksheetManipulator;
+import org.ascent.deployment.excel.WorksheetManipulator.Row;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the

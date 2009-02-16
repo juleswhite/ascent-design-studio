@@ -11,6 +11,14 @@ import jxl.Workbook;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.excel.handlers.ComponentColocationHandler;
+import org.ascent.deployment.excel.handlers.ComponentHandler;
+import org.ascent.deployment.excel.handlers.ComponentSchedulingHandler;
+import org.ascent.deployment.excel.handlers.InteractionHandler;
+import org.ascent.deployment.excel.handlers.NetworkHandler;
+import org.ascent.deployment.excel.handlers.NodeHandler;
+import org.ascent.deployment.excel.handlers.ValidHostsHandler;
+import org.ascent.deployment.excel.handlers.WorksheetHandler;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
