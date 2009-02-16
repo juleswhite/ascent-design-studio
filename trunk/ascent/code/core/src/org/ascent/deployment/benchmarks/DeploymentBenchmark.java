@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.ascent.deployment.BandwidthMinimizingPSODeploymentPlanner;
-import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
 import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.DeploymentPlanner;
@@ -58,7 +56,7 @@ public class DeploymentBenchmark {
 		
 		//There is a bug in the following loop for the rate calculation
         for (Interaction i : plan.getDeploymentConfiguration().getInteractions()) {
-                if (plan.getChannel(i) instanceof LocalHostLink) {
+                if (!(plan.getChannel(i) instanceof LocalHostLink)) {
                         score += (i.getResources()[0] * i.getRate());
                 }
         }
