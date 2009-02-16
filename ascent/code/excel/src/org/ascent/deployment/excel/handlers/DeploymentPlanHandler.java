@@ -8,6 +8,7 @@ import jxl.Sheet;
 
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
+import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.Node;
 import org.ascent.deployment.excel.ExcelDeploymentConfigException;
 
@@ -23,7 +24,7 @@ import org.ascent.deployment.excel.ExcelDeploymentConfigException;
  ****************************************************************************/
 public class DeploymentPlanHandler extends AbstractWorksheetHandler {
 
-	private static final String DEPLOYMENT_PLAN_SHEET = "Deployment Plan";
+	public static final String DEPLOYMENT_PLAN_SHEET = "Deployment Plan";
 
 	public String getWorksheetName() {
 		return DEPLOYMENT_PLAN_SHEET;
@@ -32,8 +33,13 @@ public class DeploymentPlanHandler extends AbstractWorksheetHandler {
 	public boolean isOptionalWorksheet() {
 		return true;
 	}
-
+	
 	public void handleSheet(DeploymentConfig problem, Sheet dplan,
+			Map<String, Component> comps, Map<String, Node> nodes) {
+		handleSheetImpl(problem, dplan, comps, nodes);
+	}
+
+	public void handleSheetImpl(Object problem, Sheet dplan,
 			Map<String, Component> comps, Map<String, Node> nodes) {
 
 		String[] headers = getHeaders(dplan);
@@ -60,11 +66,20 @@ public class DeploymentPlanHandler extends AbstractWorksheetHandler {
 								DEPLOYMENT_PLAN_SHEET, i + 1, j + 1);
 
 					}
-					problem.getPrePlacedComponents().put(comp, other);
+					place(comp,other,problem);
 					break;
 				}
 			}
 			
+		}
+	}
+	
+	public void place(Component c, Node n, Object plan){
+		if(plan instanceof DeploymentConfig){
+			((DeploymentConfig)plan).getPrePlacedComponents().put(c,n);
+		}
+		else if(plan instanceof DeploymentPlan){
+			((DeploymentPlan)plan).moveTo(c, n);
 		}
 	}
 }
