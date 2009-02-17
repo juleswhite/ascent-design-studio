@@ -8,6 +8,7 @@
   <property name="dist-zip" value="dist"/>
   <property name="lib" value="lib"/>
   <property name="docs"  value="docs"/>
+  <property name="manual" value="../../ascent-docs/manual"/>
   <property name="main-class" value="org.ascent.deployment.excel.CommandLineInterface"/>
   <property name="ascent-excel-base" value="../../ascent-excel/"/>
 	
@@ -50,10 +51,16 @@
       <tag name="todo" scope="all" description="To do:"/>
     </javadoc>
   	 
-     <copy todir="${ascent-base}/${dist-stage}/lib">
+    <copy todir="${ascent-base}/${dist-stage}/lib">
         <fileset dir="${ascent-base}/${lib}"/>
         <fileset dir="${ascent-excel-base}/${lib}"/>
-      </copy>
+    </copy>
+  	
+  	<copy todir="${ascent-base}/${dist-stage}/docs">
+  	    <fileset dir="${manual}"/>
+  	</copy>
+  	
+  	<copy file="${ascent-base}/LICENSE" todir="${ascent-base}/${dist-stage}"/>
       	
   	<path id="libs">
   		<fileset id="ascent-libs" dir="${ascent-base}/${dist-stage}/">
