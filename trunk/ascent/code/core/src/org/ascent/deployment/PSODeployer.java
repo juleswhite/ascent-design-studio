@@ -27,7 +27,7 @@ public class PSODeployer implements DeploymentPlanner {
 	private int maxVelocity_ = 4;
 	private int totalParticles_ = 20;
 	private int searchIterations_ = 20;
-	private boolean useNetworkGravity_ = true;
+	private boolean useNetworkGravity_ = false;
 
 	public DeploymentPlan deploy(DeploymentConfig problem) {
 
