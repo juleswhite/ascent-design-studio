@@ -17,7 +17,7 @@
 package org.ascent.deployment.excel;
 
 import java.io.File;
-import java.util.Comparator;
+import java.io.FileWriter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -27,17 +27,19 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.ascent.VectorSolution;
-import org.ascent.VectorSolutionComparator;
-import org.ascent.deployment.DeploymentPlan;
 import org.ascent.deployment.NetMinConfig;
+import org.ascent.deployment.PSODeployer;
 import org.ascent.deployment.RateMonotonicPessimisticResource;
 import org.ascent.deployment.RateMonotonicResource;
 import org.ascent.deployment.RateMonotonicResponseTimeResource;
-import org.ascent.pso.Pso;
+import org.ascent.deployment.benchmarks.BenchmarkData;
+import org.ascent.deployment.benchmarks.DeploymentBenchmark;
+import org.ascent.deployment.excel.output.ExcelDeploymentPlan;
+import org.ascent.deployment.output.HtmlUtil;
 
 public class CommandLineInterface {
 
+	private static final String GENERATE_HTML = "html";
 	private static final String PESSIMISTIC_69_4 = "pessimistic_69_4";
 	private static final String HARMONIC = "harmonic";
 	private static final String RESPONSE_TIME = "response-time";
@@ -48,8 +50,6 @@ public class CommandLineInterface {
 	public static final String OUTPUT_FILE = "output";
 	public static final String INPUT_FILE = "file";
 
-	
-	
 	public static void main(String[] args) {
 		Options options = new Options();
 
@@ -66,34 +66,38 @@ public class CommandLineInterface {
 				.withDescription(
 						"the name of the file to write the generated deployment plan to")
 				.create(OUTPUT_FILE);
-		
-		Option particlesopt = OptionBuilder
-		.withArgName(POPULATION)
-		.hasArg()
-		.withDescription(
-				"the total number of population members involved in the search")
-		.create(POPULATION);
-		
-		Option iter  = OptionBuilder
-		.withArgName(ITERATIONS)
-		.hasArg()
-		.withDescription(
-				"the total number of search iterations")
-		.create(ITERATIONS);
-		
-		Option sched  = OptionBuilder
-		.withArgName(SCHEDULING_METHOD)
-		.hasArg()
-		.withDescription(
-				"the method to use when calculating schedulability ("+LIU_LAYLAND+","+RESPONSE_TIME+","+HARMONIC+","+PESSIMISTIC_69_4+")")
-		.create(SCHEDULING_METHOD);
 
+		Option particlesopt = OptionBuilder
+				.withArgName(POPULATION)
+				.hasArg()
+				.withDescription(
+						"the total number of population members involved in the search")
+				.create(POPULATION);
+
+		Option iter = OptionBuilder.withArgName(ITERATIONS).hasArg()
+				.withDescription("the total number of search iterations")
+				.create(ITERATIONS);
+
+		Option sched = OptionBuilder.withArgName(SCHEDULING_METHOD).hasArg()
+				.withDescription(
+						"the method to use when calculating schedulability ("
+								+ LIU_LAYLAND + "," + RESPONSE_TIME + ","
+								+ HARMONIC + "," + PESSIMISTIC_69_4 + ")")
+				.create(SCHEDULING_METHOD);
+
+		Option html = OptionBuilder
+				.withArgName(GENERATE_HTML)
+				.hasArg()
+				.withDescription(
+						"should an html copy of the deployment plan be generated (true|false)")
+				.create(GENERATE_HTML);
 
 		options.addOption(file);
 		options.addOption(out);
 		options.addOption(particlesopt);
 		options.addOption(iter);
 		options.addOption(sched);
+		options.addOption(html);
 
 		CommandLine line = null;
 		CommandLineParser parser = new GnuParser();
@@ -114,89 +118,68 @@ public class CommandLineInterface {
 
 		String input = line.getOptionValue(INPUT_FILE);
 		String output = line.getOptionValue(OUTPUT_FILE);
-		int iterations = (line.hasOption(ITERATIONS))? Integer.parseInt(line.getOptionValue(ITERATIONS)) : 20; 
-		int particles = (line.hasOption(POPULATION))? Integer.parseInt(line.getOptionValue(POPULATION)) : 20; 
+		int iterations = (line.hasOption(ITERATIONS)) ? Integer.parseInt(line
+				.getOptionValue(ITERATIONS)) : 20;
+		int particles = (line.hasOption(POPULATION)) ? Integer.parseInt(line
+				.getOptionValue(POPULATION)) : 20;
 
 		NetMinConfig problem = new NetMinConfig();
 		ExcelDeploymentConfig config = new ExcelDeploymentConfig();
 		try {
 			config.load(new File(input), problem);
 		} catch (Exception e) {
-			System.out.println("Error loading Excel file <"+input+">:" + e.getMessage());
+			System.out.println("Error loading Excel file <" + input + ">:"
+					+ e.getMessage());
 			return;
 		}
 
-		if(line.hasOption(SCHEDULING_METHOD)){
+		if (line.hasOption(SCHEDULING_METHOD)) {
 			String method = line.getOptionValue(SCHEDULING_METHOD);
-			if(method.equals(LIU_LAYLAND)){
-				problem.getResourceConsumptionPolicies().put(0, new RateMonotonicResource());
-			}
-			else if(method.equals(RESPONSE_TIME)){
-				problem.getResourceConsumptionPolicies().put(0, new RateMonotonicResponseTimeResource());
-			}
-			else if(method.equals(HARMONIC)){
-				//nothing needs to be done...assume < 100% is schedulable
-			}
-			else if(method.equals(PESSIMISTIC_69_4)){
-				problem.getResourceConsumptionPolicies().put(0, new RateMonotonicPessimisticResource());
-			}
-			else {
-				System.out.println("Unknown scheduling method:"+method);
+			if (method.equals(LIU_LAYLAND)) {
+				problem.getResourceConsumptionPolicies().put(0,
+						new RateMonotonicResource());
+			} else if (method.equals(RESPONSE_TIME)) {
+				problem.getResourceConsumptionPolicies().put(0,
+						new RateMonotonicResponseTimeResource());
+			} else if (method.equals(HARMONIC)) {
+				// nothing needs to be done...assume < 100% is schedulable
+			} else if (method.equals(PESSIMISTIC_69_4)) {
+				problem.getResourceConsumptionPolicies().put(0,
+						new RateMonotonicPessimisticResource());
+			} else {
+				System.out.println("Unknown scheduling method:" + method);
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("ScatterD", options);
 				return;
 			}
 		}
-		
-		
+
+		boolean genhtml = false;
+		if (line.hasOption(GENERATE_HTML)
+				&& line.getOptionValue(GENERATE_HTML).equalsIgnoreCase("true"))
+			genhtml = true;
+
 		problem.init();
 
-		long time = 0;
-		VectorSolution best = null;
-		for (int i = 0; i < 1; i++) {
-			long start = System.currentTimeMillis();
-			double grate = 2;// the global learning rate
-			double lrate = 0.5;// the local learning rate
-			double intertia = 1;// the particle intertia impact
-			int maxv = 4;// the max particle velocity
-//			int particles = 20;// the total number of particles
-//			int iterations = 20;// the total number of iterations per solver
-								// invocation
+		PSODeployer pso = new PSODeployer();
+		pso.setTotalParticles(particles);
+		pso.setSearchIterations(iterations);
+		BenchmarkData data = (new DeploymentBenchmark(problem)).test(pso);
 
-			Pso pso = new Pso(problem);
-			pso.setTotalParticles(particles);
-			pso.setVelocityMax(maxv);
-			pso.setLocalLearningRate(lrate);
-			pso.setGlobalLearningRate(grate);
-			pso.setIterations(iterations);
+		try {
+			ExcelDeploymentPlan.write(data.getDeploymentPlan(),
+					new File(output));
 
-			Comparator<VectorSolution> comp = new VectorSolutionComparator(
-					problem.getFitnessFunction());
-			VectorSolution sol = pso.solve(problem.getFitnessFunction());
-			
-			time += (System.currentTimeMillis() - start);
-
-			DeploymentPlan plan = new DeploymentPlan(problem, sol);
-
-			// assertTrue(plan.isValid());
-
-			boolean better = false;
-			if (best != null) {
-				if (comp.compare(sol, best) > 0) {
-					best = sol;
-					better = true;
-				}
-			} else {
-				best = sol;
+			if (genhtml) {
+				String htmlout = HtmlUtil.toHtml(data);
+				FileWriter fw = new FileWriter(output + ".htm");
+				fw.write(htmlout);
+				fw.flush();
+				fw.close();
 			}
-			problem.printSolutionStats(best);
-			System.out.println("Total Time:" + time);
-
-//			System.out.println("### Squeezing with Network Gravity ###");
-//			NetworkGravityOptimizer opt = new NetworkGravityOptimizer();
-//			opt.optimize(plan);
-//			problem.printSolutionStats(plan.getSolution());
-
+		} catch (Exception e) {
+			System.err.println("Error writing deployment plan to disk!");
+			e.printStackTrace();
 		}
 	}
 }
