@@ -92,9 +92,9 @@ public class ExcelLargeDeploymentConfigTest extends TestCase {
 			problem.printSolutionStats(best);
 			System.out.println("Total Time:"+time);
 			
-			System.out.println("### Squeezing with Network Gravity ###");
-			NetworkGravityOptimizer opt = new NetworkGravityOptimizer();
-			opt.optimize(plan);
+//			System.out.println("### Squeezing with Network Gravity ###");
+//			NetworkGravityOptimizer opt = new NetworkGravityOptimizer();
+//			opt.optimize(plan);
 			problem.printSolutionStats(plan.getSolution());
 			
 		}

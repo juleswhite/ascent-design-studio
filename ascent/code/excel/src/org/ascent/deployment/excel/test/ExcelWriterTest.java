@@ -24,6 +24,8 @@ import junit.framework.TestCase;
  *    Jules White - initial API and implementation 
  ****************************************************************************/
 public class ExcelWriterTest extends TestCase {
+	
+	public static final String TEST_FILE = "./___foo.xls";
 
 	public void testWrite(){
 		PSODeployer deployer = new PSODeployer();
@@ -609,7 +611,12 @@ public class ExcelWriterTest extends TestCase {
 		DeploymentPlan plan = deployer.deploy(problem);
 		
 		try{
-			File f = new File("./foo.xls");
+			
+			File f = new File(TEST_FILE);
+			
+			if(f.exists())
+				fail("Cannot run the test, the file "+f.getAbsolutePath()+" already exists.");
+			
 			ExcelDeploymentPlan.write(plan, f);
 			
 			DeploymentPlan planfromfile = ExcelDeploymentPlan.read(f, problem);
@@ -617,10 +624,18 @@ public class ExcelWriterTest extends TestCase {
 			for(Component c : problem.getComponents()){
 				assertEquals(plan.getHost(c), planfromfile.getHost(c));
 			}
-		}catch (Exception e) {
+		
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			
 			fail("Unexpected exception thrown!");
+		}
+		finally {
+			File f = new File(TEST_FILE);
+			if(f.exists()){
+				f.delete();
+			}
 		}
 	}
 }
