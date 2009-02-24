@@ -52,6 +52,7 @@ public class NetMinConfig extends DeploymentConfig {
 	
 	public void setComponents(Component[] components){
 		components_ = components;
+		orderElements();
 	}
 
 	public NetMinConfig(Node[] nodes, NetworkLink[] networks,
