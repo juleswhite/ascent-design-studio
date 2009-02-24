@@ -1,4 +1,4 @@
- /**************************************************************************
+/**************************************************************************
  * Copyright 2009 Jules White                                              *
  *                                                                         *
  * Licensed under the Apache License, Version 2.0 (the "License");         *
@@ -14,7 +14,6 @@
  * limitations under the License.                                          *
  **************************************************************************/
 
-
 package org.ascent.deployment;
 
 import java.util.ArrayList;
@@ -24,46 +23,45 @@ public class KFailureNetMinConfig extends NetMinConfig {
 	public KFailureNetMinConfig(Node[] nodes, NetworkLink[] networks,
 			Component[] components, Interaction[] interactions, int failures) {
 		super(nodes, networks, components, interactions);
-		
-		//Make the components array big enough
-		if (failures != 0){
-			
+
+		// Make the components array big enough
+		if (failures != 0) {
+
 			ArrayList<Component> temp = new ArrayList<Component>();
-			//Iterate through the components and make duplicates
-			for(Component c:components){
+			// Iterate through the components and make duplicates
+			for (Component c : components) {
 				temp.add(c);
 				ArrayList<Component> curComps = new ArrayList<Component>();
-				
-				for (int i = 0; i < failures; ++i){
+
+				for (int i = 0; i < failures; ++i) {
 					Component newComponent = new Component(c);
-					super.getConstraints().add(new NotColocated(c, newComponent));
+					super.getConstraints().add(
+							new NotColocated(c, newComponent));
 					temp.add(newComponent);
 					curComps.add(newComponent);
 				}
-				
-				for (Component c2:curComps){
-					for (int i = 0; i < curComps.size(); ++i){
-						if (c2 != curComps.get(i)){
-							super.getConstraints().add(new NotColocated(c2, curComps.get(i)));
+
+				for (Component c2 : curComps) {
+					for (int i = 0; i < curComps.size(); ++i) {
+						if (c2 != curComps.get(i)) {
+							super.getConstraints().add(
+									new NotColocated(c2, curComps.get(i)));
 						}
 					}
-				}	
+				}
 			}
-			
+
 			Component[] newArray = new Component[temp.size()];
-			
-			for(int i = 0; i < temp.size(); ++i){
+
+			for (int i = 0; i < temp.size(); ++i) {
 				newArray[i] = temp.get(i);
 			}
 			
-			super.setComponents(newArray);	
-			
+			init();
+			super.setComponents(newArray);
+			init();
+
 		}
-		
-		
-		
-		
-		
 
 	}
 }
