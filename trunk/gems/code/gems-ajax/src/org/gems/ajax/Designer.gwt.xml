@@ -1,0 +1,18 @@
+<module>
+
+	<servlet path="/modelLoader" class="org.gems.ajax.server.model.ModelLoaderImpl" />
+	<servlet path="/templateManager" class="org.gems.ajax.server.figures.templates.TemplateManagerImpl" />
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.user.Debug"/>
+    
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='org.gems.ajax.client.Designer'/>
+
+    <stylesheet src="css/gems.css" />
+	<script src="js/dojo/dojo/dojo.js"/>
+	
+	
+ 	
+</module>
