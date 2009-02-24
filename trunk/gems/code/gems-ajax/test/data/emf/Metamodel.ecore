@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="org.eclipse.gmt.gems.dsml.metamodel2.emf" nsURI="http://www.sf.net/projects/gems/metamodel2" nsPrefix="metamodel">
+  
+   <eClassifiers xsi:type="ecore:EClass" name="MementoValue">
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="0"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="0"/>
+   </eClassifiers>
+   <eClassifiers xsi:type="ecore:EClass" name="Memento">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="0"/>
+  		 <eStructuralFeatures xsi:type="ecore:EReference" name="data" upperBound="2000"
+        eType="#//MementoValue" containment="true"/>
+   </eClassifiers>
+   <eClassifiers xsi:type="ecore:EClass" name="Subtype">
+   	 <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="AnonymousSubtype"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="base" upperBound="1"
+        eType="#//ModelObject"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instances" upperBound="2000"
+        eType="#//ModelObject"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="links" upperBound="20000"
+        eType="#//SubtypeLink" containment="true"/>
+   </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="SubtypeLink">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="base" upperBound="1"
+        eType="#//ModelObject"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instance" upperBound="1"
+        eType="#//ModelObject"/>
+   </eClassifiers>
+   <eClassifiers xsi:type="ecore:EClass" name="ModelObject">
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="0"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="0"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="X" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Width" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="100"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Height" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="100"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ExpandedWidth" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="200"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ExpandedHeight" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="200"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Expanded" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Subtype" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="Visible" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ModelLinkTarget" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=""/>
+  </eClassifiers>
+     
+ <eClassifiers xsi:type="ecore:EClass" name="Metamodel" eSuperTypes="#//ModelObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="DSMLID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="http://www.sf.net/projects/gems/dsml/newdsml"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FileExtensions" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=".dsml"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Category" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="Modeling"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Aspect" upperBound="2000"
+        eType="#//Aspect" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Connection" upperBound="2000"
+        eType="#//Connection" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Entity" upperBound="2000"
+        eType="#//Entity" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Inheritance" upperBound="2000"
+        eType="#//Inheritance" containment="true"/>
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="Entity" eSuperTypes="#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsRoot" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ParentEntity" lowerBound="0" upperBound="2147483647"
+        eType="#//ContainmentConnectionConnection" />
+      <eStructuralFeatures xsi:type="ecore:EReference" name="SourceConnectionDeclarations" lowerBound="0" upperBound="2147483647"
+        eType="#//ConnectionSourceConnection" />
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ConnectionTargets" lowerBound="0" upperBound="2147483647"
+        eType="#//ConnectionTargetConnection" />
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ChildEntities" lowerBound="0" upperBound="2147483647"
+        eType="#//ContainmentConnectionConnection" />
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="Connection" eSuperTypes="#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="SourceDecoration" eType="#//SourceDecoration"
+        defaultValueLiteral="none"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="TargetDecoration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="arrow"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LineColor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="(0,0,0)"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LineStyle" eType="#//LineStyle"
+        defaultValueLiteral="solid"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LineWidth" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ConnectionTarget" lowerBound="1" upperBound="1"
+        eType="#//ConnectionTargetConnection" />
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ConnectionSource" lowerBound="1" upperBound="1"
+        eType="#//ConnectionSourceConnection" />
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="Aspect" eSuperTypes="#//ModelObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=""/>
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="ModelElement" eSuperTypes="#//ModelObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsAbstract" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Attribute" upperBound="2000"
+        eType="#//Attribute" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="DerivedFrom" lowerBound="0" upperBound="2147483647"
+        eType="#//Inheritance" />
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Derived" lowerBound="1" upperBound="1"
+        eType="#//Inheritance" />
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="Attribute" eSuperTypes="#//ModelObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="AttributeType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="null"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="AllowedValues" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="*"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="DefaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="0"/>
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="Inheritance" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Base" lowerBound="1" upperBound="1"
+        eType="#//ModelElement" />
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Derived" lowerBound="0" upperBound="2147483647"
+        eType="#//ModelElement" />
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="ConnectionSourceConnection">
+ 	 <eStructuralFeatures xsi:type="ecore:EReference" name="Source" eType="#//Entity"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Target" eType="#//Connection"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="SourceRole" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="null"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Cardinality" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="*"/>
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="ConnectionTargetConnection">
+ 	 <eStructuralFeatures xsi:type="ecore:EReference" name="Source" eType="#//Connection"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Target" eType="#//Entity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="TargetRole" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="null"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Cardinality" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="*"/>
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="DerivedFromConnection">
+ 	 <eStructuralFeatures xsi:type="ecore:EReference" name="Source" eType="#//Inheritance"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Target" eType="#//ModelElement"/>
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="BaseClassConnection">
+ 	 <eStructuralFeatures xsi:type="ecore:EReference" name="Source" eType="#//ModelElement"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Target" eType="#//Inheritance"/>
+  </eClassifiers>
+
+     
+ <eClassifiers xsi:type="ecore:EClass" name="ContainmentConnectionConnection">
+ 	 <eStructuralFeatures xsi:type="ecore:EReference" name="Source" eType="#//Entity"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Target" eType="#//Entity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="RoleOfChild" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="childOf"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="RoleOfParent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="childrenOf"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Cardinality" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="*"/>
+  </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Root">
+  	<eStructuralFeatures xsi:type="ecore:EReference" name="mementos" upperBound="2000"
+        eType="#//Memento" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subtypes" upperBound="2000"
+        eType="#//Subtype" containment="true"/>
+   <eStructuralFeatures xsi:type="ecore:EReference" name="RealRoot" upperBound="1"
+        eType="#//Metamodel" containment="true"/>
+   
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Metamodel" upperBound="2000"
+        eType="#//Metamodel" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Entity" upperBound="2000"
+        eType="#//Entity" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Connection" upperBound="2000"
+        eType="#//Connection" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Aspect" upperBound="2000"
+        eType="#//Aspect" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="ModelElement" upperBound="2000"
+        eType="#//ModelElement" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Attribute" upperBound="2000"
+        eType="#//Attribute" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="Inheritance" upperBound="2000"
+        eType="#//Inheritance" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="ConnectionSourceConnection" upperBound="2000"
+        eType="#//ConnectionSourceConnection" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="ConnectionTargetConnection" upperBound="2000"
+        eType="#//ConnectionTargetConnection" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="DerivedFromConnection" upperBound="2000"
+        eType="#//DerivedFromConnection" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="BaseClassConnection" upperBound="2000"
+        eType="#//BaseClassConnection" containment="true"/>
+     <eStructuralFeatures xsi:type="ecore:EReference" name="ContainmentConnectionConnection" upperBound="2000"
+        eType="#//ContainmentConnectionConnection" containment="true"/>
+      
+  </eClassifiers>
+      
+<eClassifiers xsi:type="ecore:EEnum" name="SourceDecoration" instanceClassName="">
+    <eLiterals name="arrow" value="0"/>
+    <eLiterals name="diamond" value="1"/>
+    <eLiterals name="none" value="2"/>
+</eClassifiers>
+ 
+
+      
+<eClassifiers xsi:type="ecore:EEnum" name="LineStyle" instanceClassName="">
+    <eLiterals name="solid" value="0"/>
+    <eLiterals name="dash" value="1"/>
+    <eLiterals name="dashdot" value="2"/>
+</eClassifiers>
+ 
+
+
+</ecore:EPackage>
