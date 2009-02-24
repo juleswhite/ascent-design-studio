@@ -1,0 +1,1 @@
+@java -Xmx256M -cp "%~dp0\lib\gwtext.jar;%~dp0\lib\gwt-mosaic-0.1.8.jar;%~dp0\lib\gwt-incubator.jar;%~dp0\lib\gwt-dnd-2.5.6.jar;%~dp0\src;%~dp0\bin;C:/workspaces/frameworks/gwt/gwt-user.jar;C:/workspaces/frameworks/gwt/gwt-dev-windows.jar" com.google.gwt.dev.GWTShell -out "%~dp0\www" %* org.gems.ajax.Designer/Designer.html

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ASCII"?>
+<metamodel:Metamodel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:metamodel="http://www.sf.net/projects/gems/metamodel2" Name="FeatureModel" Id="237" DSMLID="http://www.sf.net/projects/gems/dsml/featuremodeling" FileExtensions="feat" Category="Software Factories">
+  <Connection Name="Requirement" Id="398" X="-260" Y="337" Width="191" Height="58" ExpandedWidth="0" ExpandedHeight="0" Expanded="true">
+    <Attribute Name="RequirementType" Id="294" AttributeType="Enumeration" AllowedValues="requires,excludes,cardinality" DefaultValue="requires"/>
+    <Attribute Name="Cardinality" Id="295" AttributeType="string" DefaultValue="na"/>
+    <ConnectionTarget href="featuremodeling.gemsmeta2#//@ConnectionTargetConnection.0"/>
+    <ConnectionSource href="featuremodeling.gemsmeta2#//@ConnectionSourceConnection.0"/>
+  </Connection>
+  <Entity Name="ViewPoint" Id="335" X="155" Y="171" Width="68" Height="73">
+    <ParentEntity href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.0"/>
+    <ChildEntities href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.1"/>
+  </Entity>
+  <Entity Name="ProductSchema" Id="336" X="317" Y="24" Width="68" Height="73" ExpandedWidth="0" ExpandedHeight="0" Expanded="true" IsRoot="true">
+    <Attribute Name="ConfigurationRole" Id="ffffffffc0a80288_206" DefaultValue="super-user"/>
+    <Attribute Name="ModelingMode" Id="ffffffffc0a80288_506" AttributeType="Enumeration" AllowedValues="modeling,configuration" DefaultValue="modeling"/>
+    <ChildEntities href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.0"/>
+  </Entity>
+  <Entity Name="Feature" Id="362" X="153" Y="324" Width="68" Height="73" ExpandedWidth="0" ExpandedHeight="0" Expanded="true" Derived="//@Inheritance.0">
+    <Attribute Name="Cardinality" Id="450" AttributeType="string" DefaultValue="1"/>
+    <Attribute Name="Required" Id="ffffffffc0a80166_160" AttributeType="Toggle" DefaultValue="false"/>
+    <Attribute Name="Selected" Id="ffffffffc0a80166_161" AttributeType="Toggle" DefaultValue="false"/>
+    <ParentEntity href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.1"/>
+    <ParentEntity href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.2"/>
+    <SourceConnectionDeclarations href="featuremodeling.gemsmeta2#//@ConnectionSourceConnection.0"/>
+    <ConnectionTargets href="featuremodeling.gemsmeta2#//@ConnectionTargetConnection.0"/>
+    <ChildEntities href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.2"/>
+    <ChildEntities href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.3"/>
+  </Entity>
+  <Entity Name="FeatureGroup" Id="451" X="63" Y="514" Width="68" Height="73" ExpandedWidth="0" ExpandedHeight="0" Expanded="true" DerivedFrom="//@Inheritance.0">
+    <Attribute Name="ChildComposition" Id="292" AttributeType="Enumeration" AllowedValues="and,xor,cardinality" DefaultValue="and"/>
+    <Attribute Name="ChildCardinality" Id="293" AttributeType="string" DefaultValue="na"/>
+  </Entity>
+  <Entity Name="RequirementSet" Id="7f000001_305" X="524" Y="345" Width="69" Height="73" ExpandedWidth="0" ExpandedHeight="0" Expanded="true">
+    <ParentEntity href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.3"/>
+    <ChildEntities href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.4"/>
+  </Entity>
+  <Entity Name="NonFuncRequirement" Id="7f000001_697" X="490" Y="462" Width="160" Height="84" ExpandedWidth="0" ExpandedHeight="0" Expanded="true">
+    <Attribute Name="Constraint" Id="7f000001_442" DefaultValue="="/>
+    <Attribute Name="ProvidedBy" Id="7f000001_569" AttributeType="Enumeration" AllowedValues="probe,user" DefaultValue="user"/>
+    <ParentEntity href="featuremodeling.gemsmeta2#//@ContainmentConnectionConnection.4"/>
+  </Entity>
+  <Inheritance Name="name" Id="452" X="87" Y="451" Width="36" Height="24" Base="//@Entity.2" Derived="//@Entity.3"/>
+</metamodel:Metamodel>
