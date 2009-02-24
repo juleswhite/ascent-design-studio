@@ -35,6 +35,7 @@ public class KFailureNetMinConfig extends NetMinConfig {
 
 				for (int i = 0; i < failures; ++i) {
 					Component newComponent = new Component(c);
+					
 					super.getConstraints().add(
 							new NotColocated(c, newComponent));
 					temp.add(newComponent);
@@ -55,6 +56,10 @@ public class KFailureNetMinConfig extends NetMinConfig {
 
 			for (int i = 0; i < temp.size(); ++i) {
 				newArray[i] = temp.get(i);
+			}
+			
+			for (int i = 0; i < newArray.length; ++i){
+				newArray[i].setId(i);
 			}
 			
 			init();
