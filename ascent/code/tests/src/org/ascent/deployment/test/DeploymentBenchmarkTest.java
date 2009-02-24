@@ -19,8 +19,10 @@ package org.ascent.deployment.test;
 import org.ascent.deployment.BandwidthMinimizingPSODeploymentPlanner;
 import org.ascent.deployment.Component;
 import org.ascent.deployment.DeploymentConfig;
+import org.ascent.deployment.KFailureNetMinConfig;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.PSODeployer;
 import org.ascent.deployment.benchmarks.BenchmarkData;
 import org.ascent.deployment.benchmarks.DeploymentBenchmark;
 import org.ascent.deployment.RandDeploymentConfigGen;
@@ -29,6 +31,39 @@ import junit.framework.TestCase;
 
 public class DeploymentBenchmarkTest extends TestCase {
 	
+	
+	/**
+	 * This method will run a benchmark on a given deployment.
+	 * 
+	 * In order to run the deployment benchmark, you must first
+	 * supply it with a deployment configuration.  You then
+	 * call the "test" method and supply the planner.
+	 */
+	public void testDeploymentKFailure(){
+
+		PSODeployer planner = new PSODeployer();
+		DeploymentConfig conf = new DeploymentConfig();
+		
+		Node n1 = conf.addNode("n1", new int[0]);
+		Node n2 = conf.addNode("n2", new int[0]);
+		Node n3 = conf.addNode("n3", new int[0]);
+		Component c1 = conf.addComponent("c1", new int[0]);
+		Component c2 = conf.addComponent("c2", new int[0]);
+		Component c3 = conf.addComponent("c3", new int[0]);
+		conf.addInteraction("c1-->c2", new int[]{20}, 1, new Component[]{c1,c2});
+		conf.addInteraction("c1-->c3", new int[]{30}, 1, new Component[]{c1,c3});
+		conf.addInteraction("c1-->c1", new int[]{20}, 1, new Component[]{c1,c1});
+		conf.addNetwork("n1", new Node[] {n1, n2, n3}, new int[]{Integer.MAX_VALUE});
+		conf.init();
+
+		KFailureNetMinConfig kconf = new KFailureNetMinConfig(conf.getNodes(),conf.getNetworks(),conf.getComponents(),conf.getInteractions(),2);
+		
+		
+		DeploymentBenchmark dbm = new DeploymentBenchmark(kconf);
+		System.out.println(dbm.test(planner).toString());
+		
+		NetworkBandwidthMinimizingPlanner pl2 = new NetworkBandwidthMinimizingPlanner();
+	}
 	
 	/**
 	 * This method will run a benchmark on a given deployment.
