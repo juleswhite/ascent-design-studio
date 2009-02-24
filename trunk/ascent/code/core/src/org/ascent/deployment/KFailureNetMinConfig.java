@@ -32,12 +32,31 @@ public class KFailureNetMinConfig extends NetMinConfig {
 			//Iterate through the components and make duplicates
 			for(Component c:components){
 				temp.add(c);
+				ArrayList<Component> curComps = new ArrayList<Component>();
+				
 				for (int i = 0; i < failures; ++i){
-					temp.add(c);
+					Component newComponent = new Component(c);
+					super.getConstraints().add(new NotColocated(c, newComponent));
+					temp.add(newComponent);
+					curComps.add(newComponent);
 				}
+				
+				for (Component c2:curComps){
+					for (int i = 0; i < curComps.size(); ++i){
+						if (c2 != curComps.get(i)){
+							super.getConstraints().add(new NotColocated(c2, curComps.get(i)));
+						}
+					}
+				}	
 			}
 			
+			Component[] newArray = new Component[temp.size()];
 			
+			for(int i = 0; i < temp.size(); ++i){
+				newArray[i] = temp.get(i);
+			}
+			
+			super.setComponents(newArray);	
 			
 		}
 		

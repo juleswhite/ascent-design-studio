@@ -29,6 +29,10 @@ public class Component extends ModelElement implements Schedulable{
 	public Component(int id, String label, int[] resources) {
 		super(id, label, resources);
 	}
+	
+	public Component(Component c){
+		super(c.id_, c.label_, c.resources_);
+	}
 
 	public Interaction[] getInteractions() {
 		return interactions_;
