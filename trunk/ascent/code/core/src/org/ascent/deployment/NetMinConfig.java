@@ -49,6 +49,10 @@ public class NetMinConfig extends DeploymentConfig {
 	public NetMinConfig(DeploymentConfig toclone) {
 		super(toclone);
 	}
+	
+	public void setComponents(Component[] components){
+		components_ = components;
+	}
 
 	public NetMinConfig(Node[] nodes, NetworkLink[] networks,
 			Component[] components, Interaction[] interactions) {
