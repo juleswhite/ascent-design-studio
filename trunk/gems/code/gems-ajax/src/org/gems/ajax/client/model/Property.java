@@ -47,9 +47,17 @@ public class Property implements Serializable, PropertyConstants {
 	public Object getValue() {
 		return value_;
 	}
+	
+	public String getValueAsString(){
+		return ""+value_;
+	}
 
 	public void setValue(Object value) {
 		value_ = ""+value;
+	}
+	
+	public void setValueFromString(String value){
+		value_ = value;
 	}
 
 	public String getName() {

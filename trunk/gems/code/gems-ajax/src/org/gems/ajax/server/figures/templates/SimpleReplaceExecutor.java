@@ -1,6 +1,10 @@
 package org.gems.ajax.server.figures.templates;
 
-import org.gems.ajax.client.figures.templates.TemplateData;
+import java.util.Map;
+
+import org.gems.ajax.client.model.ClientModelObject;
+import org.gems.ajax.client.model.Property;
+
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -27,11 +31,19 @@ public class SimpleReplaceExecutor implements TemplateExecutor {
 		template_ = template;
 	}
 
-	public String exec(TemplateData data) {
+	public String exec(TemplateExecData data) {
 		String t = template_;
 		if (t != null) {
 			for (String key : data.keySet()) {
 				t = t.replaceAll("\\$\\{" + key + "\\}", data.get(key));
+			}
+		}
+		
+		ClientModelObject cmo = data.getClientModelObject();
+		if(cmo != null){
+			Map<String, Property> props = cmo.getProperties();
+			for(String pname : props.keySet()){
+				t = t.replaceAll("\\$\\{model." + pname + "\\}", props.get(pname).getValueAsString());
 			}
 		}
 		return t;

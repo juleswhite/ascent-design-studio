@@ -1,4 +1,7 @@
-package org.gems.ajax.server.figures.templates;
+package org.gems.ajax.client.figures.templates;
+
+import org.gems.ajax.client.model.ClientModelObject;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -11,18 +14,21 @@ package org.gems.ajax.server.figures.templates;
  ****************************************************************************/
 
 /**
- * An executor factory is used to create executors for a given template
- * language type. The executor factories should be registered with the
- * DefaultServerTemplateManager.
+ * This interface should be implemented if you want to create a
+ * new executor type that is translated into javascript and run
+ * on the client. 
  */
-public interface ExecutorFactory {
-	
+public interface ClientTemplateExecutor {
+
 	/**
-	 * Create a template executor from a string of template
-	 * data.
+	 * This method takes the template data and current object
+	 * of the figure and updates the html used by the figure's
+	 * view.
 	 * 
-	 * @param template
+	 * @param data
+	 * @param cmo
 	 * @return
 	 */
-	public TemplateExecutor createExecutor(String template);
+	public String exec(TemplateData data, ClientModelObject cmo);
+	
 }

@@ -13,6 +13,7 @@ import org.gems.ajax.client.figures.templates.TemplateUpdaterInfo;
 import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.MetaType;
 import org.gems.ajax.client.model.ModelRegistry;
+import org.gems.ajax.server.model.ClientServerModelMapping;
 import org.gems.ajax.server.util.file.DirectoryWatcher;
 import org.gems.ajax.server.util.file.IFileListener;
 
@@ -44,14 +45,20 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 		return "<div style=\"width:'100%'; height:'100%'\"><img src=\"img/block.png\" style=\"width:'100%'; height:'100%'\" height=\"100%\" width=\"100%\"></div><div style=\"position:absolute; top:0; left:0; margin:10 10 10 10;\">foo bar</div>";
 	}
 
-	public String updateTemplate(String id, TemplateData data) {
+	public String updateTemplate(String id, TemplateData tdata) {
 
+		TemplateExecData data = new TemplateExecData(tdata);
 		TemplateExecutor t = serverTemplates_.get(id);
 		
 		ClientModelObject cmo = ModelRegistry.getInstance().get(""+data.getObjectId());
 		
-		if(cmo != null)
-			data.setModelObject(cmo);
+		if(cmo != null){
+			data.setClientModelObject(cmo);
+			Object severobj = ClientServerModelMapping.get().getServerObject(cmo);
+			if(severobj != null){
+				data.setServerModelObject(severobj);
+			}
+		}
 		
 		String result = null;
 		if (t != null) {
