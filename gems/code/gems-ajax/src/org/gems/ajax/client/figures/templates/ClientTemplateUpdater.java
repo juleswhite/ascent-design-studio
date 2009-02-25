@@ -1,5 +1,9 @@
 package org.gems.ajax.client.figures.templates;
 
+import java.util.List;
+
+import org.gems.ajax.client.util.Util;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse
@@ -34,7 +38,7 @@ public class ClientTemplateUpdater implements TemplateUpdater {
 		for (String key : data.keySet()) {
 			t = t.replaceAll("\\$\\{" + key + "\\}", data.get(key));
 		}
-
+		
 		callback.setTemplate(t);
 	}
 

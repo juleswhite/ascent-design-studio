@@ -1,11 +1,14 @@
 package org.gems.ajax.client.edit;
 
+import java.util.List;
+
 import org.gems.ajax.client.edit.exdata.ExtendedData;
 import org.gems.ajax.client.edit.exdata.RectangleData;
 import org.gems.ajax.client.figures.ConnectableDiagramElement;
 import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.figures.HtmlPanel;
 import org.gems.ajax.client.figures.HtmlPanelListener;
+import org.gems.ajax.client.figures.templates.ScriptExtractor;
 import org.gems.ajax.client.figures.templates.Template;
 import org.gems.ajax.client.figures.templates.TemplateData;
 import org.gems.ajax.client.figures.templates.TemplateUpdateCallback;
@@ -103,6 +106,11 @@ public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 
 				public void setTemplate(String html) {
 					getTemplateFigure().setHtml(html);
+					
+					List<String> scripts = ScriptExtractor.extractScripts(html);
+					for(String script : scripts)
+						Util.eval(script);
+					
 					if (getModelFigure().getResizer() != null)
 						getModelFigure().getResizer().updateDragHandle();
 				}
@@ -127,8 +135,13 @@ public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 						new TemplateUpdateCallback() {
 
 							public void setTemplate(String html) {
+								
 								getTemplateFigure().setBodyHtml(
 										new HTMLPanel(html));
+								
+								List<String> scripts = ScriptExtractor.extractScripts(html);
+								for(String script : scripts)
+									Util.eval(script);
 							}
 						});
 				updateTemplate(null, null);

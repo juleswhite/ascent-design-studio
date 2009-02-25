@@ -1,6 +1,5 @@
 package org.gems.ajax.server.figures.templates;
 
-import org.gems.ajax.client.figures.templates.TemplateData;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -12,8 +11,24 @@ import org.gems.ajax.client.figures.templates.TemplateData;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
+
+/**
+ * This interface should be implemented to create a new template
+ * language and plug it into the server-side template engine.
+ * An executor can be registered with the DefaultServerTemplateManager
+ * and run whenever a template is requested of the type handled
+ * by this template executor.
+ */
 public interface TemplateExecutor {
 
-	public String exec(TemplateData data);
+	/**
+	 * This method should execute the template with
+	 * the provided data and produce html that can
+	 * be displayed by the view on the client-side.
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public String exec(TemplateExecData data);
 	
 }
