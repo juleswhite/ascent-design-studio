@@ -17,13 +17,13 @@ import org.gems.ajax.client.model.Type;
 
 public class TemplateParser {
 	
-	private class Element {
+	public class Element {
 		public Map<String, String> attributes = new HashMap<String, String>(3);
 		public String name;
 		public boolean selfTerminating = false;
 	}
 
-	private class Token {
+	public class Token {
 		public String remainder;
 		public Object data;
 	}

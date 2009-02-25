@@ -11,7 +11,8 @@
 	<entry-point class='org.gems.ajax.client.Designer'/>
 
     <stylesheet src="css/gems.css" />
-	<script src="js/dojo/dojo/dojo.js"/>
+    
+    <script src="js/dojo/dojo/dojo.js"/>
 	
 	
  	

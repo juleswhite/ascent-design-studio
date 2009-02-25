@@ -1,5 +1,12 @@
 <!--GEMS_Server-->
 <!--TemplateType:Simple-->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="js/lightbox/lightbox.css" />
+<script type="text/javascript" src="js/lightbox/lightbox.js"></script>
+</head>
+
+<body>
 
 <div style="width:${width}; height:${height}">
   <img src="img/block.png" 
@@ -8,8 +15,12 @@
        width="${width}">
 </div>
 <div style="position:absolute; top:0; left:0; margin:10 10 10 10;">
-<p style="align:center">
+<p style="align:center" >
 Model Object:${id}
+<a href="img/block.jpg" onclick="testf(this);return false;" title="my caption"><img src="img/b.gif" /></a> 
+
 <p>
 </div>
+</body>
+</html>
 		
