@@ -68,12 +68,12 @@ public class Util implements GraphicsConstants {
 	}
 
 	public static native int getZIndex(Element e)/*-{
-			return e.style.zIndex;
-		}-*/;
+					return e.style.zIndex;
+				}-*/;
 
 	public static native void setZIndex(Element e, int z)/*-{
-			e.style.zIndex = z;
-		}-*/;
+					e.style.zIndex = z;
+				}-*/;
 
 	public static int getOffsetWidth(Widget w) {
 		if (w.getParent() == null) {
@@ -99,9 +99,10 @@ public class Util implements GraphicsConstants {
 
 	public static native void eval(String javascript)
 	/*-{
-      
+	   try{
 	    $wnd.eval(javascript);
-	 
+	   }catch(ex){
+	     alert('Error:'+ex+' evaluating javascript javascript:'+javascript);}
 	}-*/;
 
 	public static int getLeftBorderWidth(Element el) {
@@ -284,28 +285,28 @@ public class Util implements GraphicsConstants {
 	}
 
 	public static native void scrollElementRight(Element container, int amount)/*-{
-						  container.scrollLeft += amount;
-						}-*/;
+								  container.scrollLeft += amount;
+								}-*/;
 
 	public static native void scrollElementLeft(Element container, int amount)/*-{
-						  container.scrollLeft -= amount;
-						}-*/;
+								  container.scrollLeft -= amount;
+								}-*/;
 
 	public static native void scrollElementDown(Element container, int amount)/*-{
-						  container.scrollTop += amount;
-						}-*/;
+								  container.scrollTop += amount;
+								}-*/;
 
 	public static native void scrollElementUp(Element container, int amount)/*-{
-						  container.scrollTop -= amount;
-						}-*/;
+								  container.scrollTop -= amount;
+								}-*/;
 
 	public static native int getScrollTop(Element container)/*-{
-						  return container.scrollTop;
-						}-*/;
+								  return container.scrollTop;
+								}-*/;
 
 	public static native int getScrollLeft(Element container)/*-{
-						  return container.scrollLeft;
-						}-*/;
+								  return container.scrollLeft;
+								}-*/;
 
 	public static void attachMovementListener(Widget w, MovementListener l) {
 		MovementDetector d = new MovementDetector(w, l);
@@ -323,6 +324,43 @@ public class Util implements GraphicsConstants {
 		}
 		return false;
 	}
+
+	public static void addCSS(String cssUrl) {
+		Element head = getElementByTagName("head");
+		Element cssLink = DOM.createElement("link");
+		setAttribute(cssLink, "type", "text/css");
+		setAttribute(cssLink, "rel", "stylesheet");
+		setAttribute(cssLink, "href", cssUrl);
+		head.appendChild(cssLink);
+	}
+
+	public native static void setAttribute(Element el, String key, String val) /*-{ 
+	    el.setAttribute(key, val); 
+	    }-*/;
+
+	public static String getScriptLoader(String spath) {
+		String script = " "
+				+ "   var old = document.getElementById('"
+				+ spath
+				+ "');\r\n"
+				+ "   if (old == null) {\n"
+				+ "   var head = document.getElementsByTagName(\"head\")[0];\r\n"
+				+ "   var script = document.createElement('script');\r\n"
+				+ "   script.id = '" + spath + "';\r\n"
+				+ "   script.type = 'text/javascript';\r\n"
+				+ "   script.src = \"" + spath + "\";\r\n"
+				+ "   head.appendChild(script);" + "  }";
+		return script;
+	}
+	
+	public static void loadScriptOnce(String spath){
+		eval(getScriptLoader(spath));
+	}
+
+	public native static Element getElementByTagName(String tagName) /*-{ 
+	    var elem = $doc.getElementsByTagName(tagName); 
+	    return elem ? elem[0] : null; 
+	    }-*/;
 
 	public static void makeDraggable() {
 		// public boolean onEventPreview(Event event) {

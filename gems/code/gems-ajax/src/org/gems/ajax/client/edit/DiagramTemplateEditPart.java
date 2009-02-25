@@ -8,9 +8,12 @@ import org.gems.ajax.client.figures.ConnectableDiagramElement;
 import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.figures.HtmlPanel;
 import org.gems.ajax.client.figures.HtmlPanelListener;
+import org.gems.ajax.client.figures.templates.ProcessedTemplate;
 import org.gems.ajax.client.figures.templates.ScriptExtractor;
 import org.gems.ajax.client.figures.templates.Template;
 import org.gems.ajax.client.figures.templates.TemplateData;
+import org.gems.ajax.client.figures.templates.TemplateElement;
+import org.gems.ajax.client.figures.templates.TemplateScript;
 import org.gems.ajax.client.figures.templates.TemplateUpdateCallback;
 import org.gems.ajax.client.figures.templates.TemplateUpdater;
 import org.gems.ajax.client.geometry.Rectangle;
@@ -105,17 +108,23 @@ public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 			updater_.updateTemplate(dat, new TemplateUpdateCallback() {
 
 				public void setTemplate(String html) {
-					getTemplateFigure().setHtml(html);
+					ProcessedTemplate t = ScriptExtractor.processTemplate(html);
 					
-					List<String> scripts = ScriptExtractor.extractScripts(html);
-					for(String script : scripts)
-						Util.eval(script);
+					getTemplateFigure().setHtml(t.getHtml());
+					
+					processTemplateElements(t);
 					
 					if (getModelFigure().getResizer() != null)
 						getModelFigure().getResizer().updateDragHandle();
 				}
 			});
 		}
+	}
+	
+	public void processTemplateElements(ProcessedTemplate t){
+		List<TemplateElement> scripts = t.getElementsToLoad();
+		for(TemplateElement script : scripts)
+			script.load();
 	}
 
 	public void resizeRequested(String w, String h) {
@@ -135,13 +144,11 @@ public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 						new TemplateUpdateCallback() {
 
 							public void setTemplate(String html) {
-								
+								ProcessedTemplate t = ScriptExtractor.processTemplate(html);
 								getTemplateFigure().setBodyHtml(
-										new HTMLPanel(html));
+										new HTMLPanel(t.getHtml()));
 								
-								List<String> scripts = ScriptExtractor.extractScripts(html);
-								for(String script : scripts)
-									Util.eval(script);
+								processTemplateElements(t);
 							}
 						});
 				updateTemplate(null, null);
