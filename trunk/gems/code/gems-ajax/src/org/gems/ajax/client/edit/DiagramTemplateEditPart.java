@@ -38,6 +38,28 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 		HtmlPanelListener {
+	
+	private class TemplateHTMLPanel extends HTMLPanel {
+		
+		private ProcessedTemplate template_;
+		
+		public TemplateHTMLPanel(ProcessedTemplate t) {
+			super(t.getHtml());
+			template_ = t;
+		}
+
+		protected void onLoad() {
+			super.onLoad();
+			
+			//The problem is that we don't know if the script
+			//element is attached...we know that the html is attached
+			//but the script has to be done before the init method
+			//is fired
+			List<TemplateElement> scripts = template_.getElementsToLoad();
+			for(TemplateElement script : scripts)
+				script.load();
+		}		
+	}
 
 	private Template template_;
 
@@ -110,21 +132,15 @@ public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 				public void setTemplate(String html) {
 					ProcessedTemplate t = ScriptExtractor.processTemplate(html);
 					
-					getTemplateFigure().setHtml(t.getHtml());
+					getTemplateFigure().setBodyHtml(new TemplateHTMLPanel(t));
 					
-					processTemplateElements(t);
+//					processTemplateElements(t);
 					
 					if (getModelFigure().getResizer() != null)
 						getModelFigure().getResizer().updateDragHandle();
 				}
 			});
 		}
-	}
-	
-	public void processTemplateElements(ProcessedTemplate t){
-		List<TemplateElement> scripts = t.getElementsToLoad();
-		for(TemplateElement script : scripts)
-			script.load();
 	}
 
 	public void resizeRequested(String w, String h) {
@@ -145,10 +161,12 @@ public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 
 							public void setTemplate(String html) {
 								ProcessedTemplate t = ScriptExtractor.processTemplate(html);
-								getTemplateFigure().setBodyHtml(
-										new HTMLPanel(t.getHtml()));
+//								getTemplateFigure().setBodyHtml(
+//										new HTMLPanel(t.getHtml()));
+								getTemplateFigure().setBodyHtml(new TemplateHTMLPanel(t));
 								
-								processTemplateElements(t);
+								
+//								processTemplateElements(t);
 							}
 						});
 				updateTemplate(null, null);
