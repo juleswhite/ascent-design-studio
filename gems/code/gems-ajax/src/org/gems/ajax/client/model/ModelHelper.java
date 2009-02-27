@@ -22,7 +22,7 @@ public interface ModelHelper {
 	public String getId(Object o);
 	
 	
-	public Type getTypeForName(String name);	
+	public Type getTypeForName(String modeltype, String name);	
 	/**
 	 * This method creates a clone/copy of
 	 * the model object passed in.

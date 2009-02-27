@@ -128,8 +128,8 @@ public class DelegatingModelHelper implements ModelHelper {
 		return delegate_.getTags(o);
 	}
 
-	public Type getTypeForName(String name) {
-		return delegate_.getTypeForName(name);
+	public Type getTypeForName(String mtype, String name) {
+		return delegate_.getTypeForName(mtype, name);
 	}
 
 	public Type[] getTypes(Object o) {

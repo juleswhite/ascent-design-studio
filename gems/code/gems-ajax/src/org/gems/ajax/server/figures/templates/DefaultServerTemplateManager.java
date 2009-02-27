@@ -2,6 +2,7 @@ package org.gems.ajax.server.figures.templates;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ import org.gems.ajax.server.util.file.IFileListener;
  ****************************************************************************/
 public class DefaultServerTemplateManager implements ServerTemplateManager {
 
-	public static final String SERVER_FLAG = "<!--GEMS_Server-->";
+	public static final String CLIENTSIDE_FLAG = "<!--GEMS_Client-->";
 	public static final String TEMPLATE_TYPE_FLAG = "<!--TemplateType:";
 
 	private Logger logger_ = Logger
@@ -36,10 +37,9 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 	private Map<String, ExecutorFactory> executorFactories_ = new HashMap<String, ExecutorFactory>();
 	private Map<String, TemplateUpdaterInfo> updaters_ = new HashMap<String, TemplateUpdaterInfo>();
 	private Map<String, TemplateExecutor> serverTemplates_ = new HashMap<String, TemplateExecutor>();
-	private boolean watchFiles_ = false;
 	private String defaultTemplateType_ = "Simple";
+	private TemplateFinder templateFinder_;
 
-	private File templateRepository_;
 
 	public String getTemplate(String id) {
 		return "<div style=\"width:'100%'; height:'100%'\"><img src=\"img/block.png\" style=\"width:'100%'; height:'100%'\" height=\"100%\" width=\"100%\"></div><div style=\"position:absolute; top:0; left:0; margin:10 10 10 10;\">foo bar</div>";
@@ -107,14 +107,17 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 			boolean clientside = false;
 
 			try {
-				File f = new File(getTemplateRepository(), key + ".htm");
-				if (f.exists()) {
-					t = IOUtils.toString(new FileInputStream(f));
+//				File f = new File(getTemplateRepository(), key + ".htm");
+				ResolvedTemplate res = templateFinder_.findTemplate(modeltype, type);
+				InputStream in = res.getInputStream();
+				
+				if (in != null) {
+					t = IOUtils.toString(in);
 					t = t.trim();
-					clientside = !t.startsWith(SERVER_FLAG);
+					clientside = t.startsWith(CLIENTSIDE_FLAG);
 
 					if (!clientside) {
-						loadExecutor(key, t);
+						loadExecutor(key, t, res.getType());
 						t = "loading...";
 					}
 
@@ -130,30 +133,25 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 
 		return upi;
 	}
-
-	public void loadExecutor(String key, String t) {
-		ExecutorFactory factory = executorFactories_.get(getTemplateType(t));
+	
+	public void loadExecutor(String key, String t, String type) {
+		ExecutorFactory factory = executorFactories_.get(type);
 		if (factory != null) {
 			TemplateExecutor exec = factory.createExecutor(t);
 			serverTemplates_.put(key, exec);
 		}
+		else {
+			logger_.severe("No executor factory found for template type:"+type+" while trying to execute template for key:"+key+" with template contents:"+t);
+		}
 	}
 
-	public File getTemplateRepository() {
-		return templateRepository_;
+	
+	public Map<String, TemplateExecutor> getServerTemplates() {
+		return serverTemplates_;
 	}
 
-	public String getTemplateRepositoryPath() {
-		return templateRepository_.getAbsolutePath();
-	}
-
-	public void setTemplateRepositoryPath(String templateRepository) {
-		templateRepository_ = new File(templateRepository);
-		System.out.println(templateRepository_.getAbsolutePath());
-	}
-
-	public boolean getFileWatching() {
-		return watchFiles_;
+	public void setServerTemplates(Map<String, TemplateExecutor> serverTemplates) {
+		serverTemplates_ = serverTemplates;
 	}
 
 	public Map<String, ExecutorFactory> getExecutorFactories() {
@@ -165,62 +163,15 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 		executorFactories_ = executorFactories;
 	}
 
-	public void setFileWatching(boolean watch) {
-		watchFiles_ = watch;
-		if (watchFiles_) {
-
-			for (File f : getTemplateRepository().listFiles()) {
-				if (f.isDirectory()) {
-					DirectoryWatcher dw = new DirectoryWatcher(f
-							.getAbsolutePath(), 1);
-					dw.addListener(new IFileListener() {
-
-						public void onStop(Object notMonitoredResource) {
-						}
-
-						public void onStart(Object monitoredResource) {
-						}
-
-						public void onDelete(Object deletedResource) {
-						}
-
-						public void onChange(Object changedResource) {
-							if (changedResource instanceof File) {
-								File file = (File) changedResource;
-								if (file.isFile()) {
-									String dir = file.getParentFile().getName();
-									String fname = file.getName();
-									if (fname.endsWith(".htm")) {
-										fname = fname.substring(0, fname
-												.length() - 4);
-										String key = dir + "/" + fname;
-										if (serverTemplates_.get(key) != null) {
-											try {
-												String t = IOUtils
-														.toString(new FileInputStream(
-																file));
-												t = t.trim();
-												loadExecutor(key, t);
-
-											} catch (Exception e) {
-												logger_.log(Level.SEVERE,
-														"Unable to load template for key:"
-																+ key, e);
-											}
-										}
-									}
-								}
-
-							}
-						}
-
-						public void onAdd(Object newResource) {
-						}
-					});
-					dw.start();
-				}
-			}
-		}
+	public TemplateFinder getTemplateFinder() {
+		return templateFinder_;
 	}
+
+	public void setTemplateFinder(TemplateFinder templateFinder) {
+		templateFinder_ = templateFinder;
+	}
+
+	
+	
 
 }
