@@ -209,4 +209,4 @@ To plug-in a new !TemplateFinder, modify gems-server.xml as follows:
 <bean id="myTemplateFinder" class="org.your.pkg.MyTemplateFinder"/>         
 }}}
 
-Please see: org.gems.ajax.server.figures.templates.DefaultTemplateFinder for an example implementation.
+Please see: [http://code.google.com/p/ascent-design-studio/source/browse/trunk/gems/code/gems-ajax/src/org/gems/ajax/server/figures/templates/DefaultTemplateFinder.java org.gems.ajax.server.figures.templates.DefaultTemplateFinder] for an example implementation.
