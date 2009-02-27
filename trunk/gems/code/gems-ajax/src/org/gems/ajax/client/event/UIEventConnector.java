@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class UIEventConnector implements MouseListener, KeyboardListener {
 
-	private Widget sender_;
 	private DiagramElement element_;
 
 	public UIEventConnector(FocusPanel fp, DiagramElement element) {

@@ -9,7 +9,6 @@ import org.gems.ajax.client.util.dojo.MoveListener;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -60,7 +59,7 @@ public class GPanel extends AbstractDiagramElement implements
 	private SimplePanel headerCenter_;
 	private SimplePanel headerLeftCorner_;
 	private DockPanel contentPanel_;
-	private DeckPanel swapPanel_;
+	
 	private Resizer resizer_;
 	private Dimension expandSize_;
 	private String id_;

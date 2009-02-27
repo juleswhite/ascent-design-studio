@@ -110,7 +110,7 @@ public class TemplateEditPartFactory implements EditPartFactory {
 	}
 
 	public EditPart createModelEditPart(View v, Template template, Object model) {
-		String etype = template.getEditPartId();
+		
 		DiagramTemplateEditPart mep = null;
 		mep = new DiagramTemplateEditPart(modelHelper_, this, model, template);
 		manager_.getTemplateUpdaterInfo(v.getId(), modelHelper_.getId(model), new TemplateUpdaterSetter(mep));

@@ -13,7 +13,6 @@ import org.gems.ajax.client.figures.templates.ScriptExtractor;
 import org.gems.ajax.client.figures.templates.Template;
 import org.gems.ajax.client.figures.templates.TemplateData;
 import org.gems.ajax.client.figures.templates.TemplateElement;
-import org.gems.ajax.client.figures.templates.TemplateScript;
 import org.gems.ajax.client.figures.templates.TemplateUpdateCallback;
 import org.gems.ajax.client.figures.templates.TemplateUpdater;
 import org.gems.ajax.client.geometry.Rectangle;
@@ -78,7 +77,7 @@ public class DiagramTemplateEditPart extends DiagramPanelEditPart implements
 	public String getContainerElementId(Object child) {
 		String cid = null;
 		if (getContainerIds() != null) {
-			String id = getFigure().getId();
+			
 			Type[] types = getModelHelper().getTypes(child);
 			if (types != null) {
 				for (Type type : types) {

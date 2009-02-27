@@ -4,7 +4,6 @@ import org.gems.ajax.client.SelectionManager;
 import org.gems.ajax.client.edit.Command;
 import org.gems.ajax.client.edit.DiagramElementEditPart;
 import org.gems.ajax.client.edit.EditPart;
-import org.gems.ajax.client.edit.tools.SelectionTool;
 
 public class AddChildCommand implements Command {
 

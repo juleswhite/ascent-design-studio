@@ -4,7 +4,6 @@ import org.gems.ajax.client.connection.Connection;
 import org.gems.ajax.client.connection.ConnectionAnchor;
 import org.gems.ajax.client.connection.ConnectionLayer;
 import org.gems.ajax.client.edit.cmd.DisconnectCommand;
-import org.gems.ajax.client.figures.AbstractDiagramElement;
 import org.gems.ajax.client.figures.ConnectableDiagramElement;
 import org.gems.ajax.client.figures.DiagramElement;
 import org.gems.ajax.client.figures.GEMSDiagram;

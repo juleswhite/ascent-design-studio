@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gems.ajax.client.figures.templates.Template;
-import org.gems.ajax.client.util.dojo.DojoUtil;
 
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 

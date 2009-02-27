@@ -27,8 +27,6 @@ public class DnDManager {
 		return instance_;
 	}
 	
-	private boolean inDrag_ = true;
-	
 	private DnDManager(){}
 	
 	public void addDropTarget(DropTarget t){

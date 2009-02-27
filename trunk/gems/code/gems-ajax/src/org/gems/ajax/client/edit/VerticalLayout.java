@@ -47,4 +47,12 @@ public class VerticalLayout implements LayoutManager {
 //		element_.setSize(x+"px", y+"px");
 	}
 
+	public ResizableDiagramElement getElement() {
+		return element_;
+	}
+
+	public void setElement(ResizableDiagramElement element) {
+		element_ = element;
+	}
+
 }

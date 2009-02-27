@@ -3,8 +3,6 @@ package org.gems.ajax.client.figures;
 import org.gems.ajax.client.figures.templates.Template;
 import org.gems.ajax.client.util.dojo.DojoUtil;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
 /******************************************************************************

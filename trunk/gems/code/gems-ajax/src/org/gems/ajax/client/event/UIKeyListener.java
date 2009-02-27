@@ -2,8 +2,6 @@ package org.gems.ajax.client.event;
 
 import org.gems.ajax.client.figures.DiagramElement;
 
-import com.google.gwt.user.client.ui.Widget;
-
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials

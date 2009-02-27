@@ -3,7 +3,6 @@ package org.gems.ajax.client.edit;
 import java.util.List;
 
 import org.gems.ajax.client.figures.ConnectableDiagramElement;
-import org.gems.ajax.client.figures.GEMSDiagram;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the

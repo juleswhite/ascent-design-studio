@@ -12,7 +12,6 @@ package org.gems.ajax.client;
  ****************************************************************************/
 import org.gems.ajax.client.edit.EditDomain;
 import org.gems.ajax.client.edit.EditManager;
-import org.gems.ajax.client.edit.tools.ConnectionTool;
 import org.gems.ajax.client.event.UIEventDispatcher;
 import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.model.ModelingPackage;
@@ -58,12 +57,7 @@ public class Designer implements EntryPoint {
 				});
 
 		EditManager emanager = new EditManager();
-		ToolEntry te = new ToolEntry("Select", "Select",
-				"A tool to select an element.", SelectionManager.getInstance()
-						.getSelectionTool());
-		ToolEntry ce = new ToolEntry("Connect", "Connect",
-				"A tool to create connectsion between elements.",
-				ConnectionTool.getInstance());
+
 		emanager.setCurrentTool(SelectionManager.getInstance()
 				.getSelectionTool());
 		UIEventDispatcher.getInstance().addUIListener(emanager);
@@ -72,43 +66,7 @@ public class Designer implements EntryPoint {
 		editor_ = new GEMSEditor(new EditDomain(emanager));
 
 		RootPanel.get("slot1").add(editor_);
-		// }
-		/*
-		 * else { modelLoaderService_ = (ModelLoaderAsync) GWT
-		 * .create(ModelLoader.class); ServiceDefTarget endpoint =
-		 * (ServiceDefTarget) modelLoaderService_; String moduleRelativeURL =
-		 * GWT.getModuleBaseURL() + "modelLoader";
-		 * endpoint.setServiceEntryPoint(moduleRelativeURL);
-		 * modelLoaderService_.loadModel("foo", new
-		 * AsyncCallback<ClientModelObject>() {
-		 * 
-		 * public void onFailure(Throwable caught) {
-		 * Window.alert("Unable to load the specified model!"); }
-		 * 
-		 * public void onSuccess(ClientModelObject result) {
-		 * 
-		 * EditManager emanager = new EditManager(); ToolEntry te = new
-		 * ToolEntry("Select", "Select", "A tool to select an element.",
-		 * SelectionManager.getInstance() .getSelectionTool()); ToolEntry ce =
-		 * new ToolEntry( "Connect", "Connect",
-		 * "A tool to create connectsion between elements.",
-		 * ConnectionTool.getInstance());
-		 * emanager.setCurrentTool(SelectionManager
-		 * .getInstance().getSelectionTool());
-		 * UIEventDispatcher.getInstance().addUIListener( emanager);
-		 * UIEventDispatcher.getInstance().addKeyListener( emanager);
-		 * 
-		 * 
-		 * 
-		 * GEMSDiagram dig = editor_.open( new BasicModelHelper(), result);//
-		 * new
-		 * 
-		 * editor_.addView(dig, "View 1");
-		 * 
-		 * editor_.getViews().selectTab(0); RootPanel.get("slot1").add(editor_);
-		 * dig.setSize("2001px", "2001px"); } }); }
-		 */
-
+		
 	}
 
 	public void loadModelingPackage(ModelingPackage pkg) {

@@ -13,15 +13,10 @@ package org.gems.ajax.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gems.ajax.client.edit.Command;
 import org.gems.ajax.client.edit.EditConstants;
 import org.gems.ajax.client.edit.EditPart;
-import org.gems.ajax.client.edit.EditPartManager;
 import org.gems.ajax.client.edit.Tool;
 import org.gems.ajax.client.edit.tools.SelectionTool;
-import org.gems.ajax.client.figures.DiagramElement;
-
-import com.google.gwt.user.client.ui.KeyboardListener;
 
 public class SelectionManager implements EditConstants{
 

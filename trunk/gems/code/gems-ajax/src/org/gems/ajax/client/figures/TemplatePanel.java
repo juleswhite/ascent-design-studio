@@ -1,18 +1,11 @@
 package org.gems.ajax.client.figures;
 
-import org.gems.ajax.client.edit.EditPartManager;
-import org.gems.ajax.client.event.UIEventConnector;
 import org.gems.ajax.client.figures.templates.Template;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.MouseListener;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /******************************************************************************

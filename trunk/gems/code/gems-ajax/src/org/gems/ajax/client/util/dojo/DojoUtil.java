@@ -1,8 +1,6 @@
 package org.gems.ajax.client.util.dojo;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;

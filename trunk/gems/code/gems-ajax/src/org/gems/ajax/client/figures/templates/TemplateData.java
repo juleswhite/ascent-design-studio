@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.gems.ajax.client.model.ClientModelObject;
-
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse

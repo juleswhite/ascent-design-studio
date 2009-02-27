@@ -1,7 +1,6 @@
 package org.gems.ajax.client.edit;
 
 import org.gems.ajax.client.connection.ConnectionLayer;
-import org.gems.ajax.client.figures.DiagramElement;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.

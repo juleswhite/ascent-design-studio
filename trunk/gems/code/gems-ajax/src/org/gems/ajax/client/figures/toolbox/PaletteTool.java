@@ -1,7 +1,6 @@
 package org.gems.ajax.client.figures.toolbox;
 
 import org.gems.ajax.client.edit.Command;
-import org.gems.ajax.client.edit.cmd.OpenViewCommand;
 import org.gems.ajax.client.edit.cmd.ShowPaletteCommand;
 import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.figures.ImageButton;

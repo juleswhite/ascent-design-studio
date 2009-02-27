@@ -36,7 +36,7 @@ public class FloatingWrapper extends DockPanel implements GraphicsConstants,
 	private HorizontalPanel top_;
 	private HorizontalPanel bottom_;
 	
-	private boolean dirty_ = true;
+	
 	private int widgetSpread_ = 2;
 	private GEMSDiagram diagram_;
 	private DiagramPanel parent_;

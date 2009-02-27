@@ -172,6 +172,14 @@ public class GEMSEditor extends DockPanel {
 		return paletteManager_;
 	}
 
+	public EditManager getEditManager() {
+		return editManager_;
+	}
+
+	public void setEditManager(EditManager editManager) {
+		editManager_ = editManager;
+	}
+
 	public void setPaletteManager(PaletteManager paletteManager) {
 		paletteManager_ = paletteManager;
 	}

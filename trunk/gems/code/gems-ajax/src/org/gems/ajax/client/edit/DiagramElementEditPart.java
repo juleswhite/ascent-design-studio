@@ -36,7 +36,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasFocus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -58,7 +57,6 @@ public class DiagramElementEditPart extends AbstractModelEditPart implements
 		MovementAware, GraphicsConstants {
 
 	public static final String DEFAULT_CONTAINER_ID = "children";
-	private String template_ = "<table><tr><td>foo</td></tr><tr><td><div id=\"children\"></div></td></tr></table>";
 	private ConnectableDiagramElement figure_;
 	private ToolBox toolBox_;
 	private Map<Type, String> containerIds_;
@@ -215,7 +213,7 @@ public class DiagramElementEditPart extends AbstractModelEditPart implements
 
 	public Element getContainerElement(Object child) {
 		if (containerIds_ != null) {
-			String id = figure_.getId();
+			
 			Type[] types = getModelHelper().getTypes(child);
 			if (types != null) {
 				for (Type type : types) {

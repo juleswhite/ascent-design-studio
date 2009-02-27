@@ -28,8 +28,6 @@ import org.gems.ajax.client.model.Property;
 import org.gems.ajax.server.model.Model;
 import org.gems.ajax.server.model.ModelReader;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse
@@ -116,7 +114,7 @@ public class EMFModelLoader implements ModelReader {
 			for (EReference ref : eclass.getEReferences()) {
 				if (!ref.isContainment()) {
 					String typename = ref.getName();
-					ClientModelObject src = cmo;
+					
 					Object val = eobj.eGet(ref);
 					if (val instanceof EList) {
 						EList list = (EList) val;

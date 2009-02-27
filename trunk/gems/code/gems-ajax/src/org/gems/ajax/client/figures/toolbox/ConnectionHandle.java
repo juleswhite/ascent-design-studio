@@ -6,23 +6,11 @@ import org.gems.ajax.client.dnd.DropTarget;
 import org.gems.ajax.client.edit.CommandStack;
 import org.gems.ajax.client.edit.EditConstants;
 import org.gems.ajax.client.edit.EditPart;
-import org.gems.ajax.client.edit.EditPartManager;
-import org.gems.ajax.client.edit.ModelEditPart;
 import org.gems.ajax.client.edit.cmd.ConnectCommand;
 import org.gems.ajax.client.figures.ImageButton;
 import org.gems.ajax.client.util.GraphicsConstants;
-import org.gems.ajax.client.util.Util;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventPreview;
-import com.google.gwt.user.client.ui.MouseListenerAdapter;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -33,7 +21,8 @@ import com.google.gwt.user.client.ui.Widget;
  * Contributors: Jules White - initial API and implementation
  ******************************************************************************/
 
-public class ConnectionHandle implements ToolBoxTool, GraphicsConstants, EditConstants {
+public class ConnectionHandle implements ToolBoxTool, GraphicsConstants,
+		EditConstants {
 	private CommandStack commandStack_;
 	private EditPart context_;
 	private ConnectCommand connectCommand_;
@@ -42,44 +31,45 @@ public class ConnectionHandle implements ToolBoxTool, GraphicsConstants, EditCon
 	private SimplePanel connectionFloater_;
 	private boolean dragging_ = false;
 	private DragSource dragSource_;
-	
+
 	public ConnectionHandle() {
 		super();
 		widget_ = createHandle();
-				
+
 		connectionFloater_ = createFloater();
-		
-		dragSource_ = new DragSource(widget_,connectionFloater_,CONNECTION_TARGET);
+
+		dragSource_ = new DragSource(widget_, connectionFloater_,
+				CONNECTION_TARGET);
 		dragSource_.addListener(new DragSourceListener() {
-			
+
 			public void onExitTarget(DragSource ds, DropTarget t) {
 			}
-		
+
 			public void onEnterTarget(DragSource ds, DropTarget t) {
 			}
-		
+
 			public void onDrop(DragSource ds, DropTarget t) {
 			}
-		
+
 			public void onDragStart(DragSource ds) {
 			}
-		
+
 			public void onDragEnd(DragSource ds) {
 				widget_.setPressed(false);
 				widget_.setActive(false);
 				widget_.updateStyle();
 			}
-		
+
 		});
 	}
-	
-	protected SimplePanel createFloater(){
+
+	protected SimplePanel createFloater() {
 		SimplePanel s = new SimplePanel();
 		s.setStyleName(CONNECTION_HANDLE_FLOAT_STYLE);
 		return s;
 	}
-	
-	protected ImageButton createHandle(){
+
+	protected ImageButton createHandle() {
 		return new ImageButton(CONNECTION_HANDLE_STYLE,
 				CONNECTION_HANDLE_ACTIVE_STYLE,
 				CONNECTION_HANDLE_DRAGGING_STYLE,
@@ -91,19 +81,18 @@ public class ConnectionHandle implements ToolBoxTool, GraphicsConstants, EditCon
 		toolBox_ = toolbox;
 		toolBox_.add(widget_);
 		connectCommand_ = getConnectionCommand(context);
-		
-		
+
 		dragSource_.setCommand(getConnectCommand());
-		
+
 	}
-	
-	public ConnectCommand getConnectionCommand(EditPart context){
-		return (ConnectCommand)context.getCommand(ADD_CONNECTION_REQUEST);
+
+	public ConnectCommand getConnectionCommand(EditPart context) {
+		return (ConnectCommand) context.getCommand(ADD_CONNECTION_REQUEST);
 	}
 
 	public void detach() {
 		context_ = null;
-		if(toolBox_ != null){
+		if (toolBox_ != null) {
 			toolBox_.remove(widget_);
 			toolBox_ = null;
 		}
@@ -121,8 +110,8 @@ public class ConnectionHandle implements ToolBoxTool, GraphicsConstants, EditCon
 
 	public ImageButton getWidget() {
 		return widget_;
-	}	
-	
+	}
+
 	public EditPart getContext() {
 		return context_;
 	}
@@ -153,6 +142,10 @@ public class ConnectionHandle implements ToolBoxTool, GraphicsConstants, EditCon
 
 	public void setConnectionFloater(SimplePanel connectionFloater) {
 		connectionFloater_ = connectionFloater;
+	}
+
+	public boolean isDragging() {
+		return dragging_;
 	}
 
 }

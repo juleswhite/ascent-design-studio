@@ -40,6 +40,10 @@ public class Tool extends UIEventListenerAdapter implements UIKeyListener,
 		updateCursor();
 	}
 
+	public boolean isActive() {
+		return active_;
+	}
+
 	public void onMouseLeave(DiagramElement sender) {
 		updateCursor();
 	}

@@ -20,7 +20,6 @@ public abstract class AbstractEditPart implements EditPart {
 	private Object model_;
 	private ModelHelper modelHelper_;
 	private EditPartFactory factory_;
-	private Object layoutConstraint_;
 	private GEMSDiagram diagram_;
 
 	public AbstractEditPart(ModelHelper modelHelper, EditPartFactory factory,

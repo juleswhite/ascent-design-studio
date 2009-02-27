@@ -81,6 +81,10 @@ public class Resizer extends FocusPanel implements GraphicsConstants,
 		}
 	}
 
+	public boolean isResizing() {
+		return resizing_;
+	}
+
 	public void startResize(int x, int y) {
 		resizing_ = true;
 		resizeStartPosition_ = new Point(getAbsoluteLeft() + x,
