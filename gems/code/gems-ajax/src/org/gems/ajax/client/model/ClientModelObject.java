@@ -6,29 +6,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gems.ajax.client.model.event.ConnectionEvent;
+import org.gems.ajax.client.model.event.ContainmentEvent;
+import org.gems.ajax.client.model.event.EventDispatcher;
+import org.gems.ajax.client.model.event.ModelEvent;
+import org.gems.ajax.client.model.event.ModelListener;
+import org.gems.ajax.client.model.event.PropertyEvent;
+import org.gems.ajax.client.model.event.ProposedChangeListener;
+import org.gems.ajax.client.model.event.ProposedConnectionEvent;
+import org.gems.ajax.client.model.event.ProposedContainmentEvent;
+import org.gems.ajax.client.model.event.ProposedEvent;
+import org.gems.ajax.client.model.resources.ModelResource;
 import org.gems.ajax.client.util.UUID;
 
-public class ClientModelObject implements Serializable{
+public class ClientModelObject implements Serializable, ModelElement {
 
 	private String id_;
-	
+
 	private String label_ = "[New Element]";
-	
-	private List<String> tags_ = new ArrayList<String>();
+
+	private List<String> tags_ = new ArrayList<String>(1);
 
 	private ClientModelObject parent_;
+
+	private List<MetaType> types_ = new ArrayList<MetaType>(1);
+
+	private List<ModelListener> listeners_ = new ArrayList<ModelListener>(1);
+
+	private List<ClientModelObject> children_ = new ArrayList<ClientModelObject>(1);
+
+	private List<ClientAssociation> associations_ = new ArrayList<ClientAssociation>(1);
+
+	private Map<String, Property> properties_ = new HashMap<String, Property>(3);
 	
-	private List<MetaType> types_ = new ArrayList<MetaType>();
+	private ModelResource modelResource_;
 
-	private List<ModelListener> listeners_ = new ArrayList<ModelListener>();
-
-	private List<ClientModelObject> children_ = new ArrayList<ClientModelObject>();
-
-	private List<ClientAssociation> associations_ = new ArrayList<ClientAssociation>();
-
-	private Map<String,Property> properties_ = new HashMap<String,Property>();
-	
-	public ClientModelObject(){
+	public ClientModelObject() {
 		id_ = UUID.get();
 		ModelRegistry.getInstance().add(this);
 	}
@@ -38,14 +51,14 @@ public class ClientModelObject implements Serializable{
 		label_ = label;
 		ModelRegistry.getInstance().add(this);
 	}
-	
+
 	public ClientModelObject(String id, String label, MetaType mt) {
-		this(id,label);
+		this(id, label);
 		getTypes().add(mt);
 	}
-	
+
 	public ClientModelObject(String label, MetaType mt) {
-		this(UUID.get(),label);
+		this(UUID.get(), label);
 		getTypes().add(mt);
 	}
 
@@ -68,23 +81,33 @@ public class ClientModelObject implements Serializable{
 	}
 
 	public void addChild(ClientModelObject child) {
-		getChildren().add(child);
-		child.setParent(this);
-
+		if (dispatch(new ProposedContainmentEvent(this, child, true))) {
+			getChildren().add(child);
+			child.setParent(this);
+			dispatch(new ContainmentEvent(this, child, true));
+		}
 	}
 
 	public void removeChild(ClientModelObject child) {
-		getChildren().remove(child);
-		child.setParent(null);
-
+		if (dispatch(new ProposedContainmentEvent(this, child, false))) {
+			getChildren().remove(child);
+			child.setParent(null);
+			dispatch(new ContainmentEvent(this, child, false));
+		}
 	}
 
 	public void addAssociation(ClientAssociation a) {
-		getAssociations().add(a);
+		if (dispatch(new ProposedConnectionEvent(a.getSource(),a.getTarget(),true))) {
+			getAssociations().add(a);
+			dispatch(new ConnectionEvent(a.getSource(),a.getTarget(),true));
+		}
 	}
 
 	public void removeAssociation(ClientAssociation a) {
-		getAssociations().remove(a);
+		if (dispatch(new ProposedConnectionEvent(a.getSource(),a.getTarget(),false))) {
+			getAssociations().remove(a);
+			dispatch(new ConnectionEvent(a.getSource(),a.getTarget(),false));
+		}
 	}
 
 	public ClientModelObject getParent() {
@@ -97,6 +120,22 @@ public class ClientModelObject implements Serializable{
 
 	public List<ModelListener> getListeners() {
 		return listeners_;
+	}
+
+	public void addModelListener(ModelListener l) {
+		listeners_.add(l);
+	}
+
+	public void removeModelListener(ModelListener l) {
+		listeners_.remove(l);
+	}
+
+	public void addProposedChangeListener(ProposedChangeListener l) {
+		listeners_.add(l);
+	}
+
+	public void removeProposedChangeListener(ProposedChangeListener l) {
+		listeners_.remove(l);
 	}
 
 	public void setListeners(List<ModelListener> listeners) {
@@ -115,12 +154,12 @@ public class ClientModelObject implements Serializable{
 		return tags_;
 	}
 
-	public void addTag(String tag){
-		if(!getTags().contains(tag))
+	public void addTag(String tag) {
+		if (!getTags().contains(tag))
 			getTags().add(tag);
 	}
-	
-	public void removeTag(String tag){
+
+	public void removeTag(String tag) {
 		getTags().remove(tag);
 	}
 
@@ -139,6 +178,16 @@ public class ClientModelObject implements Serializable{
 	public void setProperties(Map<String, Property> properties) {
 		properties_ = properties;
 	}
+	
+	public void attachProperty(Property prop){
+		properties_.put(prop.getName(), prop);
+		prop.setOwner(this);
+	}
+	
+	public void detatchProperty(Property prop){
+		properties_.remove(prop.getName());
+		prop.setOwner(null);
+	}
 
 	public String getLabel() {
 		return label_;
@@ -148,4 +197,24 @@ public class ClientModelObject implements Serializable{
 		label_ = label;
 	}
 	
+	public ModelResource getModelResource() {
+		return modelResource_;
+	}
+
+	public void attachToModelResource(ModelResource modelResource) {
+		modelResource_ = modelResource;
+		for(ClientModelObject child : children_)
+			child.attachToModelResource(modelResource);
+	}
+
+	protected boolean propertyChange(PropertyEvent pe){
+		return dispatch(pe);
+	}
+
+	protected boolean dispatch(ModelEvent evt) {
+		EventDispatcher.get().dispatch(this,evt,listeners_);
+		
+		return !(evt instanceof ProposedEvent)
+				|| !((ProposedEvent) evt).vetoed();
+	}
 }

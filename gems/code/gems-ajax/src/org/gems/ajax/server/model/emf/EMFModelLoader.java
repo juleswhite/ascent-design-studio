@@ -25,6 +25,7 @@ import org.gems.ajax.client.model.MetaAssociation;
 import org.gems.ajax.client.model.MetaProperty;
 import org.gems.ajax.client.model.MetaType;
 import org.gems.ajax.client.model.Property;
+import org.gems.ajax.server.model.ClientServerModelMapping;
 import org.gems.ajax.server.model.Model;
 import org.gems.ajax.server.model.ModelReader;
 
@@ -91,6 +92,9 @@ public class EMFModelLoader implements ModelReader {
 		ClientModelObject cmo = lookup.get(eobj);
 		if (cmo == null) {
 			cmo = new ClientModelObject();
+			//This makes sure we can lookup the 
+			//EMF object later
+			ClientServerModelMapping.get().put(cmo, eobj);
 			lookup.put(eobj, cmo);
 
 			// This should eventually be changed to create a
@@ -109,7 +113,7 @@ public class EMFModelLoader implements ModelReader {
 				if (autoMapId_ && prop.getName().equalsIgnoreCase("id")) {
 					cmo.setId("" + prop.getValue());
 				}
-				cmo.getProperties().put(prop.getName(), prop);
+				cmo.attachProperty(prop);
 			}
 			for (EReference ref : eclass.getEReferences()) {
 				if (!ref.isContainment()) {

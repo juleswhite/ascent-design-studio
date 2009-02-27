@@ -1,4 +1,4 @@
-package org.gems.ajax.client.model;
+package org.gems.ajax.client.model.event;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -41,4 +41,13 @@ public class ContainmentEvent extends ModelEvent {
 	public boolean isAdd(){
 		return getType() == CHILD_ADDED;
 	}
+
+	public void dispatchImpl(ModelListener l) {
+		if(isAdd())
+			l.childAdded(this);
+		else
+			l.childRemoved(this);
+	}
+	
+	
 }

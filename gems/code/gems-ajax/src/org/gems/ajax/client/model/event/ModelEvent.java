@@ -1,4 +1,6 @@
-package org.gems.ajax.client.model;
+package org.gems.ajax.client.model.event;
+
+import java.util.List;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -17,6 +19,7 @@ public abstract class ModelEvent {
 	public static int CONNECTION_REMOVED = 4;
 	public static int PROPERTY_CHANGED = 5;
 	
+	private boolean vetoed_ = false;
 	private Object source_;
 	private int type_;
 
@@ -41,4 +44,18 @@ public abstract class ModelEvent {
 		type_ = type;
 	}
 
+	public void dispatch(List<ModelListener> listeners){
+		for(ModelListener l : listeners)
+			dispatchImpl(l);
+	}
+	
+	public void veto(){
+		vetoed_ = true;
+	}
+	
+	public boolean vetoed(){
+		return vetoed_;
+	}
+	
+	public abstract void dispatchImpl(ModelListener l);
 }

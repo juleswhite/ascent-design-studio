@@ -1,5 +1,4 @@
-package org.gems.ajax.client.model;
-
+package org.gems.ajax.client.model.event;
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -10,12 +9,17 @@ package org.gems.ajax.client.model;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
+public class ProposedPropertyEvent extends PropertyEvent implements ProposedEvent{
 
-public interface ModelListener {
-
-	public void childAdded(ContainmentEvent evt);
-	public void childRemoved(ContainmentEvent evt);
-	public void connectionAdded(ConnectionEvent evt);
-	public void connectionRemoved(ConnectionEvent evt);
-	public void propertyChanged(PropertyEvent evt);
+	public ProposedPropertyEvent(Object source, String propertyname,
+			Object oldvalue, Object newvalue) {
+		super(source, propertyname, oldvalue, newvalue);
+	}
+	
+	public void dispatchImpl(ModelListener l) {
+		if(l instanceof ProposedChangeListener){
+			ProposedChangeListener pcl = (ProposedChangeListener)l;
+			pcl.aboutToChangeProperty(this);
+		}
+	}
 }

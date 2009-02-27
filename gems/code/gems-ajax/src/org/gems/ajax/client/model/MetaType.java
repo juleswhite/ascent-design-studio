@@ -119,7 +119,7 @@ public class MetaType extends Type {
 		o.getTypes().add(this);
 		for(MetaProperty p : getAllProperties()){
 			Property prop = p.newInstance();
-			o.getProperties().put(prop.getName(),prop);
+			o.attachProperty(prop);
 		}
 		return o;
 	}

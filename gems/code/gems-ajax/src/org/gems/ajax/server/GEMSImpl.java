@@ -1,7 +1,11 @@
 package org.gems.ajax.server;
 
+import java.util.List;
+
 import org.gems.ajax.client.GEMS;
+import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.ModelingPackage;
+import org.gems.ajax.client.model.event.ModelEvent;
 import org.gems.ajax.client.model.resources.ModelParameterRef;
 import org.gems.ajax.client.model.resources.ModelResource;
 import org.gems.ajax.server.model.ModelLoader;
@@ -35,14 +39,25 @@ public class GEMSImpl extends RemoteServiceServlet implements GEMS {
 	}
 
 	public ModelingPackage getModelPackage(ModelResource res) {
+		ModelingPackage pkg = null;
+		
 		if (res != null) {
 			if (res instanceof ModelParameterRef) {
 				ModelParameterRef ref = (ModelParameterRef) res;
 				System.out.println("Received a request for : "
 						+ ref.getParameterRef());
 			}
-			return loader_.loadModel(res);
+			pkg = loader_.loadModel(res);
+			if(pkg.getRootObject() != null && pkg.getModelResource() != null)
+				pkg.getRootObject().attachToModelResource(pkg.getModelResource());
+				
 		}
+		
+		return pkg;
+	}
+
+	public List<ModelEvent> sendEvent(ModelResource res, ClientModelObject src,
+			ModelEvent evt) {
 		return null;
 	}
 

@@ -1,7 +1,4 @@
-package org.gems.ajax.server.model;
-
-import org.gems.ajax.client.model.ModelingPackage;
-import org.gems.ajax.client.model.resources.ModelResource;
+package org.gems.ajax.client.model.event;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -13,8 +10,12 @@ import org.gems.ajax.client.model.resources.ModelResource;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
-public interface ModelLoader {
-	
-	public ModelingPackage loadModel(ModelResource res);
-	public void saveModel(ModelingPackage pkg, ModelResource res);
+
+public interface ModelListener {
+
+	public void childAdded(ContainmentEvent evt);
+	public void childRemoved(ContainmentEvent evt);
+	public void connectionAdded(ConnectionEvent evt);
+	public void connectionRemoved(ConnectionEvent evt);
+	public void propertyChanged(PropertyEvent evt);
 }

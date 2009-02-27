@@ -1,6 +1,10 @@
 package org.gems.ajax.client;
 
+import java.util.List;
+
+import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.ModelingPackage;
+import org.gems.ajax.client.model.event.ModelEvent;
 import org.gems.ajax.client.model.resources.ModelResource;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -16,5 +20,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *    Jules White - initial API and implementation 
  ****************************************************************************/
 public interface GEMSAsync {
-	public void getModelPackage(ModelResource res, AsyncCallback<ModelingPackage> pkg);
+	public void getModelPackage(ModelResource res, AsyncCallback<ModelingPackage> callback);
+	public void sendEvent(ModelResource res, ClientModelObject src, ModelEvent evt, AsyncCallback<List<ModelEvent>> callback);
 }

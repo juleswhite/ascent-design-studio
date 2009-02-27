@@ -27,6 +27,9 @@ public class ModelLoaderImpl extends RemoteServiceServlet implements ModelLoader
 		postProcessors_.add(new GemsAssociationPostProcessor());
 	}
 	
+	public void saveModel(ModelingPackage pkg, ModelResource res) {
+	}
+
 	public ClientModelObject createModel(){
 		MetaType mt = TypeManager.getOrCreateTypeForName("default","ClientModelObject");
 		mt.getValidChildTypes().add(mt);
@@ -43,15 +46,15 @@ public class ModelLoaderImpl extends RemoteServiceServlet implements ModelLoader
 		ClientModelObject f4 = new ClientModelObject("f4",mt);
 		
 
-		f4.getProperties().put("boolean",new Property("boolean",Property.BOOLEAN,false));
-		f4.getProperties().put("int",new Property("int",Property.INT,2));
-		f4.getProperties().put("string",new Property("string",Property.STRING,"my string"));
-		f4.getProperties().put("decimal",new Property("decimal",Property.DECIMAL,"1.0"));
+		f4.attachProperty(new Property("boolean",Property.BOOLEAN,false));
+		f4.attachProperty(new Property("int",Property.INT,2));
+		f4.attachProperty(new Property("string",Property.STRING,"my string"));
+		f4.attachProperty(new Property("decimal",Property.DECIMAL,"1.0"));
 		ArrayList<String> pvals = new ArrayList<String>();
 		pvals.add("a");
 		pvals.add("b");
 		pvals.add("c");
-		f4.getProperties().put("enum",new EnumProperty("enum","a",pvals));
+		f4.attachProperty(new EnumProperty("enum","a",pvals));
 		root.addChild(f4);
 		
 		return root;

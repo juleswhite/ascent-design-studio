@@ -26,9 +26,9 @@ import org.gems.ajax.client.figures.toolbox.OpenFullDiagramViewTool;
 import org.gems.ajax.client.figures.toolbox.ToolBox;
 import org.gems.ajax.client.geometry.Rectangle;
 import org.gems.ajax.client.model.ModelHelper;
-import org.gems.ajax.client.model.ModelListener;
 import org.gems.ajax.client.model.Property;
 import org.gems.ajax.client.model.Type;
+import org.gems.ajax.client.model.event.ModelListener;
 import org.gems.ajax.client.util.GraphicsConstants;
 import org.gems.ajax.client.util.Util;
 

@@ -17,10 +17,10 @@ import java.util.List;
 import org.gems.ajax.client.edit.cmd.ConnectCommand;
 import org.gems.ajax.client.edit.cmd.DeleteCommand;
 import org.gems.ajax.client.figures.DiagramPanel;
-import org.gems.ajax.client.model.ConnectionEvent;
-import org.gems.ajax.client.model.ContainmentEvent;
 import org.gems.ajax.client.model.ModelHelper;
-import org.gems.ajax.client.model.PropertyEvent;
+import org.gems.ajax.client.model.event.ConnectionEvent;
+import org.gems.ajax.client.model.event.ContainmentEvent;
+import org.gems.ajax.client.model.event.PropertyEvent;
 
 public abstract class AbstractModelEditPart extends AbstractEditPart implements
 		ModelEditPart, EditConstants {
