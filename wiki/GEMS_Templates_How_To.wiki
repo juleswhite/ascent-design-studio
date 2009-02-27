@@ -22,7 +22,14 @@ By default, GEMS looks through the "templates" subdirectory of its installation 
 
 {{{<GEMS_INSTALL_DIR>/templates/default/ClientModelObject.extension}}} 
 
-GEMS will match the element against templates with any arbitrary file extension '(e.g. ClientModelObject.htm, ClientModelObject.foo, etc.)'. The file extension is used to determine the TemplateExecutor implementation that should be used to interpret it. You should add templates for your model elements by creating a new subdirectory of your templates directory corresponding to the name of the model type and then placing appropriately named template files within it.
+GEMS will match the element against templates with any arbitrary file extension e.g. 
+{{{
+ClientModelObject.htm
+ClientModelObject.foo
+etc.
+}}}
+
+The file extension is used to determine the TemplateExecutor implementation that should be used to interpret it. You should add templates for your model elements by creating a new subdirectory of your templates directory corresponding to the name of the model type and then placing appropriately named template files within it.
 
 = Default GEMS Template Language =
 
