@@ -1,5 +1,6 @@
-package org.gems.ajax.server.figures.templates;
+package org.gems.ajax.client.model.resources;
 
+import java.io.Serializable;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -11,6 +12,6 @@ package org.gems.ajax.server.figures.templates;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
-public interface TemplateFinder {
-	public ResolvedTemplate findTemplate(String modeltype, String objecttype);
+public class ModelResource implements Serializable{
+
 }

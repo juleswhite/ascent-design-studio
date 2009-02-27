@@ -1,5 +1,6 @@
 package org.gems.ajax.client.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /*******************************************************************************
@@ -11,7 +12,7 @@ import java.util.List;
  * Contributors: Jules White - initial API and implementation
  ******************************************************************************/
 
-public interface ModelHelper {
+public interface ModelHelper extends Serializable{
 
 	/**
 	 * Returns the unique id associated with

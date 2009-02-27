@@ -10,20 +10,26 @@ package org.gems.ajax.client.util;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
+import org.gems.ajax.client.GEMS;
+import org.gems.ajax.client.GEMSAsync;
 import org.gems.ajax.client.edit.EditPart;
 import org.gems.ajax.client.geometry.Point;
 import org.gems.ajax.client.geometry.Rectangle;
 import org.gems.ajax.client.util.dojo.DojoUtil;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Util implements GraphicsConstants {
+
+	private static GEMSAsync GEMS_SVC;
 
 	private Util() {
 	}
@@ -68,12 +74,12 @@ public class Util implements GraphicsConstants {
 	}
 
 	public static native int getZIndex(Element e)/*-{
-					return e.style.zIndex;
-				}-*/;
+							return e.style.zIndex;
+						}-*/;
 
 	public static native void setZIndex(Element e, int z)/*-{
-					e.style.zIndex = z;
-				}-*/;
+							e.style.zIndex = z;
+						}-*/;
 
 	public static int getOffsetWidth(Widget w) {
 		if (w.getParent() == null) {
@@ -107,7 +113,7 @@ public class Util implements GraphicsConstants {
 	     
 	   return null;
 	}-*/;
-	
+
 	public static native boolean evalBoolean(String javascript)
 	/*-{
 	   try{
@@ -118,7 +124,7 @@ public class Util implements GraphicsConstants {
 	     
 	   return false;
 	}-*/;
-	
+
 	public static native boolean functionExists(String funcname)
 	/*-{
 	   try{
@@ -127,8 +133,7 @@ public class Util implements GraphicsConstants {
 	     
 	   return false;
 	}-*/;
-		
-	
+
 	public static int getLeftBorderWidth(Element el) {
 		int v = getPixelSize(el, "border-left-width");
 		if (v == 0)
@@ -309,28 +314,28 @@ public class Util implements GraphicsConstants {
 	}
 
 	public static native void scrollElementRight(Element container, int amount)/*-{
-								  container.scrollLeft += amount;
-								}-*/;
+										  container.scrollLeft += amount;
+										}-*/;
 
 	public static native void scrollElementLeft(Element container, int amount)/*-{
-								  container.scrollLeft -= amount;
-								}-*/;
+										  container.scrollLeft -= amount;
+										}-*/;
 
 	public static native void scrollElementDown(Element container, int amount)/*-{
-								  container.scrollTop += amount;
-								}-*/;
+										  container.scrollTop += amount;
+										}-*/;
 
 	public static native void scrollElementUp(Element container, int amount)/*-{
-								  container.scrollTop -= amount;
-								}-*/;
+										  container.scrollTop -= amount;
+										}-*/;
 
 	public static native int getScrollTop(Element container)/*-{
-								  return container.scrollTop;
-								}-*/;
+										  return container.scrollTop;
+										}-*/;
 
 	public static native int getScrollLeft(Element container)/*-{
-								  return container.scrollLeft;
-								}-*/;
+										  return container.scrollLeft;
+										}-*/;
 
 	public static void attachMovementListener(Widget w, MovementListener l) {
 		MovementDetector d = new MovementDetector(w, l);
@@ -357,8 +362,8 @@ public class Util implements GraphicsConstants {
 		setAttribute(cssLink, "href", cssUrl);
 		head.appendChild(cssLink);
 	}
-	
-	public static void addScript(String scripturl){
+
+	public static void addScript(String scripturl) {
 		Element head = getElementByTagName("head");
 		Element cssLink = DOM.createElement("script");
 		setAttribute(cssLink, "type", "text/javascript");
@@ -384,8 +389,8 @@ public class Util implements GraphicsConstants {
 				+ "   head.appendChild(script);" + "  }";
 		return script;
 	}
-	
-	public static void loadScriptOnce(String spath){
+
+	public static void loadScriptOnce(String spath) {
 		eval(getScriptLoader(spath));
 	}
 
@@ -406,5 +411,18 @@ public class Util implements GraphicsConstants {
 		// }
 		// }
 
+	}
+
+	
+
+	public static GEMSAsync getGEMS() {
+		if (GEMS_SVC == null) {
+			GEMS_SVC = (GEMSAsync) GWT.create(GEMS.class);
+			ServiceDefTarget endpoint = (ServiceDefTarget) GEMS_SVC;
+			String moduleRelativeURL = GWT.getModuleBaseURL()
+					+ GEMS.SERVICE_NAME;
+			endpoint.setServiceEntryPoint(moduleRelativeURL);
+		}
+		return GEMS_SVC;
 	}
 }

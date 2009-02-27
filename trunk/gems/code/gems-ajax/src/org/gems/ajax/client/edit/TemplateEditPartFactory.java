@@ -2,17 +2,12 @@ package org.gems.ajax.client.edit;
 
 import java.util.Map;
 
-import org.gems.ajax.client.figures.TemplatePanel;
-import org.gems.ajax.client.figures.properties.BooleanPropertyEditor;
-import org.gems.ajax.client.figures.properties.EnumerationPropertyEditor;
 import org.gems.ajax.client.figures.properties.InlineBooleanEditor;
 import org.gems.ajax.client.figures.properties.InlineEnumerationEditor;
 import org.gems.ajax.client.figures.properties.InlineIntegerEditor;
 import org.gems.ajax.client.figures.properties.InlineNumberEditor;
 import org.gems.ajax.client.figures.properties.InlineTextEditor;
-import org.gems.ajax.client.figures.properties.NumericPropertyEditor;
 import org.gems.ajax.client.figures.properties.PropertyEditor;
-import org.gems.ajax.client.figures.properties.TextPropertyEditor;
 import org.gems.ajax.client.figures.templates.ClientTemplateUpdater;
 import org.gems.ajax.client.figures.templates.ServerTemplateUpdater;
 import org.gems.ajax.client.figures.templates.Template;
@@ -23,8 +18,6 @@ import org.gems.ajax.client.figures.templates.TemplateUpdater;
 import org.gems.ajax.client.figures.templates.TemplateUpdaterInfo;
 import org.gems.ajax.client.model.EnumProperty;
 import org.gems.ajax.client.model.ModelHelper;
-import org.gems.ajax.client.model.ModelLoader;
-import org.gems.ajax.client.model.ModelLoaderAsync;
 import org.gems.ajax.client.model.Property;
 import org.gems.ajax.client.model.Type;
 import org.gems.ajax.client.views.View;

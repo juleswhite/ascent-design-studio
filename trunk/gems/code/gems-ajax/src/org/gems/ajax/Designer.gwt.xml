@@ -1,6 +1,6 @@
 <module>
 
-	<servlet path="/modelLoader" class="org.gems.ajax.server.model.ModelLoaderImpl" />
+    <servlet path="/gems" class="org.gems.ajax.server.GEMSImpl" />
 	<servlet path="/templateManager" class="org.gems.ajax.server.figures.templates.TemplateManagerImpl" />
 
 	<!-- Inherit the core Web Toolkit stuff.                  -->
