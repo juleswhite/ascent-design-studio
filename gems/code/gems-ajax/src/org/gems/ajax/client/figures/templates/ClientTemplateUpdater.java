@@ -1,8 +1,5 @@
 package org.gems.ajax.client.figures.templates;
 
-import java.util.List;
-
-import org.gems.ajax.client.util.Util;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the

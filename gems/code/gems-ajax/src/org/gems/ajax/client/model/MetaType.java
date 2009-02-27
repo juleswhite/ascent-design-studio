@@ -3,8 +3,6 @@ package org.gems.ajax.client.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gems.ajax.client.util.UUID;
-
 public class MetaType extends Type {
 
 	private MetaType parentType_;

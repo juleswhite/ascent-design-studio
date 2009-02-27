@@ -11,8 +11,6 @@ import org.gems.ajax.client.edit.EditPart;
 import org.gems.ajax.client.edit.EditPartManager;
 import org.gems.ajax.client.edit.Tool;
 import org.gems.ajax.client.figures.DiagramElement;
-import org.gems.ajax.client.util.GraphicsConstants;
-import org.gems.ajax.client.util.Util;
 
 import com.google.gwt.user.client.ui.KeyboardListener;
 

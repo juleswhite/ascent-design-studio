@@ -65,7 +65,7 @@ public final class GlobalKeyboardListener {
 		return instance_;
 	}
 
-	private static void onKeyDown(Event event) {
+	public static void onKeyDown(Event event) {
 		char keyCode = (char) DOM.eventGetKeyCode(event);
 		int modifiers = getModifiers(event);
 
@@ -73,7 +73,7 @@ public final class GlobalKeyboardListener {
 			l.onKeyDown(null, keyCode, modifiers);
 	}
 
-	private static void onKeyPress(Event event) {
+	public static void onKeyPress(Event event) {
 		char keyCode = (char) DOM.eventGetKeyCode(event);
 		int modifiers = getModifiers(event);
 
@@ -81,7 +81,7 @@ public final class GlobalKeyboardListener {
 			l.onKeyPress(null, keyCode, modifiers);
 	}
 
-	private static void onKeyUp(Event event) {
+	public static void onKeyUp(Event event) {
 		char keyCode = (char) DOM.eventGetKeyCode(event);
 		int modifiers = getModifiers(event);
 

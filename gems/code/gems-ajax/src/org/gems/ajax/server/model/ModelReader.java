@@ -1,6 +1,5 @@
 package org.gems.ajax.server.model;
 
-import org.gems.ajax.client.model.ClientModelObject;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.

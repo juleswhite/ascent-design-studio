@@ -46,8 +46,6 @@ public class UIEventDispatcher {
 	
 	private List keyListeners_ = new ArrayList();
 	
-	private DiagramElement selection_;
-
 	public static void onKeyUp(DiagramElement sender, char keyCode, int modifiers) {
 		getInstance().doKeyUp(sender, keyCode, modifiers);
 	}

@@ -12,8 +12,6 @@ import org.gems.ajax.client.util.GraphicsConstants;
 import org.gems.ajax.client.util.Util;
 import org.gems.ajax.client.util.dojo.MoveListener;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /******************************************************************************

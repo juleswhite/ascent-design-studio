@@ -130,6 +130,14 @@ public class Segment extends FocusPanel implements GraphicsConstants,
 		return getElement().getId();
 	}
 
+	public RectilinearConnection getConnection() {
+		return connection_;
+	}
+
+	public void setConnection(RectilinearConnection connection) {
+		connection_ = connection;
+	}
+
 	public void onMove() {
 	}
 

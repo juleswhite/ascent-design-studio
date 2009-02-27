@@ -4,7 +4,6 @@ package org.gems.ajax.client.figures;
 import org.gems.ajax.client.connection.ChopBoxAnchor;
 import org.gems.ajax.client.connection.ConnectionAnchor;
 import org.gems.ajax.client.connection.RectilinearConnection;
-import org.gems.ajax.client.util.Util;
 
 import com.google.gwt.user.client.ui.Widget;
 

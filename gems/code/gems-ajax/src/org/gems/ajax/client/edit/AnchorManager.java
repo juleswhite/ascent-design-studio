@@ -109,6 +109,14 @@ public class AnchorManager implements GraphicsConstants {
 		addToSide(ca, d, l);
 	}
 
+	public Widget getOwner() {
+		return owner_;
+	}
+
+	public void setOwner(Widget owner) {
+		owner_ = owner;
+	}
+
 	public void addToSide(ConnectionAnchor ca, AnchorData d,
 			ArrayList<ConnectionAnchor> l) {
 

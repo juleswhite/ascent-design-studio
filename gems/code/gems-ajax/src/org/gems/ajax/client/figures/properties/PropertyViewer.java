@@ -1,6 +1,5 @@
 package org.gems.ajax.client.figures.properties;
 
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.SourcesClickEvents;
 import com.google.gwt.user.client.ui.Widget;
 

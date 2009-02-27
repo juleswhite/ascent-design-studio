@@ -10,7 +10,6 @@ import org.gems.ajax.client.model.ModelHelper;
 import org.gems.ajax.client.model.ModelListener;
 import org.gems.ajax.client.util.GraphicsConstants;
 
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /*******************************************************************************

@@ -99,8 +99,8 @@ public class DragSource extends MouseListenerAdapter implements
 							Util.cancelAllDocumentSelections();
 						}
 					});
-			int xoff = avatar_.getOffsetWidth() / 2;
-			int yoff = avatar_.getOffsetHeight() / 2;
+//			int xoff = avatar_.getOffsetWidth() / 2;
+//			int yoff = avatar_.getOffsetHeight() / 2;
 			RootPanel.get().setWidgetPosition(avatar_,
 					x-xOff_,//(sender.getAbsoluteLeft() + x) - xOff_,
 					y-yOff_);//(sender.getAbsoluteTop() + y) - yOff_);

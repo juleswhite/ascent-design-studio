@@ -1,16 +1,13 @@
 package org.gems.ajax.server.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.gems.ajax.client.model.BasicModelHelper;
 import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.EnumProperty;
 import org.gems.ajax.client.model.MetaAssociation;
 import org.gems.ajax.client.model.MetaType;
-import org.gems.ajax.client.model.ModelType;
 import org.gems.ajax.client.model.ModelingPackage;
 import org.gems.ajax.client.model.Property;
 import org.gems.ajax.client.model.TypeManager;
@@ -21,12 +18,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class ModelLoaderImpl extends RemoteServiceServlet implements ModelLoader{
 
-	private ClientModelObject root_;
-	private Map<String,ModelReader> readers_ = new HashMap<String, ModelReader>();
+//	private ClientModelObject root_;
+//	private Map<String,ModelReader> readers_ = new HashMap<String, ModelReader>();
 	private List<ModelPostprocessor> postProcessors_ = new ArrayList<ModelPostprocessor>();
 	
 	public ModelLoaderImpl(){
-		root_ = createModel();
+//		root_ = createModel();
 		postProcessors_.add(new GemsAssociationPostProcessor());
 	}
 	

@@ -3,16 +3,10 @@ package org.gems.ajax.client.figures.properties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gems.ajax.client.dnd.DnDManager;
-import org.gems.ajax.client.dnd.DropTarget;
-import org.gems.ajax.client.edit.DiagramElementEditPart;
 import org.gems.ajax.client.util.GraphicsConstants;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.HasFocus;
 import com.google.gwt.user.client.ui.Widget;
 
 /*******************************************************************************

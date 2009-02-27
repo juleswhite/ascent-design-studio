@@ -7,7 +7,6 @@ import org.gems.ajax.client.connection.Connection;
 import org.gems.ajax.client.connection.ConnectionAnchor;
 import org.gems.ajax.client.connection.ConnectionDecoration;
 import org.gems.ajax.client.connection.RectilinearConnection;
-import org.gems.ajax.client.figures.AbstractDiagramElement;
 import org.gems.ajax.client.figures.ConnectableDiagramElement;
 import org.gems.ajax.client.figures.DetailFigure;
 import org.gems.ajax.client.figures.GEMSDiagram;

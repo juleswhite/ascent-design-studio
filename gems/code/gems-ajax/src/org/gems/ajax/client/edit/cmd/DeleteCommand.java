@@ -1,6 +1,5 @@
 package org.gems.ajax.client.edit.cmd;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 

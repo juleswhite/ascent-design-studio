@@ -42,7 +42,7 @@ public class TemplateParser {
 		String cmap = e.attributes.get(Template.CHILD_MAPPINGS_ATTR);
 		if(cmap != null){
 			template.setContainerIds(new HashMap<Type, String>());
-			Map<String,String> childmap = parseMap(cmap);
+//			Map<String,String> childmap = parseMap(cmap);
 //			for(String key : childmap.keySet()){
 //				Type type = mh.getTypeForName(key.trim());
 //				if(type != null){

@@ -215,9 +215,7 @@ public class GEMSManhattanRouterHelper {
 
        public Point rectilinearIntermediatePoint(Point start, Point end,
                        List obList) {
-               boolean aok = true;
-               boolean bok = true;
-
+              
                Point a = new Point(start.x, end.y);
                Point b = new Point(start.y, end.x);
                LineSeg first = new LineSeg(start, a);

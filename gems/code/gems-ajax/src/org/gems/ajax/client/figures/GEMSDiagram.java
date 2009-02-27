@@ -29,9 +29,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class GEMSDiagram extends AbsolutePanel implements GraphicsConstants,
 		DiagramElement {
 
-	private AbstractDiagramElement zoomViewPanel_;
-	private Widget zoomViewParent_;
-	private int zoomViewOZ_ = 0;
+//	private AbstractDiagramElement zoomViewPanel_;
+//	private Widget zoomViewParent_;
+//	private int zoomViewOZ_ = 0;
 
 	private List<DiagramPanel> children_ = new ArrayList<DiagramPanel>();
 	private FocusPanel eventTrap_;

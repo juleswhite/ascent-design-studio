@@ -110,7 +110,7 @@ public class BasicModelHelper implements ModelHelper {
 	}
 
 	public boolean canAddChild(Object parent, Object child) {
-		List<MetaType> cts = ((ClientModelObject) child).getTypes();
+		
 		List<MetaType> pts = ((ClientModelObject) parent).getTypes();
 		for (MetaType t : pts) {
 			if (t.instanceOf((ClientModelObject) child)) {

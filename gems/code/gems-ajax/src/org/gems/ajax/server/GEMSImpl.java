@@ -4,7 +4,6 @@ import org.gems.ajax.client.GEMS;
 import org.gems.ajax.client.model.ModelingPackage;
 import org.gems.ajax.client.model.resources.ModelParameterRef;
 import org.gems.ajax.client.model.resources.ModelResource;
-import org.gems.ajax.client.util.Util;
 import org.gems.ajax.server.model.ModelLoader;
 import org.gems.ajax.server.util.ServerUtils;
 import org.springframework.context.ApplicationContext;
