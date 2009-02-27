@@ -170,8 +170,7 @@ Once the !ExecutorFactory and !TemplateExecutor implementations are created, the
 
 {{{
 <bean name="serverTemplateManager" class="org.gems.ajax.server.figures.templates.DefaultServerTemplateManager">
-    <property name="templateRepositoryPath" value="templates"/>
-    <property name="fileWatching" value="true"/>
+    ....
     <property name="executorFactories">
       <map>
         <entry>
@@ -190,3 +189,23 @@ Once the !ExecutorFactory and !TemplateExecutor implementations are created, the
   <bean name="simpleTemplateFactory" 
         class="org.gems.ajax.server.figures.templates.SimpleExecutorFactory"/>
 }}}
+
+= Overriding the Default Template Resolution Mechanism =
+
+The default template resolution procedure of looking through the templates directory can be changed by plugging in a new implementation of !TemplateFinder. To change the resolution mechanism, implement a new implementation of org.gems.ajax.server.figures.templates.TemplateFinder
+
+The !TemplateFinder interface has a single method which is invoked to get a handle on an input stream for template for the requested object type. The data is returned as an instance of the !ResolvedTemplate class. The !ResolvedTemplate instance MUST have a value set for the type. The !TemplateFinder is passed the model type and model element type of the element that a template is being requested for. 
+
+To plug-in a new !TemplateFinder, modify gems-server.xml as follows:
+
+{{{
+<bean name="serverTemplateManager" class="org.gems.ajax.server.figures.templates.DefaultServerTemplateManager">
+    <!-- A reference to your implementation of TemplateFinder -->
+    <property name="templateFinder" ref="myTemplateFinder"/>
+   ....
+</bean>
+
+<!-- Instantiate your template finder -->
+<bean id="myTemplateFinder" class="org.your.pkg.MyTemplateFinder"/>         
+}}}
+
