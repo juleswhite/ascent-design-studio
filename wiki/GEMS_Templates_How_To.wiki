@@ -108,9 +108,85 @@ The hooks can be seen in the following code snippet:
 
 The "readyif" attribute specifies a javascript expression to execute via "eval()" to determine if your script has finished loading. The javascript expression MUST RETURN A BOOLEAN. The "init" attribute specifies a javascript expression to execute via "eval()" once the script has successfully loaded. This expression will be executed once for the entire modeling session. If other templates reference the script and the init function, the script will only be loaded once and the init function called a single time. The "onupdate" attribute specifies a javascript expression to run each time the template is re-interpreted and the result has been loaded into the view on the client.
 
-= Details =
+= Creating New Template Languages =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Arbitrary template languages can be created for GEMS. The only requirement is that the execution of the template returns a valid HTML string that meets the specifications from the previous section. There are three key steps to creating a new template language and installing it in GEMS:
+  # Implement a new org.gems.ajax.server.figures.templates.ExecutorFactory
+  # Implement a new org.gems.ajax.server.figures.templates.TemplateExecutor
+  # Install the new ExecutorFactory into GEMS' gems-server.xml
+
+The !ExecutorFactory is a class that creates executable versions of each script. The !ExectuorFactory interface has a single method:
+
+{{{
+/**
+ * An executor factory is used to create executors for a given template
+ * language type. The executor factories should be registered with the
+ * DefaultServerTemplateManager.
+ */
+public interface ExecutorFactory {
+	
+	/**
+	 * Create a template executor from a string of template
+	 * data.
+	 * 
+	 * @param template
+	 * @return
+	 */
+	public TemplateExecutor createExecutor(String template);
+}
+}}}
+
+The !ExecutorFactory is passed the contents of the template file from disk that it is being asked to turn into a !TemplateExecutor. The factory must compile and create an instance of a concrete subclass of the !TemplateExecutor interface.
+
+The !TemplateExecutor is used to execute the template each time the model changes and the client requests for its view to be updated. The !TemplateExecutor interface has a single method that takes the new state of the client and model (wrapped as a !TemplateExecData object):
+
+{{{
+/**
+ * This interface should be implemented to create a new template
+ * language and plug it into the server-side template engine.
+ * An executor can be registered with the DefaultServerTemplateManager
+ * and run whenever a template is requested of the type handled
+ * by this template executor.
+ */
+public interface TemplateExecutor {
+
+	/**
+	 * This method should execute the template with
+	 * the provided data and produce html that can
+	 * be displayed by the view on the client-side.
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public String exec(TemplateExecData data);
+	
+}
+
+}}}
+
+The !TemplateExecutor's exec method should execute the template using the new client and model state data and then return a new HTML result. The HTML is passed on to the client and loaded into that model element's view.
+
+Once the !ExecutorFactory and !TemplateExecutor implementations are created, they must be installed into GEMS. The installation is accomplished by creating a new bean (see the Java Spring framework documentation for more details on this file) to instantiate the !ExecutorFactory and then referencing it in the executorFactories map of the serverTemplateManager:
+
+{{{
+<bean name="serverTemplateManager" class="org.gems.ajax.server.figures.templates.DefaultServerTemplateManager">
+    <property name="templateRepositoryPath" value="templates"/>
+    <property name="fileWatching" value="true"/>
+    <property name="executorFactories">
+      <map>
+        <entry>
+            <key>
+                <!-- the file extension to register your template type with -->
+                <value>htm</value>
+            </key>
+            <!-- the reference to your executor factory -->
+            <ref bean="simpleTemplateFactory" />
+        </entry>
+      </map>
+    </property>
+  </bean>
+  
+  <!-- the instantiation of your executor factory -->
+  <bean name="simpleTemplateFactory" 
+        class="org.gems.ajax.server.figures.templates.SimpleExecutorFactory"/>
+}}}
