@@ -59,8 +59,53 @@ Arbitrary HTML code can be sent to the client as the result of interpreting a te
 
   # the HTML must have `<html>` tags surrounding it
   # all javascripts and CSS stylesheets that are loaded must be referenced in a `<head>` tag section that follows the `<html>` tag
-  # the HTML must have a valid '<body>' tag section
+  # the HTML must have a valid `<body>` tag section
 
+For example, valid HTML to return could look like:
+
+{{{
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="js/lightbox/lightbox.css" />
+<script type="text/javascript" 
+        src="js/lightbox/lightbox.js" 
+        readyif="window.initLightbox != null" 
+        init="initLightbox();"  
+        onupdate="initLightbox();">
+</script>
+</head>
+
+<body>
+
+<div style="width:100%; height:100%">
+  <img src="img/block.png">
+</div>
+
+<div style="position:absolute; top:0; left:0; margin:10 10 10 10;">
+Model Object:${id}
+<a href="img/block.jpg" rel="lightbox" title="my caption"><img src="img/b.gif" /></a> 
+</div>
+</body>
+</html>
+}}}
+
+This HTML loads a javascript and a CSS stylesheet in its head. Any javascripts or stylesheets that are returned with the template HTML are dynamically loaded into the client browser. Furthermore, GEMS guarantees that the same script or stylesheet is loaded exactly once regardless of how many times the javascript or stylesheet shows up in HTML returned from templates to the client. 
+
+Because the javascript is loaded dynamically, it cannot use the document's onLoad method to execute. GEMS provides hooks that can be used to:
+  # Check to make sure your script is loaded properly
+  # Call a method on your script to initialize it the first time it is loaded (from any template)
+  # Call a method on your script each time the template is re-interpreted and the result is sent back to the browser
+
+The hooks can be seen in the following code snippet:
+{{{
+<script type="text/javascript" 
+        src="js/lightbox/lightbox.js" 
+        readyif="window.initLightbox != null"  
+        init="initLightbox();"  
+        onupdate="initLightbox();">
+</script>
+}}
+The "readyif" attribute specifies a javascript expression to execute via "eval()" to determine if your script has finished loading. The javascript expression MUST RETURN A BOOLEAN. The "init" attribute specifies a javascript expression to execute via "eval()" once the script has successfully loaded. This expression will be executed once for the entire modeling session. If other templates reference the script and the init function, the script will only be loaded once and the init function called a single time. The "onupdate" attribute specifies a javascript expression to run each time the template is re-interpreted and the result has been loaded into the view on the client.
 
 = Details =
 
