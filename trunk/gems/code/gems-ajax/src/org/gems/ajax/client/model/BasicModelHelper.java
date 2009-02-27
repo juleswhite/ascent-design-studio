@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.gems.ajax.client.model.event.ModelListener;
 import org.gems.ajax.client.util.UUID;
 
 public class BasicModelHelper implements ModelHelper {

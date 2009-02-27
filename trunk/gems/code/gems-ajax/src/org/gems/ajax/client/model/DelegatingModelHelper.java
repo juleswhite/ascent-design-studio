@@ -2,6 +2,8 @@ package org.gems.ajax.client.model;
 
 import java.util.List;
 
+import org.gems.ajax.client.model.event.ModelListener;
+
 public class DelegatingModelHelper implements ModelHelper {
 
 	private ModelHelper delegate_;

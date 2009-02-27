@@ -62,6 +62,14 @@ public class ClientAssociation implements IsSerializable{
 	public List<Property> getProperties() {
 		return properties_;
 	}
+	
+	public void attachProperty(Property prop){
+		properties_.add(prop);
+	}
+	
+	public void detatchProperty(Property prop){
+		properties_.remove(prop);
+	}
 
 	public void setProperties(List<Property> properties) {
 		properties_ = properties;

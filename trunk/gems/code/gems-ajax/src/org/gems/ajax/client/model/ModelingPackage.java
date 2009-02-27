@@ -13,16 +13,16 @@ import org.gems.ajax.client.model.resources.ModelResource;
  * Contributors: Jules White - initial API and implementation
  ****************************************************************************/
 public class ModelingPackage implements Serializable {
-	private ClientModelObject rootObject_;
+	private ModelElement rootObject_;
 	private ModelResource modelResource_;
 	private ModelType modelType_;
 	private ModelHelper modelHelper_;
 
-	public ClientModelObject getRootObject() {
+	public ModelElement getRootObject() {
 		return rootObject_;
 	}
 
-	public void setRootObject(ClientModelObject rootObject) {
+	public void setRootObject(ModelElement rootObject) {
 		rootObject_ = rootObject;
 	}
 

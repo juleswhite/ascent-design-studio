@@ -3,6 +3,8 @@ package org.gems.ajax.client.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.gems.ajax.client.model.event.ModelListener;
+
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse

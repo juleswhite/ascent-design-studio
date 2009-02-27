@@ -1,4 +1,4 @@
-package org.gems.ajax.client.model;
+package org.gems.ajax.client.model.event;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -46,6 +46,10 @@ public class PropertyEvent extends ModelEvent {
 
 	public void setNewValue(Object newValue) {
 		newValue_ = newValue;
+	}
+
+	public void dispatchImpl(ModelListener l) {
+		l.propertyChanged(this);
 	}
 	
 	

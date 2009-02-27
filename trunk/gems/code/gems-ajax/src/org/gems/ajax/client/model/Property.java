@@ -2,6 +2,9 @@ package org.gems.ajax.client.model;
 
 import java.io.Serializable;
 
+import org.gems.ajax.client.model.event.PropertyEvent;
+import org.gems.ajax.client.model.event.ProposedPropertyEvent;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse
@@ -12,20 +15,21 @@ import java.io.Serializable;
  ****************************************************************************/
 
 public class Property implements Serializable, PropertyConstants {
-	
+
+	private ClientModelObject owner_;
 	private MetaProperty type_;
 	private String value_;
 
 	public Property() {
-		type_ = new MetaProperty(null,null);
+		type_ = new MetaProperty(null, null);
 	}
 
 	public Property(String name, String type, Object value) {
 		super();
-		type_ = new MetaProperty(name,type);
+		type_ = new MetaProperty(name, type);
 		setValue(value);
 	}
-	
+
 	public Property(MetaProperty type, Object value) {
 		super();
 		type_ = type;
@@ -39,7 +43,7 @@ public class Property implements Serializable, PropertyConstants {
 	public void setType(String type) {
 		type_.setType(type);
 	}
-	
+
 	public void setType(MetaProperty type) {
 		type_ = type;
 	}
@@ -47,16 +51,30 @@ public class Property implements Serializable, PropertyConstants {
 	public Object getValue() {
 		return value_;
 	}
-	
-	public String getValueAsString(){
-		return ""+value_;
+
+	public String getValueAsString() {
+		return "" + value_;
 	}
 
 	public void setValue(Object value) {
-		value_ = ""+value;
+		
+		if(owner_ != null){
+			if(owner_.dispatch(new ProposedPropertyEvent(owner_,getName(),value_,value))){
+				Object old = value_;
+				setValueImpl(value);
+				owner_.dispatch(new PropertyEvent(owner_,getName(),old,value));
+			}
+		}
+		else {
+			setValueImpl(value);
+		}
 	}
 	
-	public void setValueFromString(String value){
+	private void setValueImpl(Object value){
+		value_ = "" + value;
+	}
+
+	public void setValueFromString(String value) {
 		value_ = value;
 	}
 
@@ -66,6 +84,14 @@ public class Property implements Serializable, PropertyConstants {
 
 	public void setName(String name) {
 		type_.setName(name);
+	}
+
+	public ClientModelObject getOwner() {
+		return owner_;
+	}
+
+	public void setOwner(ClientModelObject owner) {
+		owner_ = owner;
 	}
 
 }

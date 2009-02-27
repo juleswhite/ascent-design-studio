@@ -7,7 +7,7 @@ import org.gems.ajax.client.figures.DiagramElementListener;
 import org.gems.ajax.client.figures.DiagramPanel;
 import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.model.ModelHelper;
-import org.gems.ajax.client.model.ModelListener;
+import org.gems.ajax.client.model.event.ModelListener;
 import org.gems.ajax.client.util.GraphicsConstants;
 
 import com.google.gwt.user.client.ui.Widget;
