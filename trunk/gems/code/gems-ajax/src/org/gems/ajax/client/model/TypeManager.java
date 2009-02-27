@@ -15,15 +15,15 @@ public class TypeManager {
 	private static HashMap<String, MetaType> metaTypeMap_ = new HashMap<String, MetaType>();
 	private static HashMap<String, ModelType> modelTypeMap_ = new HashMap<String, ModelType>();
 
-	public static MetaType getTypeForName(String type) {
-		return metaTypeMap_.get(type);
+	public static MetaType getTypeForName(String modeltype, String type) {
+		return metaTypeMap_.get(getKey(modeltype, type));
 	}
 
 	public static MetaType getOrCreateTypeForName(String modeltype, String type) {
-		MetaType t = getTypeForName(type);
+		MetaType t = getTypeForName(modeltype,type);
 		if (t == null) {
 			t = new MetaType(getOrCreateModelTypeForName(modeltype),type);
-			metaTypeMap_.put(type, t);
+			metaTypeMap_.put(getKey(modeltype, type), t);
 		}
 		return t;
 	}
@@ -39,5 +39,9 @@ public class TypeManager {
 			modelTypeMap_.put(type, t);
 		}
 		return t;
+	}
+	
+	public static String getKey(String modeltype, String metatype){
+		return modeltype+"::"+metatype;
 	}
 }

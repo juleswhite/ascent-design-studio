@@ -8,6 +8,16 @@ import org.gems.ajax.client.util.UUID;
 
 public class BasicModelHelper implements ModelHelper {
 
+	private ModelType modelType_;
+	
+	public ModelType getModelType() {
+		return modelType_;
+	}
+
+	public void setModelType(ModelType modelType) {
+		modelType_ = modelType;
+	}
+
 	public void addChild(Object parent, Object child) {
 		((ClientModelObject) parent).addChild((ClientModelObject) child);
 	}
@@ -80,8 +90,8 @@ public class BasicModelHelper implements ModelHelper {
 		return ((ClientModelObject) o).getTypes().toArray(new Type[0]);
 	}
 
-	public Type getTypeForName(String name) {
-		return TypeManager.getTypeForName(name);
+	public Type getTypeForName(String modeltype, String name) {
+		return TypeManager.getTypeForName(modelType_.getName(),name);
 	}
 
 	public Object getProperty(Object model, String property) {

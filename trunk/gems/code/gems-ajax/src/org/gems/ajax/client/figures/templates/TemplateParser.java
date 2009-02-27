@@ -43,12 +43,12 @@ public class TemplateParser {
 		if(cmap != null){
 			template.setContainerIds(new HashMap<Type, String>());
 			Map<String,String> childmap = parseMap(cmap);
-			for(String key : childmap.keySet()){
-				Type type = mh.getTypeForName(key.trim());
-				if(type != null){
-					template.getContainerIds().put(type, childmap.get(key));
-				}
-			}
+//			for(String key : childmap.keySet()){
+//				Type type = mh.getTypeForName(key.trim());
+//				if(type != null){
+//					template.getContainerIds().put(type, childmap.get(key));
+//				}
+//			}
 		}
 		template.setHtml(t.remainder);
 		template.setStylePrimaryName(e.attributes.get(Template.STYLE_PRIMARY_NAME));
