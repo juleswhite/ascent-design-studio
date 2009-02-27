@@ -5,7 +5,7 @@
 If you use ClientModelObjects as your client-side model, GEMS provides a set of built-in event handling classes. This page introduces you to these classes and how to use them.
 
 
-= Listening for Changes on a Model Element =
+= Listening for Changes on a ClientModelObject =
 
 To listen for changes on a specific ClientModelObject instance, you must register an instance of a org.gems.ajax.client.model.event.ModelListener with that instance. The ModelListener has a few simple methods:
 
@@ -97,4 +97,24 @@ public interface ProposedChangeListener extends ModelListener {
 	public void aboutToChangeProperty(PropertyEvent evt);
 	
 }
+}}}
+
+Now, to veto an event, we can register a PropsedChangeListener:
+
+{{{
+ClientModelObject readOnlyObject = ...;
+ProposedChangeListener vetoEverything = new ProposedChangeListener(){
+
+	public void aboutToAddChild(ContainmentEvent evt){evt.veto();}
+	
+	public void aboutToRemoveChild(ContainmentEvent evt){evt.veto();}
+	
+	public void aboutToAddConnection(ConnectionEvent evt){evt.veto();}
+	
+	public void aboutToRemoveConnection(ConnectionEvent evt){evt.veto();}
+	
+	public void aboutToChangeProperty(PropertyEvent evt){evt.veto();}
+};
+
+readOnlyObject.addProposedChangeListener(vetoEverything);
 }}}
