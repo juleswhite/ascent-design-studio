@@ -118,3 +118,19 @@ ProposedChangeListener vetoEverything = new ProposedChangeListener(){
 
 readOnlyObject.addProposedChangeListener(vetoEverything);
 }}}
+
+= Global Event Listening Across a Model or Multiple Models =
+
+GEMS uses a centralized event dispatcher: org.gems.ajax.client.model.event.EventDispatcher. This singleton class can be used to listen to events from every ClientModelObject -- regardless of the model it is attached to. To receive notification of all events across all ClientModelObjects BEFORE they are dispatched to a ClientModelObject's local listeners, register a ModelListener with the EventDispatcher as follows:
+
+{{{
+ModelListener mygloballistener = ...;
+EventDispatcher.get().getPreDispatchListeners().add(l);
+}}}
+
+To receive notification of all events across all ClientModelObjects AFTER they are dispatched to a ClientModelObject's local listeners, register a ModelListener with the EventDispatcher as follows:
+
+{{{
+ModelListener mygloballistener = ...;
+EventDispatcher.get().getPostDispatchListeners().add(l);
+}}}
