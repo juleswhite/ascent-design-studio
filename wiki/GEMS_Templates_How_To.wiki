@@ -18,7 +18,7 @@ ClientModelObject root = new ClientModelObject("root",mt);
 
 
 
-By default, GEMS looks through the "templates" subdirectory of its installation path to find a template for an element. For example, to find a template for an element of type "ClientModelObject" attached to a model of type "default", GEMS will search for files matching the pattern "<GEMS_INSTALL_DIR>/templates/default/ClientModelObject.*". GEMS will match the element against templates with any arbitrary file extension (e.g. ClientModelObject.htm, ClientModelObject.foo, etc.). The file extension is used to determine the TemplateExecutor implementation that should be used to interpret it. You should add templates for your model elements by creating a new subdirectory of your templates directory corresponding to the name of the model type and then placing appropriately named template files within it.
+By default, GEMS looks through the "templates" subdirectory of its installation path to find a template for an element. For example, to find a template for an element of type "ClientModelObject" attached to a model of type "default", GEMS will search for files matching the pattern '<GEMS_INSTALL_DIR>/templates/default/ClientModelObject.*'. GEMS will match the element against templates with any arbitrary file extension (e.g. ClientModelObject.htm, ClientModelObject.foo, etc.). The file extension is used to determine the TemplateExecutor implementation that should be used to interpret it. You should add templates for your model elements by creating a new subdirectory of your templates directory corresponding to the name of the model type and then placing appropriately named template files within it.
 
 = Default GEMS Template Language =
 
