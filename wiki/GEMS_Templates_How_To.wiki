@@ -1,0 +1,55 @@
+#summary This page describes how to create and work with GEMS templates to change the look, feel, and interaction with a model.
+
+= Introduction =
+
+GEMS uses this type information to look up a template to use to generate the view for a model element. Templates can be written in multiple languages -- as long as GEMS has the appropriate TemplateExecutor installed. The next sections of this tutorial are going to focus on GEMS' default template language. Detailed instructions for creating a new templating language are near the end of this guide.
+
+= How Templates are Resolved =
+
+Each element in a model has a type associated with it. Furthermore, each model also has a type associated with it. 
+
+{{{
+MetaType mt = TypeManager.getOrCreateTypeForName(
+                                         "default", //the model's type
+                                         "ClientModelObject" //the element's type
+                                           );
+ClientModelObject root = new ClientModelObject("root",mt);
+}}}
+
+
+
+By default, GEMS looks through the "templates" subdirectory of its installation path to find a template for an element. For example, to find a template for an element of type "ClientModelObject" attached to a model of type "default", GEMS will search for files matching the pattern "<GEMS_INSTALL_DIR>/templates/default/ClientModelObject.*". GEMS will match the element against templates with any arbitrary file extension (e.g. ClientModelObject.htm, ClientModelObject.foo, etc.). The file extension is used to determine the TemplateExecutor implementation that should be used to interpret it. You should add templates for your model elements by creating a new subdirectory of your templates directory corresponding to the name of the model type and then placing appropriately named template files within it.
+
+= Default GEMS Template Language =
+
+The default GEMS template language is attached to the ".htm" file extension. The default template language allows you to bind values from the client and the model to the html. For example, the template:
+
+{{{
+<html>
+ <head></head>
+ <body>
+  <div style="width:${width}; height:${height}">
+   <b>My Element ID is ${id}!</b>
+  </div>
+ </body>
+</html>
+}}}
+
+uses the ${width} and ${height} placeholders to insert the client view's current width and height. If the user resizes the element's view, the template is re-interpreted and these values are updated. Similarly, the ${id} property is used to get the id of the model element that the view is bound to. Properties that are installed on the element can be referred to via ${model.propertyname}.
+
+The standard GEMS template language can be run on either the client or the server. To have the template run on the client and not require a roundtrip to the server on updates, the template's very first line should be:
+{{{
+<!--GEMS_Client-->
+}}}
+
+= Interpretation of HTML on the Client =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
