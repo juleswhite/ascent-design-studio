@@ -2,7 +2,7 @@
 
 = Introduction =
 
-GEMS uses this type information to look up a template to use to generate the view for a model element. Templates can be written in multiple languages -- as long as GEMS has the appropriate TemplateExecutor installed. The next sections of this tutorial are going to focus on GEMS' default template language. Detailed instructions for creating a new templating language are near the end of this guide.
+GEMS uses this type information to look up a template to use to generate the view for a model element. Templates can be written in multiple languages -- as long as GEMS has the appropriate !TemplateExecutor installed. The next sections of this tutorial are going to focus on GEMS' default template language. Detailed instructions for creating a new templating language are near the end of this guide.
 
 = How Templates are Resolved =
 
