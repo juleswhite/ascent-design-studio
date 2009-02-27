@@ -29,7 +29,7 @@ ClientModelObject.foo
 etc.
 }}}
 
-The file extension is used to determine the TemplateExecutor implementation that should be used to interpret it. You should add templates for your model elements by creating a new subdirectory of your templates directory corresponding to the name of the model type and then placing appropriately named template files within it.
+The file extension is used to determine the !TemplateExecutor implementation that should be used to interpret it. You should add templates for your model elements by creating a new subdirectory of your templates directory corresponding to the name of the model type and then placing appropriately named template files within it.
 
 = Default GEMS Template Language =
 
