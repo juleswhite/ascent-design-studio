@@ -104,7 +104,8 @@ The hooks can be seen in the following code snippet:
         init="initLightbox();"  
         onupdate="initLightbox();">
 </script>
-}}
+}}}
+
 The "readyif" attribute specifies a javascript expression to execute via "eval()" to determine if your script has finished loading. The javascript expression MUST RETURN A BOOLEAN. The "init" attribute specifies a javascript expression to execute via "eval()" once the script has successfully loaded. This expression will be executed once for the entire modeling session. If other templates reference the script and the init function, the script will only be loaded once and the init function called a single time. The "onupdate" attribute specifies a javascript expression to run each time the template is re-interpreted and the result has been loaded into the view on the client.
 
 = Details =
