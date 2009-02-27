@@ -1,7 +1,5 @@
 package org.gems.ajax.server.figures.templates;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +13,6 @@ import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.MetaType;
 import org.gems.ajax.client.model.ModelRegistry;
 import org.gems.ajax.server.model.ClientServerModelMapping;
-import org.gems.ajax.server.util.file.DirectoryWatcher;
-import org.gems.ajax.server.util.file.IFileListener;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -37,12 +33,11 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 	private Map<String, ExecutorFactory> executorFactories_ = new HashMap<String, ExecutorFactory>();
 	private Map<String, TemplateUpdaterInfo> updaters_ = new HashMap<String, TemplateUpdaterInfo>();
 	private Map<String, TemplateExecutor> serverTemplates_ = new HashMap<String, TemplateExecutor>();
-	private String defaultTemplateType_ = "Simple";
 	private TemplateFinder templateFinder_;
 
 
 	public String getTemplate(String id) {
-		return "<div style=\"width:'100%'; height:'100%'\"><img src=\"img/block.png\" style=\"width:'100%'; height:'100%'\" height=\"100%\" width=\"100%\"></div><div style=\"position:absolute; top:0; left:0; margin:10 10 10 10;\">foo bar</div>";
+		return "<html><body>loading...</body></html>";
 	}
 
 	public String updateTemplate(String id, TemplateData tdata) {
@@ -65,36 +60,16 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 			result = t.exec(data);
 		}
 
-		System.out.println(t);
-
 		return result;
 	}
 
 	public TemplateUpdaterInfo getTemplateUpdaterInfo(String viewkey, String id) {
-		String t = "<div style=\"width:${width}; height:${height}\"><img src=\"img/block.png\" style=\"width:${width}; height:${height}\" height=\"${height}\" width=\"${width}\"></div><div style=\"position:absolute; top:0; left:0; margin:10 10 10 10;\">foo bar</div>";
-
 		ClientModelObject mo = ModelRegistry.getInstance().get(id);
 		MetaType mt = mo.getTypes().get(0);
 		String modeltype = mt.getModelType().getName();
 		String type = mt.getName();
 
 		return loadTemplate(modeltype, type);
-	}
-
-	public String getTemplateType(String t) {
-		String type = null;
-		if (t.contains(TEMPLATE_TYPE_FLAG)) {
-			int start = t.indexOf(TEMPLATE_TYPE_FLAG)
-					+ TEMPLATE_TYPE_FLAG.length();
-			int end = t.indexOf("-->", start);
-			if (start >= end)
-				type = defaultTemplateType_;
-			else
-				type = t.substring(start, end);
-		} else {
-			type = defaultTemplateType_;
-		}
-		return type;
 	}
 
 	public TemplateUpdaterInfo loadTemplate(String modeltype, String type) {
@@ -118,7 +93,7 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 
 					if (!clientside) {
 						loadExecutor(key, t, res.getType());
-						t = "loading...";
+						t = "<html><body>loading...</body></html>";
 					}
 
 				}

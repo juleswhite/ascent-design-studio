@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gems.ajax.client.model.BasicModelHelper;
 import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.EnumProperty;
 import org.gems.ajax.client.model.MetaAssociation;
 import org.gems.ajax.client.model.MetaType;
-import org.gems.ajax.client.model.ModelLoader;
+import org.gems.ajax.client.model.ModelType;
+import org.gems.ajax.client.model.ModelingPackage;
 import org.gems.ajax.client.model.Property;
 import org.gems.ajax.client.model.TypeManager;
+import org.gems.ajax.client.model.resources.ModelResource;
 import org.gems.ajax.server.model.emf.EMFModelLoader;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -65,6 +68,15 @@ public class ModelLoaderImpl extends RemoteServiceServlet implements ModelLoader
 			model = proc.process(model);
 		
 		return createModel();//model.getRoot();
+	}
+	
+	public ModelingPackage loadModel(ModelResource res){
+		ModelingPackage pkg = new ModelingPackage();
+		pkg.setRootObject(loadModel(""));
+		pkg.setModelHelper(new BasicModelHelper());
+		pkg.setModelResource(res);
+		pkg.setModelType(TypeManager.getModelTypeForName("default"));
+		return pkg;
 	}
 
 	public ModelReader getReader(String id){

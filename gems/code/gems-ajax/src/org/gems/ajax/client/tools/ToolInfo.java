@@ -1,6 +1,4 @@
-package org.gems.ajax.server.figures.templates;
-
-
+package org.gems.ajax.client.tools;
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -11,6 +9,6 @@ package org.gems.ajax.server.figures.templates;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
-public interface TemplateFinder {
-	public ResolvedTemplate findTemplate(String modeltype, String objecttype);
+public class ToolInfo {
+
 }

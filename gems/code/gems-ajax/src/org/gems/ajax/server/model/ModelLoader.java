@@ -1,5 +1,7 @@
-package org.gems.ajax.server.figures.templates;
+package org.gems.ajax.server.model;
 
+import org.gems.ajax.client.model.ModelingPackage;
+import org.gems.ajax.client.model.resources.ModelResource;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -11,6 +13,7 @@ package org.gems.ajax.server.figures.templates;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
-public interface TemplateFinder {
-	public ResolvedTemplate findTemplate(String modeltype, String objecttype);
+public interface ModelLoader {
+	
+	public ModelingPackage loadModel(ModelResource res);
 }

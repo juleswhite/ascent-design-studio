@@ -15,16 +15,13 @@ import org.gems.ajax.client.edit.EditManager;
 import org.gems.ajax.client.edit.tools.ConnectionTool;
 import org.gems.ajax.client.event.UIEventDispatcher;
 import org.gems.ajax.client.figures.GEMSDiagram;
-import org.gems.ajax.client.model.BasicModelHelper;
-import org.gems.ajax.client.model.ClientModelObject;
-import org.gems.ajax.client.model.ModelLoader;
-import org.gems.ajax.client.model.ModelLoaderAsync;
+import org.gems.ajax.client.model.ModelingPackage;
+import org.gems.ajax.client.model.resources.ModelParameterRef;
+import org.gems.ajax.client.util.Util;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -32,75 +29,97 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class Designer implements EntryPoint {
 
-	private ModelLoaderAsync modelLoaderService_;
+	private GEMSEditor editor_;
 
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		modelLoaderService_ = (ModelLoaderAsync) GWT
-				.create(ModelLoader.class);
-		ServiceDefTarget endpoint = (ServiceDefTarget) modelLoaderService_;
-		String moduleRelativeURL = GWT.getModuleBaseURL() + "modelLoader";
-		endpoint.setServiceEntryPoint(moduleRelativeURL);
-		modelLoaderService_.loadModel("foo", new AsyncCallback<ClientModelObject>() {
 
-            public void onFailure(Throwable caught) {
-              Window.alert("Unable to load the specified model!");
-            }
+		String modelref = Window.Location
+				.getParameter(GEMS.MODEL_REF_PARAMETER);
 
-            public void onSuccess(ClientModelObject result) {
-            	
-            	EditManager emanager = new EditManager();
-        		ToolEntry te = new ToolEntry("Select", "Select",
-        				"A tool to select an element.", SelectionManager.getInstance()
-        						.getSelectionTool());
-        		ToolEntry ce = new ToolEntry("Connect", "Connect",
-        				"A tool to create connectsion between elements.",
-        				ConnectionTool.getInstance());
-        		emanager.setCurrentTool(SelectionManager.getInstance()
-        				.getSelectionTool());
-        		UIEventDispatcher.getInstance().addUIListener(emanager);
-        		UIEventDispatcher.getInstance().addKeyListener(emanager);
+		if (modelref != null) {
+			modelref = "";
+		}
+		ModelParameterRef ref = new ModelParameterRef(modelref);
 
-        		GEMSEditor editor = new GEMSEditor(new EditDomain(emanager));
-        		// editor.getViews().getDeckPanel().setAnimationEnabled(true);
+		Util.getGEMS().getModelPackage(ref,
+				new AsyncCallback<ModelingPackage>() {
 
-        		// GEMSEditor editor = new GEMSEditor(new EditDomain(emanager));
-        		// editor.getPaletteManager().addToolEntry(te);
-        		// editor.getPaletteManager().addToolEntry(ce);
-        		//
-        		
-        		GEMSDiagram dig = editor.open(new BasicModelHelper(), result);// new
+					public void onSuccess(ModelingPackage result) {
 
-        		// GEMSDiagram();
-        		// editor.open(new MetaModelHelper(), new new MetaClass(), null,
-        		// "Components and Nodes");
-        		// ConnectionLayer clayer = new ConnectionLayer();
-        		// dig.setConnectionLayer(clayer);
-        		// dig.setSize("800px", "600px");
-        		// clayer.setSize("800px", "600px");
+						System.out.println("got modeling package");
+						loadModelingPackage(result);
+					}
 
-        		// GEMSPanel src = new GEMSPanel(dig);
-        		// GEMSPanel trg = new GEMSPanel(dig);
-        		// dig.add(src,30,30);
-        		// dig.add(trg,100,100);
+					public void onFailure(Throwable caught) {
+					}
+				});
 
-        		// RootPanel.get("slot1").add(editor);
-        		// RootPanel.get("slot1").add(clayer);
+		EditManager emanager = new EditManager();
+		ToolEntry te = new ToolEntry("Select", "Select",
+				"A tool to select an element.", SelectionManager.getInstance()
+						.getSelectionTool());
+		ToolEntry ce = new ToolEntry("Connect", "Connect",
+				"A tool to create connectsion between elements.",
+				ConnectionTool.getInstance());
+		emanager.setCurrentTool(SelectionManager.getInstance()
+				.getSelectionTool());
+		UIEventDispatcher.getInstance().addUIListener(emanager);
+		UIEventDispatcher.getInstance().addKeyListener(emanager);
 
-        		// src.connectTo(trg);
+		editor_ = new GEMSEditor(new EditDomain(emanager));
 
-        		editor.addView(dig, "View 1");
+		RootPanel.get("slot1").add(editor_);
+		// }
+		/*
+		 * else { modelLoaderService_ = (ModelLoaderAsync) GWT
+		 * .create(ModelLoader.class); ServiceDefTarget endpoint =
+		 * (ServiceDefTarget) modelLoaderService_; String moduleRelativeURL =
+		 * GWT.getModuleBaseURL() + "modelLoader";
+		 * endpoint.setServiceEntryPoint(moduleRelativeURL);
+		 * modelLoaderService_.loadModel("foo", new
+		 * AsyncCallback<ClientModelObject>() {
+		 * 
+		 * public void onFailure(Throwable caught) {
+		 * Window.alert("Unable to load the specified model!"); }
+		 * 
+		 * public void onSuccess(ClientModelObject result) {
+		 * 
+		 * EditManager emanager = new EditManager(); ToolEntry te = new
+		 * ToolEntry("Select", "Select", "A tool to select an element.",
+		 * SelectionManager.getInstance() .getSelectionTool()); ToolEntry ce =
+		 * new ToolEntry( "Connect", "Connect",
+		 * "A tool to create connectsion between elements.",
+		 * ConnectionTool.getInstance());
+		 * emanager.setCurrentTool(SelectionManager
+		 * .getInstance().getSelectionTool());
+		 * UIEventDispatcher.getInstance().addUIListener( emanager);
+		 * UIEventDispatcher.getInstance().addKeyListener( emanager);
+		 * 
+		 * 
+		 * 
+		 * GEMSDiagram dig = editor_.open( new BasicModelHelper(), result);//
+		 * new
+		 * 
+		 * editor_.addView(dig, "View 1");
+		 * 
+		 * editor_.getViews().selectTab(0); RootPanel.get("slot1").add(editor_);
+		 * dig.setSize("2001px", "2001px"); } }); }
+		 */
 
-        		editor.getViews().selectTab(0);
-        		RootPanel.get("slot1").add(editor);
-        		dig.setSize("2001px", "2001px");
-            }
-        });
+	}
 
-		
+	public void loadModelingPackage(ModelingPackage pkg) {
 
+		GEMSDiagram dig = editor_.open(pkg.getModelHelper(), pkg
+				.getRootObject());// new
+
+		editor_.addView(dig, "View 1");
+
+		editor_.getViews().selectTab(0);
+		dig.setSize("2001px", "2001px");
 	}
 
 	// private TabPanel centerPanel;

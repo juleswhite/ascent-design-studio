@@ -1,5 +1,9 @@
-package org.gems.ajax.server.figures.templates;
+package org.gems.ajax.client;
 
+import org.gems.ajax.client.model.ModelingPackage;
+import org.gems.ajax.client.model.resources.ModelResource;
+
+import com.google.gwt.user.client.rpc.RemoteService;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
@@ -11,6 +15,10 @@ package org.gems.ajax.server.figures.templates;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
-public interface TemplateFinder {
-	public ResolvedTemplate findTemplate(String modeltype, String objecttype);
+public interface GEMS extends RemoteService{
+	public static final String MODEL_REF_PARAMETER = "modelref";
+	public static final String SERVICE_NAME = "gems";
+
+	public ModelingPackage getModelPackage(ModelResource res);
+	
 }

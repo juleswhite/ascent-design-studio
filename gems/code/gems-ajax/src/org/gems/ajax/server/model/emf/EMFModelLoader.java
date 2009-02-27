@@ -24,7 +24,6 @@ import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.MetaAssociation;
 import org.gems.ajax.client.model.MetaProperty;
 import org.gems.ajax.client.model.MetaType;
-import org.gems.ajax.client.model.ModelLoader;
 import org.gems.ajax.client.model.Property;
 import org.gems.ajax.server.model.Model;
 import org.gems.ajax.server.model.ModelReader;

@@ -37,4 +37,5 @@
     <property name="manager" ref="serverTemplateManager"/>
   </bean>         
            
+  <bean id="modelLoader" class="org.gems.ajax.server.model.ModelLoaderImpl"/>         
 </beans>
