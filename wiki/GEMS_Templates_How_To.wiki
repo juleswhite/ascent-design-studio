@@ -57,8 +57,8 @@ The standard GEMS template language can be run on either the client or the serve
 
 Arbitrary HTML code can be sent to the client as the result of interpreting a template. The code must only follow a few small conventions:
 
-# the HTML must have '<html>' tags surrounding it
-# all javascripts and CSS stylesheets that are loaded must be referenced in a '<head>' tag section that follows the '<html>' tag
+# the HTML must have `<html>` tags surrounding it
+# all javascripts and CSS stylesheets that are loaded must be referenced in a `<head>` tag section that follows the `<html>` tag
 # the HTML must have a valid '<body>' tag section
 
 
