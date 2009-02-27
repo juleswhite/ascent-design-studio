@@ -97,14 +97,38 @@ public class Util implements GraphicsConstants {
 		}
 	}
 
-	public static native void eval(String javascript)
+	public static native Object eval(String javascript)
 	/*-{
 	   try{
-	    $wnd.eval(javascript);
+	    return $wnd.eval(javascript);
 	   }catch(ex){
-	     alert('Error:'+ex+' evaluating javascript javascript:'+javascript);}
+	     alert('Error:'+ex+' evaluating javascript javascript:'+javascript);
+	   }
+	     
+	   return null;
 	}-*/;
-
+	
+	public static native boolean evalBoolean(String javascript)
+	/*-{
+	   try{
+	    return $wnd.eval(javascript);
+	   }catch(ex){
+	     alert('Error:'+ex+' evaluating javascript javascript:'+javascript);
+	   }
+	     
+	   return false;
+	}-*/;
+	
+	public static native boolean functionExists(String funcname)
+	/*-{
+	   try{
+	    return $wnd.eval('window.'+funcname+' != null');
+	   }catch(ex){}
+	     
+	   return false;
+	}-*/;
+		
+	
 	public static int getLeftBorderWidth(Element el) {
 		int v = getPixelSize(el, "border-left-width");
 		if (v == 0)
@@ -331,6 +355,14 @@ public class Util implements GraphicsConstants {
 		setAttribute(cssLink, "type", "text/css");
 		setAttribute(cssLink, "rel", "stylesheet");
 		setAttribute(cssLink, "href", cssUrl);
+		head.appendChild(cssLink);
+	}
+	
+	public static void addScript(String scripturl){
+		Element head = getElementByTagName("head");
+		Element cssLink = DOM.createElement("script");
+		setAttribute(cssLink, "type", "text/javascript");
+		setAttribute(cssLink, "src", scripturl);
 		head.appendChild(cssLink);
 	}
 

@@ -39,6 +39,7 @@ public class ScriptExtractor {
 				Element el = (Element) token.data;
 				String spath = el.attributes.get("src");
 				String upfunc = el.attributes.get("onupdate");
+				String checkfunc = el.attributes.get("readyif");
 				String script = null;
 				String initf = el.attributes.get("init");
 
@@ -47,7 +48,7 @@ public class ScriptExtractor {
 					script = html.substring(start, end);
 				}
 
-				scripts.add(TemplateScript.getScript(spath, script, initf, upfunc));
+				scripts.add(TemplateScript.getScript(spath, script, initf, upfunc, checkfunc));
 				start = html.indexOf(START_SCRIPT, start
 						+ START_SCRIPT.length() + END_SCRIPT.length());
 			} catch (Exception e) {
