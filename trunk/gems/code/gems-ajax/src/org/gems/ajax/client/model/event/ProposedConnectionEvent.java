@@ -1,4 +1,7 @@
 package org.gems.ajax.client.model.event;
+
+import org.gems.ajax.client.model.ModelElement;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -11,7 +14,7 @@ package org.gems.ajax.client.model.event;
  ****************************************************************************/
 public class ProposedConnectionEvent extends ConnectionEvent implements ProposedEvent{
 
-	public ProposedConnectionEvent(Object source, Object target, boolean add) {
+	public ProposedConnectionEvent(ModelElement source, ModelElement target, boolean add) {
 		super(source, target, add);
 	}
 

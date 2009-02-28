@@ -1,5 +1,7 @@
 package org.gems.ajax.client.model.event;
 
+import org.gems.ajax.client.model.ModelElement;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -13,28 +15,30 @@ package org.gems.ajax.client.model.event;
 
 public class ContainmentEvent extends ModelEvent {
 
-	private Object child_;
+	private ModelElement child_;
 	
-	public ContainmentEvent(Object source, Object child, boolean add) {
+	public ContainmentEvent(){}
+	
+	public ContainmentEvent(ModelElement source, ModelElement child, boolean add) {
 		super(source, CHILD_ADDED);
 		child_ = child;
 		if(!add)
 			setType(CHILD_REMOVED);
 	}
 
-	public Object getParent(){
+	public ModelElement getParent(){
 		return getSource();
 	}
 	
-	public void setParent(Object p){
+	public void setParent(ModelElement p){
 		setSource(p);
 	}
 
-	public Object getChild() {
+	public ModelElement getChild() {
 		return child_;
 	}
 
-	public void setChild(Object child) {
+	public void setChild(ModelElement child) {
 		child_ = child;
 	}
 	

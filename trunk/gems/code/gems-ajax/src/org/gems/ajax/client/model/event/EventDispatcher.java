@@ -17,6 +17,7 @@ public class EventDispatcher {
 
 	private static final EventDispatcher dispatcher_ = new EventDispatcher();
 
+	private boolean recordVetoedEvents_ = false;
 	private boolean suspendEvents_ = false;
 	private boolean recordEvents_ = false;
 
@@ -40,6 +41,10 @@ public class EventDispatcher {
 
 	public void dispatch(ModelElement producer, ModelEvent evt,
 			List<ModelListener> listeners) {
+		
+		if(recordEvents_ && willRecordVetoedEvents())
+			recordQueue_.add(evt);
+		
 		if (!suspendEvents_) {
 			for (ModelListener pre : preDispatchListeners_)
 				evt.dispatchImpl(pre);
@@ -50,16 +55,17 @@ public class EventDispatcher {
 
 			if (listeners != null)
 				evt.dispatch(listeners);
-
-			if (recordEvents_ && !evt.vetoed() && recordQueue_ != null)
-				recordQueue_.add(evt);
-
+			
 			for (ModelListener post : postDispatchListeners_)
 				evt.dispatchImpl(post);
 			
 			if(producer != null && producer.getModelResource() != null)
 				for (ModelResourceListener post : postDispatchResourceListeners_)
 					post.resourceChanged(producer.getModelResource(), producer, evt);
+			
+			if (recordEvents_ && (!evt.vetoed() && !willRecordVetoedEvents()) && recordQueue_ != null)
+				recordQueue_.add(evt);
+
 		}
 	}
 
@@ -92,6 +98,18 @@ public class EventDispatcher {
 		suspendEvents_ = true;
 	}
 	
+	public void disableAndRecordEvents() {
+		startRecordingEvents();
+		setRecordVetoedEvents(true);
+		disableEvents();		
+	}
+	
+	public void enableEventsAndDisableRecording(){
+		stopRecordingEvents();
+		setRecordVetoedEvents(false);
+		enableEvents();	
+	}
+	
 	public void enableEvents() {
 		suspendEvents_ = false;
 	}
@@ -114,6 +132,19 @@ public class EventDispatcher {
 
 	public List<ModelEvent> getRecordedEvents() {
 		return recordQueue_;
+	}
+	
+	public void releaseRecordedEvents(){
+		recordQueue_.clear();
+		recordQueue_ = null;
+	}
+
+	public boolean willRecordVetoedEvents() {
+		return recordVetoedEvents_;
+	}
+
+	public void setRecordVetoedEvents(boolean recordVetoedEvents) {
+		recordVetoedEvents_ = recordVetoedEvents;
 	}
 
 }
