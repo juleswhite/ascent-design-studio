@@ -1,5 +1,7 @@
 package org.gems.ajax.client.model.event;
 
+import org.gems.ajax.client.model.ModelElement;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -14,10 +16,12 @@ package org.gems.ajax.client.model.event;
 public class PropertyEvent extends ModelEvent {
 
 	private String propertyName_;
-	private Object oldValue_;
-	private Object newValue_;
+	private String oldValue_;
+	private String newValue_;
 	
-	public PropertyEvent(Object source, String propertyname, Object oldvalue, Object newvalue) {
+	public PropertyEvent(){}
+	
+	public PropertyEvent(ModelElement source, String propertyname, String oldvalue, String newvalue) {
 		super(source, PROPERTY_CHANGED);
 		propertyName_ = propertyname;
 		oldValue_ = oldvalue;
@@ -32,19 +36,19 @@ public class PropertyEvent extends ModelEvent {
 		propertyName_ = propertyName;
 	}
 
-	public Object getOldValue() {
+	public String getOldValue() {
 		return oldValue_;
 	}
 
-	public void setOldValue(Object oldValue) {
+	public void setOldValue(String oldValue) {
 		oldValue_ = oldValue;
 	}
 
-	public Object getNewValue() {
+	public String getNewValue() {
 		return newValue_;
 	}
 
-	public void setNewValue(Object newValue) {
+	public void setNewValue(String newValue) {
 		newValue_ = newValue;
 	}
 

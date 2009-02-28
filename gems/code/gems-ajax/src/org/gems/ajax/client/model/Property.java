@@ -59,10 +59,10 @@ public class Property implements Serializable, PropertyConstants {
 	public void setValue(Object value) {
 		
 		if(owner_ != null){
-			if(owner_.dispatch(new ProposedPropertyEvent(owner_,getName(),value_,value))){
+			if(owner_.dispatch(new ProposedPropertyEvent(owner_,getName(),getValueAsString(),valueToString(value)))){
 				Object old = value_;
 				setValueImpl(value);
-				owner_.dispatch(new PropertyEvent(owner_,getName(),old,value));
+				owner_.dispatch(new PropertyEvent(owner_,getName(),valueToString(old),getValueAsString()));
 			}
 		}
 		else {
@@ -76,6 +76,10 @@ public class Property implements Serializable, PropertyConstants {
 
 	public void setValueFromString(String value) {
 		value_ = value;
+	}
+	
+	public String valueToString(Object v){
+		return ""+v;
 	}
 
 	public String getName() {

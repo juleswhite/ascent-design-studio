@@ -1,4 +1,7 @@
 package org.gems.ajax.client.model.event;
+
+import org.gems.ajax.client.model.ModelElement;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -11,7 +14,7 @@ package org.gems.ajax.client.model.event;
  ****************************************************************************/
 public class ProposedContainmentEvent extends ContainmentEvent implements ProposedEvent{
 
-	public ProposedContainmentEvent(Object source, Object child, boolean add) {
+	public ProposedContainmentEvent(ModelElement source, ModelElement child, boolean add) {
 		super(source, child, add);
 	}
 

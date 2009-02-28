@@ -1,6 +1,9 @@
 package org.gems.ajax.client.model.event;
 
+import java.io.Serializable;
 import java.util.List;
+
+import org.gems.ajax.client.model.ModelElement;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -11,7 +14,7 @@ import java.util.List;
  * Contributors: Jules White - initial API and implementation
  ******************************************************************************/
 
-public abstract class ModelEvent {
+public abstract class ModelEvent implements Serializable{
 	
 	public static int CHILD_ADDED = 1;
 	public static int CHILD_REMOVED = 2;
@@ -20,19 +23,21 @@ public abstract class ModelEvent {
 	public static int PROPERTY_CHANGED = 5;
 	
 	private boolean vetoed_ = false;
-	private Object source_;
+	private ModelElement source_;
 	private int type_;
 
-	public ModelEvent(Object source, int type) {
+	public ModelEvent(){}
+	
+	public ModelEvent(ModelElement source, int type) {
 		super();
 		source_ = source;
 	}
 
-	public Object getSource() {
+	public ModelElement getSource() {
 		return source_;
 	}
 
-	public void setSource(Object source) {
+	public void setSource(ModelElement source) {
 		source_ = source;
 	}
 

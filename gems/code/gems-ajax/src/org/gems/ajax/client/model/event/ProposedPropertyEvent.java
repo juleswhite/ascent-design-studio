@@ -1,4 +1,7 @@
 package org.gems.ajax.client.model.event;
+
+import org.gems.ajax.client.model.ModelElement;
+
 /******************************************************************************
  * Copyright (c) 2007 Jules White.
  * All rights reserved. This program and the accompanying materials
@@ -11,8 +14,8 @@ package org.gems.ajax.client.model.event;
  ****************************************************************************/
 public class ProposedPropertyEvent extends PropertyEvent implements ProposedEvent{
 
-	public ProposedPropertyEvent(Object source, String propertyname,
-			Object oldvalue, Object newvalue) {
+	public ProposedPropertyEvent(ModelElement source, String propertyname,
+			String oldvalue, String newvalue) {
 		super(source, propertyname, oldvalue, newvalue);
 	}
 	

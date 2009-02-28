@@ -13,9 +13,37 @@ package org.gems.ajax.client.model.event;
 
 public interface ModelListener {
 
+	/**
+	 * Called after a parent has a new child added.
+	 * @param evt
+	 */
 	public void childAdded(ContainmentEvent evt);
+	
+	/**
+	 * Called after a parent has a child removed.
+	 * @param evt
+	 */
 	public void childRemoved(ContainmentEvent evt);
+	
+	/**
+	 * Called after a connection is added to an element.
+	 * This method is dispatched once for both the source and target
+	 * of the association.
+	 * @param evt
+	 */
 	public void connectionAdded(ConnectionEvent evt);
+	
+	/**
+	 * Called after a connection is removed from an element.
+	 * This method is dispatched once for both the source and target
+	 * of the association.
+	 * @param evt
+	 */
 	public void connectionRemoved(ConnectionEvent evt);
+	
+	/**
+	 * Called after a property has changed on an element.
+	 * @param evt
+	 */
 	public void propertyChanged(PropertyEvent evt);
 }

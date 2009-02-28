@@ -1,5 +1,7 @@
 package org.gems.ajax.client.model.event;
 
+import org.gems.ajax.client.model.ModelElement;
+
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -14,7 +16,9 @@ public class ConnectionEvent extends ModelEvent {
 
 	private Object target_;
 
-	public ConnectionEvent(Object source, Object target, boolean add) {
+	public ConnectionEvent(){}
+	
+	public ConnectionEvent(ModelElement source, ModelElement target, boolean add) {
 		super(source, CONNECTION_ADDED);
 		target_ = target;
 		if (!add)
