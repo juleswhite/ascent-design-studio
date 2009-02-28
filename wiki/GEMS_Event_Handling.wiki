@@ -149,7 +149,11 @@ EventDispatcher.get().disableEvents();
 EventDispatcher.get().enableEvents();
 }}}
 
-Any events fired after disableEvents() is called will be ignored and lost forever. Alternatively, you can use the disableAndRecordEvents method to stop event dispatching without losing any events. This procedure works as follows:
+Any events fired after disableEvents() is called will be ignored and lost forever. 
+
+= Stopping All Events in the System without Losing Events =
+
+If you want to stop dispatching events but record them so they are not lost, you can use the disableAndRecordEvents method. This procedure works as follows:
 
 {{{
 //Stop all events in the system
@@ -169,3 +173,29 @@ EventDispatcher.get().releaseRecordedEvents();
 
 = Recording Events in GEMS =
 
+All events can be recorded as they pass through the EventDispatcher. To begin recording events, simply call startRecordingEvents():
+
+{{{
+//Start recording events
+EventDispatcher.get().startRecordingEvents();
+
+....//do some stuff
+
+
+EventDispatcher.get().stopRecordingEvents();
+List<ModelEvent> recordedEvents = EventDispatcher.get().getRecordedEvents();
+
+//do something with the recorded events...
+
+//cleanup the event buffer
+EventDispatcher.get().releaseRecordedEvents();
+}}}
+
+By default, events that are vetoed or sent while event dispatching is diabled are not recorded. To enable recording of vetoed events or while the event dispatcher is disabled, call the setRecordVetoedEvents(boolean) method:
+
+{{{
+//Start recording events
+EventDispatcher.get().setRecordVetoedEvents(true);
+EventDispatcher.get().startRecordingEvents();
+....
+}}}
