@@ -134,3 +134,38 @@ To receive notification of all events across all ClientModelObjects AFTER they a
 ModelListener mygloballistener = ...;
 EventDispatcher.get().getPostDispatchListeners().add(l);
 }}}
+
+= Stopping All Events in the System =
+
+Sometimes, it can be useful to temporarily suspend all event dispatching in GEMS. To stop any events from being sent to any listeners -- even local listeners -- invoke the disableEvents() method:
+
+{{{
+//Stop all events in the system
+EventDispatcher.get().disableEvents();
+
+....//do some stuff
+
+//Restart event dispatching
+EventDispatcher.get().enableEvents();
+}}}
+
+Any events fired after disableEvents() is called will be ignored and lost forever. Alternatively, you can use the disableAndRecordEvents method to stop event dispatching without losing any events. This procedure works as follows:
+
+{{{
+//Stop all events in the system
+EventDispatcher.get().disableAndRecordEvents();
+
+....//do some stuff
+
+//Restart event dispatching
+EventDispatcher.get().enableEventsAndDisableRecording();
+List<ModelEvent> recordedEvents = EventDispatcher.get().getRecordedEvents();
+
+//do something with the recorded events...
+
+//cleanup the event buffer
+EventDispatcher.get().releaseRecordedEvents();
+}}}
+
+= Recording Events in GEMS =
+
