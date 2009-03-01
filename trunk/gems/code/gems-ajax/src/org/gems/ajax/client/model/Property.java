@@ -57,6 +57,8 @@ public class Property implements Serializable, PropertyConstants {
 	}
 
 	public void setValue(Object value) {
+		if((""+value_).equals(value))
+			return;
 		
 		if(owner_ != null){
 			if(owner_.dispatch(new ProposedPropertyEvent(owner_,getName(),getValueAsString(),valueToString(value)))){
@@ -75,7 +77,7 @@ public class Property implements Serializable, PropertyConstants {
 	}
 
 	public void setValueFromString(String value) {
-		value_ = value;
+		setValue(value);
 	}
 	
 	public String valueToString(Object v){

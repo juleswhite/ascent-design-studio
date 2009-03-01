@@ -10,8 +10,6 @@ package org.gems.ajax.client;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
-import java.util.HashMap;
-
 import org.gems.ajax.client.edit.EditDomain;
 import org.gems.ajax.client.edit.EditManager;
 import org.gems.ajax.client.event.UIEventDispatcher;
@@ -20,8 +18,6 @@ import org.gems.ajax.client.model.ModelingPackage;
 import org.gems.ajax.client.model.event.ModelEventRemoting;
 import org.gems.ajax.client.model.resources.ModelParameterRef;
 import org.gems.ajax.client.util.Util;
-import org.gems.ajax.client.util.dojo.CometCallback;
-import org.gems.ajax.client.util.dojo.CometMessage;
 import org.gems.ajax.client.util.dojo.DojoUtil;
 
 import com.google.gwt.core.client.EntryPoint;

@@ -3,7 +3,7 @@
     
     <servlet path="/gems" class="org.gems.ajax.server.GEMSImpl" />
 	<servlet path="/templateManager" class="org.gems.ajax.server.figures.templates.TemplateManagerImpl" />
-
+    
 	<!-- Inherit the core Web Toolkit stuff.                  -->
 	<inherits name='com.google.gwt.user.User'/>
     <inherits name="com.google.gwt.user.Debug"/>

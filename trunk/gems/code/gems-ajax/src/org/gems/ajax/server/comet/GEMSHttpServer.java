@@ -1,9 +1,5 @@
 package org.gems.ajax.server.comet;
 
-import javax.servlet.ServletContextAttributeEvent;
-import javax.servlet.ServletContextAttributeListener;
-
-import org.cometd.Bayeux;
 import org.gems.ajax.server.GEMSImpl;
 import org.gems.ajax.server.figures.templates.TemplateManagerImpl;
 import org.mortbay.cometd.continuation.ContinuationCometdServlet;
@@ -52,20 +48,13 @@ public class GEMSHttpServer {
 		Context context = new Context(server_, "/", Context.SESSIONS);
 		ContinuationCometdServlet cometd = new ContinuationCometdServlet();
 		context.addServlet(new ServletHolder(cometd), "/org.gems.ajax.Designer/cometd/*");
-		context.addEventListener(new ServletContextAttributeListener() {
-		
-			public void attributeReplaced(ServletContextAttributeEvent arg0) {
-			}
-		
-			public void attributeRemoved(ServletContextAttributeEvent arg0) {
-			}
-		
-			public void attributeAdded(ServletContextAttributeEvent event) {
-				if (Bayeux.DOJOX_COMETD_BAYEUX.equals(event.getName()))
-					ModelRPC.launch((Bayeux) event.getValue());
-			}
-		});
-		
+		context.addEventListener(new BayeuxServicesListener());
+
+		GEMSImpl gems = new GEMSImpl();
+		ServletHolder gemsh = new ServletHolder(gems);
+		context.addServlet(gemsh, "/org.gems.ajax.Designer/gems");
+		context.setContextPath("/");
+
 		try {
 			context.setBaseResource(new ResourceCollection(
 					new Resource[] { Resource.newResource("www/"),
@@ -73,13 +62,6 @@ public class GEMSHttpServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		GEMSImpl gems = new GEMSImpl();
-		ServletHolder gemsh = new ServletHolder(gems);
-		context.addServlet(gemsh, "/org.gems.ajax.Designer/gems");
-		context.setContextPath("/");
-
-		
 		TemplateManagerImpl loader = new TemplateManagerImpl();
 		ServletHolder loaderh = new ServletHolder(loader);
 		context.addServlet(loaderh, "/org.gems.ajax.Designer/templateManager");
