@@ -1,6 +1,8 @@
 package org.gems.ajax.client.util.dojo;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -15,6 +17,9 @@ import com.google.gwt.user.client.Element;
  ******************************************************************************/
 
 public class DojoUtil {
+
+	private static final String DOJOX_COMETD_TIMESTAMP = "dojox.cometd.timestamp";
+	private static final String DOJOX_COMETD = "dojox.cometd";
 
 	static {
 		enableDebugging();
@@ -134,6 +139,50 @@ public class DojoUtil {
 		require(DOJO_NODELIST_FX);
 		makeResizeableImpl(e);
 	}
+	
+	public static void connectToCometdHost(String host){
+		require(DOJOX_COMETD);
+		require(DOJOX_COMETD_TIMESTAMP);
+		connectToCometdHostImpl(host);
+	}
+	
+	public static native void connectToCometdHostImpl(String host)/*-{
+	    $wnd.dojox.cometd.init(host);
+	}-*/;
+	
+	public static native void subscribeToChannel(String channel, CometCallback callback)/*-{ 
+	
+	    recvr = function(data){
+	       msg = data.data;
+	       callback.@org.gems.ajax.client.util.dojo.CometCallback::recv(Lorg/gems/ajax/client/util/dojo/CometMessage;)(msg);
+	    }
+	    
+        $wnd.dojox.cometd.subscribe("/model",recvr);
+     }-*/;
+	
+	
+	
+	public static void publishToChannel(String channel, Map<String,String> data){
+		CometMessage msg = newCometMsg();
+		for(String key : data.keySet()){
+			msg.put(key, data.get(key));
+		}
+		publishToChannel(channel, msg);
+	}
+	
+	public static void publishToChannel(String channel, String data){
+		CometMessage msg = newCometMsg();
+		msg.put("msg", data);
+		publishToChannel(channel, msg);
+	}
+	
+	public static native void publishToChannel(String channel, CometMessage msg)/*-{   
+        $wnd.dojox.cometd.publish(channel,msg);
+    }-*/;
+	
+	public static native CometMessage newCometMsg()/*-{   
+        return {};
+    }-*/;
 	
 	public static native void makeResizeableImpl(Element el)/*-{
 			var args = {targetContainer:el};
