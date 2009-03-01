@@ -10,6 +10,8 @@ package org.gems.ajax.client;
  * Contributors:
  *    Jules White - initial API and implementation 
  ****************************************************************************/
+import java.util.HashMap;
+
 import org.gems.ajax.client.edit.EditDomain;
 import org.gems.ajax.client.edit.EditManager;
 import org.gems.ajax.client.event.UIEventDispatcher;
@@ -17,6 +19,9 @@ import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.model.ModelingPackage;
 import org.gems.ajax.client.model.resources.ModelParameterRef;
 import org.gems.ajax.client.util.Util;
+import org.gems.ajax.client.util.dojo.CometCallback;
+import org.gems.ajax.client.util.dojo.CometMessage;
+import org.gems.ajax.client.util.dojo.DojoUtil;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Window;
@@ -34,7 +39,22 @@ public class Designer implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-
+		try {
+			DojoUtil.connectToCometdHost("http://localhost:8080/cometd");
+			DojoUtil.subscribeToChannel("/model", new CometCallback() {
+				
+				public void recv(CometMessage data) {
+					HashMap<String, String> map = data.asMap();
+					System.out.println("---Got a message:" + data.getString("msg"));
+				}
+			});
+			
+			
+			DojoUtil.publishToChannel("/model", "hello");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		String modelref = Window.Location
 				.getParameter(GEMS.MODEL_REF_PARAMETER);
 
@@ -66,7 +86,7 @@ public class Designer implements EntryPoint {
 		editor_ = new GEMSEditor(new EditDomain(emanager));
 
 		RootPanel.get("slot1").add(editor_);
-		
+
 	}
 
 	public void loadModelingPackage(ModelingPackage pkg) {
