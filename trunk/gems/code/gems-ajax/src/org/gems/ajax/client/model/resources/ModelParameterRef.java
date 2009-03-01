@@ -14,7 +14,7 @@ public class ModelParameterRef extends ModelResource {
 	public ModelParameterRef(){}
 	
 	public ModelParameterRef(String parameterRef) {
-		super();
+		super(parameterRef);
 		parameterRef_ = parameterRef;
 	}
 

@@ -51,7 +51,7 @@ public class GEMSHttpServer {
 
 		Context context = new Context(server_, "/", Context.SESSIONS);
 		ContinuationCometdServlet cometd = new ContinuationCometdServlet();
-		context.addServlet(new ServletHolder(cometd), "/cometd/*");
+		context.addServlet(new ServletHolder(cometd), "/org.gems.ajax.Designer/cometd/*");
 		context.addEventListener(new ServletContextAttributeListener() {
 		
 			public void attributeReplaced(ServletContextAttributeEvent arg0) {
