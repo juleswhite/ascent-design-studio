@@ -52,6 +52,5 @@ public class ContainmentEvent extends ModelEvent {
 		else
 			l.childRemoved(this);
 	}
-	
-	
+		
 }

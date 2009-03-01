@@ -1,9 +1,7 @@
 package org.gems.ajax.client.model.event;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.gems.ajax.client.model.ModelElement;
 
@@ -33,6 +31,7 @@ public abstract class ModelEvent implements Serializable{
 	public ModelEvent(ModelElement source, int type) {
 		super();
 		source_ = source;
+		type_ = type;
 	}
 
 	public ModelElement getSource() {

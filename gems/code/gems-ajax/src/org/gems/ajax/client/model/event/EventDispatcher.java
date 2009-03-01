@@ -147,4 +147,22 @@ public class EventDispatcher {
 		recordVetoedEvents_ = recordVetoedEvents;
 	}
 
+	public List<ModelResourceListener> getPreDispatchResourceListeners() {
+		return preDispatchResourceListeners_;
+	}
+
+	public void setPreDispatchResourceListeners(
+			List<ModelResourceListener> preDispatchResourceListeners) {
+		preDispatchResourceListeners_ = preDispatchResourceListeners;
+	}
+
+	public List<ModelResourceListener> getPostDispatchResourceListeners() {
+		return postDispatchResourceListeners_;
+	}
+
+	public void setPostDispatchResourceListeners(
+			List<ModelResourceListener> postDispatchResourceListeners) {
+		postDispatchResourceListeners_ = postDispatchResourceListeners;
+	}
+
 }

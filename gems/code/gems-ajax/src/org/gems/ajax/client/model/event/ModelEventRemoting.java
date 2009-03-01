@@ -32,37 +32,45 @@ public class ModelEventRemoting implements ModelResourceListener, CometCallback 
 	private static final String PROPERTY_KEY = "property";
 	private static final String TARGET_KEY = "target";
 	private static final String CHILD_KEY = "child";
+	
+	private boolean sendVetoedEvents_ = false;
 	private ModelHelper modelHelper_;
 
 	public ModelEventRemoting(ModelHelper modelHelper) {
 		super();
 		modelHelper_ = modelHelper;
 	}
-	
-	public void start(String host){
-		DojoUtil.connectToCometdHost(host+COMETD_PATH);
-		DojoUtil.subscribeToChannel(MODEL_EVENT_CHANNEL, new CometCallback() {
-			
-			public void recv(CometMessage data) {
-				HashMap<String, String> map = data.asMap();
-				System.out.println("---Got a message:" + data.getString("msg"));
-			}
-		});
+
+	public void start(String host) {
+
+		if (host.endsWith("/"))
+			host = host.substring(0, host.length() - 1);
+
+		String path = host + COMETD_PATH;
+
+		DojoUtil.connectToCometdHost(path);
+		DojoUtil.subscribeToChannel(MODEL_EVENT_CHANNEL, this);
+
+		EventDispatcher.get().getPostDispatchResourceListeners().add(this);
 	}
-	
-	public void stop(){
-		
+
+	public void stop() {
+
 	}
 
 	public void resourceChanged(ModelResource res, ModelElement el,
 			ModelEvent evt) {
-		Map<String, String> data = toMap(evt);
-		data.put(SENDER_KEY, modelHelper_.getId(el));
-		data.put(RESOURCE_KEY, res.getUri());
-		DojoUtil.publishToChannel(MODEL_EVENT_CHANNEL, data);
+		if (!evt.vetoed() || sendVetoedEvents_) {
+			Map<String, String> data = toMap(evt);
+			data.put(SENDER_KEY, modelHelper_.getId(el));
+			data.put(RESOURCE_KEY, res.getUri());
+			data.put("proposal", ""+(evt instanceof ProposedEvent));
+			DojoUtil.publishToChannel(MODEL_EVENT_CHANNEL, data);
+		}
 	}
 
 	public void recv(CometMessage data) {
+		System.out.println("Incoming event -->"+data.asMap());
 	}
 
 	public Map<String, String> toMap(ModelEvent evt) {
@@ -71,10 +79,10 @@ public class ModelEventRemoting implements ModelResourceListener, CometCallback 
 		map.put(TYPE_KEY, "" + evt.getType());
 
 		if (evt.getSource() != null)
-			map.put(SOURCE_KEY, modelHelper_.getId(evt));
+			map.put(SOURCE_KEY, modelHelper_.getId(evt.getSource()));
 
 		switch (evt.getType()) {
-		
+
 		case ModelEvent.CHILD_ADDED:
 			map.put(CHILD_KEY, modelHelper_.getId(((ContainmentEvent) evt)
 					.getChild()));
@@ -92,12 +100,12 @@ public class ModelEventRemoting implements ModelResourceListener, CometCallback 
 					.getTarget()));
 			break;
 		case ModelEvent.PROPERTY_CHANGED:
-			map.put(PROPERTY_KEY, modelHelper_.getId(((PropertyEvent) evt)
-					.getPropertyName()));
-			map.put(OLD_VALUE_KEY, modelHelper_.getId(((PropertyEvent) evt)
-					.getOldValue()));
-			map.put(NEW_VALUE_KEY, modelHelper_.getId(((PropertyEvent) evt)
-					.getNewValue()));
+			map.put(PROPERTY_KEY, ((PropertyEvent) evt)
+					.getPropertyName());
+			map.put(OLD_VALUE_KEY,((PropertyEvent) evt)
+					.getOldValue());
+			map.put(NEW_VALUE_KEY, ((PropertyEvent) evt)
+					.getNewValue());
 			break;
 		}
 

@@ -54,8 +54,6 @@ public class PropertyEvent extends ModelEvent {
 
 	public void dispatchImpl(ModelListener l) {
 		l.propertyChanged(this);
-	}
-	
-	
+	}	
 
 }
