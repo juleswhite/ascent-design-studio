@@ -35,7 +35,7 @@ public class DefaultTemplateFinder implements TemplateFinder {
 	private boolean watchFiles_ = false;
 
 	public void mapDir(String mtype, File dir) {
-		
+
 		File[] templates = dir.listFiles();
 		for (File template : templates) {
 			if (template.isFile()) {
@@ -57,7 +57,7 @@ public class DefaultTemplateFinder implements TemplateFinder {
 	public void mapModelTemplates(String mtype) {
 		File dir = new File(templateRepository_, mtype);
 		if (dir.exists() && dir.isDirectory()) {
-			mapDir(mtype,dir);
+			mapDir(mtype, dir);
 		}
 	}
 
@@ -100,7 +100,9 @@ public class DefaultTemplateFinder implements TemplateFinder {
 
 	public void setTemplateRepositoryPath(String templateRepository) {
 		templateRepository_ = new File(templateRepository);
-		System.out.println(templateRepository_.getAbsolutePath());
+		logger_.log(Level.INFO, "Using directory:"
+				+ templateRepository_.getAbsolutePath()
+				+ " for template repository root.");
 	}
 
 	public boolean getFileWatching() {
@@ -180,16 +182,20 @@ public class DefaultTemplateFinder implements TemplateFinder {
 									if (dot > 0) {
 										fname = fname.substring(0, dot);
 										String key = dir + "/" + fname;
-										
-										MetaType mt = TypeManager.getTypeForName(dir, fname);
-										if (mt != null && manager_.getServerTemplates().get(
-												key) != null) {
+
+										MetaType mt = TypeManager
+												.getTypeForName(dir, fname);
+										if (mt != null
+												&& manager_
+														.getServerTemplates()
+														.get(key) != null) {
 											try {
 												String t = IOUtils
 														.toString(new FileInputStream(
 																file));
 												t = t.trim();
-												manager_.loadExecutor(key, t, templateTypes_.get(mt));
+												manager_.loadExecutor(key, t,
+														templateTypes_.get(mt));
 
 											} catch (Exception e) {
 												logger_.log(Level.SEVERE,

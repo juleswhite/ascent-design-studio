@@ -17,6 +17,7 @@ import org.gems.ajax.client.edit.EditManager;
 import org.gems.ajax.client.event.UIEventDispatcher;
 import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.model.ModelingPackage;
+import org.gems.ajax.client.model.event.ModelEventRemoting;
 import org.gems.ajax.client.model.resources.ModelParameterRef;
 import org.gems.ajax.client.util.Util;
 import org.gems.ajax.client.util.dojo.CometCallback;
@@ -24,9 +25,13 @@ import org.gems.ajax.client.util.dojo.CometMessage;
 import org.gems.ajax.client.util.dojo.DojoUtil;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -39,21 +44,15 @@ public class Designer implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		try {
-			DojoUtil.connectToCometdHost("http://localhost:8080/cometd");
-			DojoUtil.subscribeToChannel("/model", new CometCallback() {
-				
-				public void recv(CometMessage data) {
-					HashMap<String, String> map = data.asMap();
-					System.out.println("---Got a message:" + data.getString("msg"));
-				}
-			});
-			
-			
-			DojoUtil.publishToChannel("/model", "hello");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		Button sendmsg = new Button("click me");
+		sendmsg.addClickListener(new ClickListener() {
+		
+			public void onClick(Widget sender) {
+				DojoUtil.publishToChannel("/model", "clicked");
+			}
+		});
+		RootPanel.get("menubar").add(sendmsg);
 		
 		String modelref = Window.Location
 				.getParameter(GEMS.MODEL_REF_PARAMETER);
@@ -67,7 +66,7 @@ public class Designer implements EntryPoint {
 				new AsyncCallback<ModelingPackage>() {
 
 					public void onSuccess(ModelingPackage result) {
-
+						
 						System.out.println("got modeling package");
 						loadModelingPackage(result);
 					}
@@ -91,6 +90,9 @@ public class Designer implements EntryPoint {
 
 	public void loadModelingPackage(ModelingPackage pkg) {
 
+		ModelEventRemoting remoting = new ModelEventRemoting(pkg.getModelHelper());
+		remoting.start(GWT.getModuleBaseURL());
+		
 		GEMSDiagram dig = editor_.open(pkg.getModelHelper(), pkg
 				.getRootObject());// new
 

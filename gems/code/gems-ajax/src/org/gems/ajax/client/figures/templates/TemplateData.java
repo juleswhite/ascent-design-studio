@@ -21,7 +21,7 @@ public class TemplateData implements Serializable {
 	public static final String HEIGHT = "height";
 	public static final String OBJECT_ID = "id";
 
-	private HashMap<String, String> data_ = new HashMap<String, String>();
+	private Map<String, String> data_ = new HashMap<String, String>();
 
 	public void setSize(int w, int h) {
 		data_.put(WIDTH, "" + w + "px");
@@ -85,11 +85,11 @@ public class TemplateData implements Serializable {
 		return data_.values();
 	}
 
-	public HashMap<String, String> getData() {
+	public Map<String, String> getData() {
 		return data_;
 	}
 
-	public void setData(HashMap<String, String> data) {
+	public void setData(Map<String, String> data) {
 		data_ = data;
 	}
 

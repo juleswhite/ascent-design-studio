@@ -1,7 +1,9 @@
 package org.gems.ajax.client.model.event;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.gems.ajax.client.model.ModelElement;
 
@@ -16,11 +18,11 @@ import org.gems.ajax.client.model.ModelElement;
 
 public abstract class ModelEvent implements Serializable{
 	
-	public static int CHILD_ADDED = 1;
-	public static int CHILD_REMOVED = 2;
-	public static int CONNECTION_ADDED = 3;
-	public static int CONNECTION_REMOVED = 4;
-	public static int PROPERTY_CHANGED = 5;
+	public static final int CHILD_ADDED = 1;
+	public static final int CHILD_REMOVED = 2;
+	public static final int CONNECTION_ADDED = 3;
+	public static final int CONNECTION_REMOVED = 4;
+	public static final int PROPERTY_CHANGED = 5;
 	
 	private boolean vetoed_ = false;
 	private ModelElement source_;

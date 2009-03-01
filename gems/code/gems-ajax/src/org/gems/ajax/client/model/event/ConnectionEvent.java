@@ -14,7 +14,7 @@ import org.gems.ajax.client.model.ModelElement;
 
 public class ConnectionEvent extends ModelEvent {
 
-	private Object target_;
+	private ModelElement target_;
 
 	public ConnectionEvent(){}
 	
@@ -25,11 +25,11 @@ public class ConnectionEvent extends ModelEvent {
 			setType(CONNECTION_REMOVED);
 	}
 
-	public Object getTarget() {
+	public ModelElement getTarget() {
 		return target_;
 	}
 
-	public void setTarget(Object target) {
+	public void setTarget(ModelElement target) {
 		target_ = target;
 	}
 
