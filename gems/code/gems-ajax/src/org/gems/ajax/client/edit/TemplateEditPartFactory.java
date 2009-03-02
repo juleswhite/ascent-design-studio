@@ -88,7 +88,7 @@ public class TemplateEditPartFactory implements EditPartFactory {
 		t = tp
 				.parse(
 						modelHelper_,
-						"<div gemstype=\"container\" childmappings=\"MetaClass:metaclass,MMethod:mmethod\" styleprimaryname=\"ttest\"  resizable=\"true\" moveable=\"true\" initwidth=\"100px\" initheight=\"100px\">\r\n"
+						"<div gemstype=\"container\" childmappings=\"MetaClass:metaclass,MMethod:mmethod\" styleprimaryname=\"ttest\"  resizable=\"true\" moveable=\"true\" initwidth=\"200px\" initheight=\"200px\">\r\n"
 								+ " <table width=\"100%\"><tr><td width=\"100%\" style=\"border:solid 1px rgb(0,0,0)\"> "
 								+ " <div width=\"100%\">\r\n"
 								+ "  Children:\r\n"

@@ -2,6 +2,7 @@ package org.gems.ajax.server.figures.templates;
 
 import java.util.Map;
 
+import org.gems.ajax.client.figures.templates.ClientTemplateUpdater;
 import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.Property;
 
@@ -33,6 +34,10 @@ public class SimpleReplaceExecutor implements TemplateExecutor {
 
 	public String exec(TemplateExecData data) {
 		String t = template_;
+		
+		ClientTemplateUpdater ctu = new ClientTemplateUpdater(template_);
+		t = ctu.updateTemplateDirect(data);
+		
 		if (t != null) {
 			for (String key : data.keySet()) {
 				t = t.replaceAll("\\$\\{" + key + "\\}", data.get(key));

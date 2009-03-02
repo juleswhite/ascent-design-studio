@@ -49,6 +49,13 @@ public abstract class Connection {
 	public ConnectionAnchor getTarget() {
 		return target_;
 	}
+	
+	public ConnectionAnchor getOtherEnd(ConnectionAnchor ca){
+		if(ca != getSource())
+			return getSource();
+		else
+			return getTarget();
+	}
 
 	public void setTarget(ConnectionAnchor target) {
 		target_ = target;

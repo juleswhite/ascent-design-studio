@@ -14,12 +14,10 @@ import org.gems.ajax.client.figures.templates.TemplateParser.Token;
  * 
  * Contributors: Jules White - initial API and implementation
  ****************************************************************************/
-public class ScriptExtractor {
+public class TemplateProcessor {
 
 	private static final String START_SCRIPT = "<script";
 	private static final String END_SCRIPT = "</script>";
-
-	private static TemplateParser parser_ = new TemplateParser();
 
 	public static List<TemplateElement> extractLoadableElements(String html) {
 		ArrayList<TemplateElement> els = new ArrayList<TemplateElement>();
@@ -34,7 +32,7 @@ public class ScriptExtractor {
 
 		while (start > -1) {
 			try {
-				Token token = parser_.parseAnyElement(html.substring(start));
+				Token token = TemplateParser.parseAnyElement(html.substring(start));
 
 				Element el = (Element) token.data;
 				String spath = el.attributes.get("src");
@@ -43,12 +41,13 @@ public class ScriptExtractor {
 				String script = null;
 				String initf = el.attributes.get("init");
 
-				if (!el.selfTerminating && spath==null) {
+				if (!el.selfTerminating && spath == null) {
 					int end = html.indexOf(END_SCRIPT, start + 1);
 					script = html.substring(start, end);
 				}
 
-				scripts.add(TemplateScript.getScript(spath, script, initf, upfunc, checkfunc));
+				scripts.add(TemplateScript.getScript(spath, script, initf,
+						upfunc, checkfunc));
 				start = html.indexOf(START_SCRIPT, start
 						+ START_SCRIPT.length() + END_SCRIPT.length());
 			} catch (Exception e) {
@@ -87,25 +86,40 @@ public class ScriptExtractor {
 
 		return css;
 	}
-	
-	public static String[] stripSection(String html, String stag, String etag){
+
+	public static String[] stripSection(String html, String stag, String etag) {
 		String sec = "";
-		
+
 		int start = html.indexOf(stag);
-		if(start > -1){
+		if (start > -1) {
 			int end = html.lastIndexOf(etag);
-			if(end > start){
-				sec = html.substring(start+stag.length(),end);
-				html = html.substring(0,start)+html.substring(end+etag.length());
+			if (end > start) {
+				sec = html.substring(start + stag.length(), end);
+				html = html.substring(0, start)
+						+ html.substring(end + etag.length());
 			}
 		}
-		
-		return new String[]{html,sec};
+
+		return new String[] { html, sec };
 	}
-	
-	public static ProcessedTemplate processTemplate(String html){
+
+	public static ProcessedTemplate processTemplate(String html) {
 		String[] parts = stripSection(html, "<head>", "</head>");
 		String body = stripSection(parts[0], "<body>", "</body>")[1];
-		return new ProcessedTemplate(body,extractLoadableElements(parts[1]));
+		ProcessedTemplate template = new ProcessedTemplate(body,
+				extractLoadableElements(parts[1]));
+		Token t = TemplateParser.parseDirective(html, "GEMS_Props");
+		if (t != null && t.data != null) {
+			try {
+				List<AttributeSet> attrs = CSSParser.parseAttributes("gems {"
+						+ t.data + "}");
+				if (attrs.size() > 0) {
+					template.setProperties(attrs.get(0));
+				}
+			} catch (Exception e) {
+			}
+		}
+
+		return template;
 	}
 }

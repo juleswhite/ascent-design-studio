@@ -18,15 +18,14 @@ import org.gems.ajax.client.geometry.Point;
 import org.gems.ajax.client.geometry.Rectangle;
 import org.gems.ajax.client.util.GraphicsConstants;
 
-
-public abstract class ConnectionAnchor implements GraphicsConstants{
+public abstract class ConnectionAnchor implements GraphicsConstants {
 
 	private ConnectableDiagramElement owner_;
-	
+
 	private int direction_ = RIGHT;
 
 	private ArrayList<Connection> attachedConnections_ = new ArrayList<Connection>();
-	
+
 	protected Point location_ = new Point();
 
 	public ConnectionAnchor(ConnectableDiagramElement owner) {
@@ -35,11 +34,11 @@ public abstract class ConnectionAnchor implements GraphicsConstants{
 		owner_.getAnchorManager().add(this);
 	}
 
-	public void dispose(){
+	public void dispose() {
 		owner_.getAnchorManager().remove(this);
 		attachedConnections_.clear();
 	}
-	
+
 	public Point getLocation(Point otherend) {
 		return location_;
 	}
@@ -56,10 +55,17 @@ public abstract class ConnectionAnchor implements GraphicsConstants{
 	public void setOwner(ConnectableDiagramElement owner) {
 		owner_ = owner;
 	}
-	
-	public void translate(int dx, int dy){
+
+	public void translate(int dx, int dy) {
 		location_.x += dx;
 		location_.y += dy;
+	}
+	
+	public ConnectionAnchor getOppositeAnchor(){
+		if(attachedConnections_.size() == 0)
+			return null;
+		
+		return attachedConnections_.get(0).getOtherEnd(this);
 	}
 
 	public int getDirection() {
@@ -67,42 +73,50 @@ public abstract class ConnectionAnchor implements GraphicsConstants{
 	}
 
 	public void setDirection(int direction) {
-		if(direction != direction_){
+		if (direction != direction_) {
 			direction_ = direction;
 			getOwner().getAnchorManager().directionChanged(this);
 		}
 	}
 
-	public void update(){
+	public void update() {
 		getOwner().getAnchorManager().update(this);
 	}
 
-	public void attach(Connection c){
+	public void attach(Connection c) {
 		attachedConnections_.add(c);
 		getOwner().getAnchorManager().connectionsChanged(this);
 	}
-	
-	public void detach(Connection c){
+
+	public void detach(Connection c) {
 		attachedConnections_.remove(c);
 		getOwner().getAnchorManager().connectionsChanged(this);
 	}
-	
-	public void forceConnectionUpdate(){
-		for(Connection c : attachedConnections_){
+
+	public void forceConnectionUpdate() {
+		for (Connection c : attachedConnections_) {
 			c.update();
 		}
 	}
-	
-	public Rectangle getBoundingBox(){
-		Rectangle bounds = new Rectangle(location_,new Dimension(1,1));
-		for(Connection c : attachedConnections_){
-			if(c instanceof RectilinearConnection){
-				RectilinearConnection rc = (RectilinearConnection)c;
-				if(this == c.getSource()){
+
+	public ArrayList<Connection> getAttachedConnections() {
+		return attachedConnections_;
+	}
+
+	public void setAttachedConnections(ArrayList<Connection> attachedConnections) {
+		attachedConnections_ = attachedConnections;
+	}
+
+	public Rectangle getBoundingBox() {
+		Rectangle bounds = new Rectangle(location_, new Dimension(1, 1));
+		for (Connection c : attachedConnections_) {
+			if (c instanceof RectilinearConnection) {
+				RectilinearConnection rc = (RectilinearConnection) c;
+				if (this == c.getSource()) {
 					bounds.union(rc.getSegmentBoundingBox(0));
-				}
-				else {
-					bounds.union(rc.getSegmentBoundingBox(rc.getSegments().size()-1));
+				} else {
+					bounds.union(rc.getSegmentBoundingBox(rc.getSegments()
+							.size() - 1));
 				}
 			}
 		}

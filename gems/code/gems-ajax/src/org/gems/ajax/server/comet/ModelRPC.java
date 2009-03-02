@@ -1,11 +1,13 @@
 package org.gems.ajax.server.comet;
 
+import java.util.List;
 import java.util.Map;
 
 import org.cometd.Bayeux;
 import org.cometd.Channel;
 import org.cometd.Client;
 import org.cometd.Message;
+import org.gems.ajax.client.model.resources.ModelResource;
 import org.mortbay.cometd.BayeuxService;
 
 /******************************************************************************
@@ -18,11 +20,20 @@ import org.mortbay.cometd.BayeuxService;
  ****************************************************************************/
 public class ModelRPC extends BayeuxService {
 
-	public static ModelRPC launch(Bayeux b){
-		return new ModelRPC(b);
+	private static ModelRPC instance_;
+	
+	public static ModelRPC getInstance(){
+		return instance_;
 	}
 	
-	public ModelRPC(Bayeux bayeux) {
+	public static ModelRPC launch(Bayeux b){
+		if(instance_ == null){
+			instance_ = new ModelRPC(b);
+		}
+		return instance_;
+	}
+	
+	private ModelRPC(Bayeux bayeux) {
 		super(bayeux, "model");
 		subscribe("/model", "modelEvent");
 		subscribe("/meta/subscribe", "monitorSubscribe");
@@ -57,5 +68,33 @@ public class ModelRPC extends BayeuxService {
 	}
 
 	public void monitorMeta(Client client, Message message) {
+	}
+	
+	public Channel getModelChannel(){
+		return null;
+	}
+	
+	public List<String> getAllModelingClients(){
+		return null;
+	}
+	
+	public List<String> getClientsOfModel(ModelResource res){
+		return null;
+	}
+	
+	public void sendMessageToAllClients(Map<String,String> msg){
+		
+	}
+	
+	public void sendMessageToClients(Map<String,String> msg, List<String> clients){
+		
+	}
+	
+	public void sendMessageToClientsOfModel(Map<String,String> msg, ModelResource res){
+		
+	}
+	
+	public void sendMessageToChannel(Map<String,String> msg, Channel c){
+		
 	}
 }
