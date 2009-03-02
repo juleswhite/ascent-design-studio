@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gems.ajax.client.model.ModelElement;
+import org.gems.ajax.client.model.resources.ModelResource;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -51,7 +52,7 @@ public class EventDispatcher {
 			
 			if(producer != null && producer.getModelResource() != null)
 				for (ModelResourceListener pre : preDispatchResourceListeners_)
-					pre.resourceChanged(producer.getModelResource(), producer, evt);
+					pre.resourceChanged(new ModelResourceEvent(evt,producer.getModelResource(), producer));
 
 			if (listeners != null)
 				evt.dispatch(listeners);
@@ -61,7 +62,7 @@ public class EventDispatcher {
 			
 			if(producer != null && producer.getModelResource() != null)
 				for (ModelResourceListener post : postDispatchResourceListeners_)
-					post.resourceChanged(producer.getModelResource(), producer, evt);
+					post.resourceChanged(new ModelResourceEvent(evt,producer.getModelResource(), producer));
 			
 			if (recordEvents_ && (!evt.vetoed() && !willRecordVetoedEvents()) && recordQueue_ != null)
 				recordQueue_.add(evt);
@@ -72,7 +73,7 @@ public class EventDispatcher {
 	public void dispatch(ModelEvent evt) {
 		dispatch(null, evt, null);
 	}
-
+	
 	public List<ModelListener> getPreDispatchListeners() {
 		return preDispatchListeners_;
 	}

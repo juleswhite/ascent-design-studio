@@ -35,7 +35,6 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 	private Map<String, TemplateExecutor> serverTemplates_ = new HashMap<String, TemplateExecutor>();
 	private TemplateFinder templateFinder_;
 
-
 	public String getTemplate(String id) {
 		return "<html><body>loading...</body></html>";
 	}
@@ -44,17 +43,19 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 
 		TemplateExecData data = new TemplateExecData(tdata);
 		TemplateExecutor t = serverTemplates_.get(id);
-		
-		ClientModelObject cmo = ModelRegistry.getInstance().get(""+data.getObjectId());
-		
-		if(cmo != null){
+
+		ClientModelObject cmo = ModelRegistry.getInstance().get(
+				"" + data.getObjectId());
+
+		if (cmo != null) {
 			data.setClientModelObject(cmo);
-			Object severobj = ClientServerModelMapping.get().getServerObject(cmo);
-			if(severobj != null){
+			Object severobj = ClientServerModelMapping.get().getServerObject(
+					cmo);
+			if (severobj != null) {
 				data.setServerModelObject(severobj);
 			}
 		}
-		
+
 		String result = null;
 		if (t != null) {
 			result = t.exec(data);
@@ -65,11 +66,17 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 
 	public TemplateUpdaterInfo getTemplateUpdaterInfo(String viewkey, String id) {
 		ClientModelObject mo = ModelRegistry.getInstance().get(id);
-		MetaType mt = mo.getTypes().get(0);
-		String modeltype = mt.getModelType().getName();
-		String type = mt.getName();
 
-		return loadTemplate(modeltype, type);
+		if (mo != null) {
+			MetaType mt = mo.getTypes().get(0);
+			String modeltype = mt.getModelType().getName();
+			String type = mt.getName();
+			return loadTemplate(modeltype, type);
+		}
+		else {
+			return new TemplateUpdaterInfo(id,"<html><body><div>Unable to load template. " +
+					"Object does not exist on the server</div></body></html>",true);
+		}
 	}
 
 	public TemplateUpdaterInfo loadTemplate(String modeltype, String type) {
@@ -82,10 +89,11 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 			boolean clientside = false;
 
 			try {
-//				File f = new File(getTemplateRepository(), key + ".htm");
-				ResolvedTemplate res = templateFinder_.findTemplate(modeltype, type);
+				// File f = new File(getTemplateRepository(), key + ".htm");
+				ResolvedTemplate res = templateFinder_.findTemplate(modeltype,
+						type);
 				InputStream in = res.getInputStream();
-				
+
 				if (in != null) {
 					t = IOUtils.toString(in);
 					t = t.trim();
@@ -108,19 +116,19 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 
 		return upi;
 	}
-	
+
 	public void loadExecutor(String key, String t, String type) {
 		ExecutorFactory factory = executorFactories_.get(type);
 		if (factory != null) {
 			TemplateExecutor exec = factory.createExecutor(t);
 			serverTemplates_.put(key, exec);
-		}
-		else {
-			logger_.severe("No executor factory found for template type:"+type+" while trying to execute template for key:"+key+" with template contents:"+t);
+		} else {
+			logger_.severe("No executor factory found for template type:"
+					+ type + " while trying to execute template for key:" + key
+					+ " with template contents:" + t);
 		}
 	}
 
-	
 	public Map<String, TemplateExecutor> getServerTemplates() {
 		return serverTemplates_;
 	}
@@ -145,8 +153,5 @@ public class DefaultServerTemplateManager implements ServerTemplateManager {
 	public void setTemplateFinder(TemplateFinder templateFinder) {
 		templateFinder_ = templateFinder;
 	}
-
-	
-	
 
 }

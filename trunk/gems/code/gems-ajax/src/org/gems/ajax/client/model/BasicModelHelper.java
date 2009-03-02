@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.gems.ajax.client.model.event.EventDispatcher;
+import org.gems.ajax.client.model.event.InstantiationEvent;
 import org.gems.ajax.client.model.event.ModelListener;
+import org.gems.ajax.client.model.resources.ModelResource;
 import org.gems.ajax.client.util.UUID;
 
 public class BasicModelHelper implements ModelHelper {
@@ -24,7 +27,11 @@ public class BasicModelHelper implements ModelHelper {
 	}
 
 	public void addListener(Object o, ModelListener l) {
-		// ((ClientModelObject) o).getListeners().add(l);
+		((ClientModelObject) o).getListeners().add(l);
+	}
+
+	public Type getModelType(Object o) {
+		return ((MetaType)getTypes(o)[0]).getModelType();
 	}
 
 	public Object clone(Object o) {
@@ -41,6 +48,10 @@ public class BasicModelHelper implements ModelHelper {
 		return null;
 	}
 
+	public Type getModelType(Type objecttype) {
+		return ((MetaType)objecttype).getModelType();
+	}
+
 	public void connect(Object src, Object trg, Object a) {
 		((ClientAssociation) a).setSource((ClientModelObject) src);
 		((ClientAssociation) a).setTarget((ClientModelObject) src);
@@ -48,8 +59,8 @@ public class BasicModelHelper implements ModelHelper {
 		((ClientModelObject) trg).addAssociation((ClientAssociation) a);
 	}
 
-	public Object createAssociation(Object assoctype) {
-		ClientAssociation assoc = new ClientAssociation(UUID.get(), null, null);
+	public Object createAssociation(ModelResource res, Type assoctype) {
+		ClientAssociation assoc = (ClientAssociation)createInstance(res, assoctype, UUID.get());
 		assoc.setType((MetaAssociation) assoctype);
 		return assoc;
 	}
@@ -80,7 +91,7 @@ public class BasicModelHelper implements ModelHelper {
 	}
 
 	public void removeListener(Object o, ModelListener l) {
-		// ((ClientModelObject) o).getListeners().remove(l);
+		((ClientModelObject) o).getListeners().remove(l);
 	}
 
 	public List<String> getTags(Object o) {
@@ -121,8 +132,22 @@ public class BasicModelHelper implements ModelHelper {
 		return false;
 	}
 
-	public Object createInstance(Object type) {
-		return ((MetaType)type).newInstance();
+	public Object createInstance(ModelResource res, Object type, String id) {
+		//It may be useful to propose InstantiationEvents
+		//and see if create a new instance is possible before
+		//creating the new instance. At the moment, I think
+		//this is probably overkill. It may be useful
+		//in the future.
+		
+		MetaType mtype = ((MetaType)type);
+		Object inst = mtype.newInstance();
+		if(id != null && inst instanceof ClientModelObject){
+			((ClientModelObject)inst).setId(id);
+		}
+		attachToResource(inst, res);
+		InstantiationEvent evt = new InstantiationEvent(mtype.getModelType().getName(), mtype.getName(), getId(inst));
+		EventDispatcher.get().dispatch((ModelElement)inst, evt, null);
+		return inst;
 	}
 
 	public List getAllowedChildTypes(Object type) {
@@ -130,8 +155,8 @@ public class BasicModelHelper implements ModelHelper {
 		return t.getValidChildTypes();
 	}
 
-	public List getAssociationTypes(Object src, Object trg) {
-		List<MetaAssociation> assoc = new ArrayList<MetaAssociation>();
+	public List<Type> getAssociationTypes(Object src, Object trg) {
+		List<Type> assoc = new ArrayList<Type>();
 		ClientModelObject so = (ClientModelObject) src;
 		ClientModelObject to = (ClientModelObject) trg;
 
@@ -171,4 +196,21 @@ public class BasicModelHelper implements ModelHelper {
 		return assoctype != null && src != null && trg != null;
 	}
 
+	public ModelResource getContainingResource(Object o) {
+		if(o instanceof ClientModelObject){
+			return ((ClientModelObject)o).getModelResource();
+		}
+		return null;
+	}
+
+	public void attachToResource(Object o, ModelResource res){
+		if(o instanceof ClientModelObject){
+			((ClientModelObject)o).attachToModelResource(res);
+			((ClientModelObject)o).register(true);
+		}
+	}
+	
+	public Object createInstance(ModelResource res, Object type){
+		return createInstance(res, type, null);
+	}
 }

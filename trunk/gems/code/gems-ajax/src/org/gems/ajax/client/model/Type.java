@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 public class Type implements Serializable{
 
+	public static final String NAME_PART_SEPARATOR = "/";
 	private String name_;
 
 	public Type(String name) {
@@ -33,13 +34,15 @@ public class Type implements Serializable{
 
 	public boolean equals(Object obj) {
 		if(obj instanceof Type)
-			return ((Type)obj).name_.equals(name_);
+			return ((Type)obj).getFullName().equals(getFullName());
 		return super.equals(obj);
 	}
 
 	public int hashCode() {
-		return name_.hashCode();
+		return getFullName().hashCode();
 	}
 	
-	
+	public String getFullName(){
+		return getName();
+	}
 }

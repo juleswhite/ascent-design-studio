@@ -1,17 +1,17 @@
 package org.gems.ajax.client.model;
 
-import java.io.Serializable;
 
-public class MetaAssociation implements Serializable {
+public class MetaAssociation extends MetaType {
 
+	public static final String META_ASSOCIATION_ID = "MetaAssociation";
 	private MetaType sourceType_;
 	private MetaType targetType_;
 	private String name_;
 
 	protected MetaAssociation(){}
 	
-	public MetaAssociation(String name, MetaType sourceType, MetaType targetType) {
-		super();
+	public MetaAssociation(ModelType mt, String name, MetaType sourceType, MetaType targetType) {
+		super(mt,name);
 		name_ = name;
 		sourceType_ = sourceType;
 		targetType_ = targetType;
@@ -43,5 +43,13 @@ public class MetaAssociation implements Serializable {
 
 	public String toString(){
 		return "MetaAssociation("+name_+","+sourceType_.getName()+"->"+targetType_.getName()+")";
+	}
+	
+	protected ClientModelObject createBlankTypeInstance(){
+		return new ClientAssociation();
+	}
+	
+	public String getFullName(){
+		return META_ASSOCIATION_ID+NAME_PART_SEPARATOR+getModelType()+NAME_PART_SEPARATOR+getName()+NAME_PART_SEPARATOR+getSourceType().getFullName()+NAME_PART_SEPARATOR+getTargetType().getFullName();
 	}
 }

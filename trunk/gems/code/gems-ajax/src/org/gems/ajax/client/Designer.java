@@ -14,6 +14,7 @@ import org.gems.ajax.client.edit.EditDomain;
 import org.gems.ajax.client.edit.EditManager;
 import org.gems.ajax.client.event.UIEventDispatcher;
 import org.gems.ajax.client.figures.GEMSDiagram;
+import org.gems.ajax.client.model.ClientModelObject;
 import org.gems.ajax.client.model.ModelingPackage;
 import org.gems.ajax.client.model.event.ModelEventRemoting;
 import org.gems.ajax.client.model.resources.ModelParameterRef;
@@ -88,6 +89,12 @@ public class Designer implements EntryPoint {
 
 		ModelEventRemoting remoting = new ModelEventRemoting(pkg.getModelHelper());
 		remoting.start(GWT.getModuleBaseURL());
+		
+		
+		///This should be changed to something that isn't
+		//tightly-coupled to ClientModelObject
+		if(pkg.getRootObject() instanceof ClientModelObject)
+			((ClientModelObject)pkg.getRootObject()).register(true);
 		
 		GEMSDiagram dig = editor_.open(pkg.getModelHelper(), pkg
 				.getRootObject());// new

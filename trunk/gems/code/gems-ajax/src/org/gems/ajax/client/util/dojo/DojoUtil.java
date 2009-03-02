@@ -184,6 +184,10 @@ public class DojoUtil {
         return {};
     }-*/;
 	
+	public static native String getCometClientId()/*-{
+		return $wnd.dojox.cometd.clientId;
+	}-*/;
+	
 	public static native void makeResizeableImpl(Element el)/*-{
 			var args = {targetContainer:el};
 			new $wnd.dojox.layout.ResizeHandle(args);

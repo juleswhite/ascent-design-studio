@@ -7,6 +7,7 @@ import org.gems.ajax.client.edit.EditPartManager;
 import org.gems.ajax.client.edit.cmd.AddChildCommand;
 import org.gems.ajax.client.model.ModelHelper;
 import org.gems.ajax.client.model.Type;
+import org.gems.ajax.client.model.resources.ModelResource;
 import org.gems.ajax.client.util.GraphicsConstants;
 import org.gems.ajax.client.util.Util;
 
@@ -23,14 +24,16 @@ public class PaletteFigure extends AbstractFloatingFigure implements GraphicsCon
 
 	private class CreateButton extends Button {
 		private Object type_;
+		private ModelResource resource_;
 		
-		public CreateButton(Object t, String label){
+		public CreateButton(ModelResource r, Object t, String label){
 			super(label);
 			type_ = t;
+			resource_ = r;
 			addClickListener(new ClickListener() {
 				
 				public void onClick(Widget sender) {
-					Object inst = attachedTo_.getModelHelper().createInstance(type_);
+					Object inst = attachedTo_.getModelHelper().createInstance(resource_,type_);
 					EditPart ep = attachedTo_.getEditDomain().getEditor().load(attachedTo_, inst);
 					AddChildCommand add = new AddChildCommand();
 					add.setChild(ep);
@@ -99,11 +102,13 @@ public class PaletteFigure extends AbstractFloatingFigure implements GraphicsCon
 		attachedTo_ = EditPartManager.getEditPart(panel);
 		if (attachedTo_ != null) {
 			ModelHelper mh = attachedTo_.getModelHelper();
-			Type[] types = mh.getTypes(attachedTo_.getModel());
+			Object model = attachedTo_.getModel();
+			ModelResource res = mh.getContainingResource(model);
+			Type[] types = mh.getTypes(model);
 			for (Type type : types) {
 				List childts = mh.getAllowedChildTypes(type);
 				for (Object o : childts) {
-					Button b = new CreateButton(o, "+ " + o);
+					Button b = new CreateButton(res, o, "+ " + o);
 					componentContainer_.add(b);
 				}
 			}

@@ -33,23 +33,25 @@ public class ClientModelObject implements Serializable, ModelElement {
 
 	private List<ModelListener> listeners_ = new ArrayList<ModelListener>(1);
 
-	private List<ClientModelObject> children_ = new ArrayList<ClientModelObject>(1);
+	private List<ClientModelObject> children_ = new ArrayList<ClientModelObject>(
+			1);
 
-	private List<ClientAssociation> associations_ = new ArrayList<ClientAssociation>(1);
+	private List<ClientAssociation> associations_ = new ArrayList<ClientAssociation>(
+			1);
 
 	private Map<String, Property> properties_ = new HashMap<String, Property>(3);
-	
+
 	private ModelResource modelResource_;
 
 	public ClientModelObject() {
 		id_ = UUID.get();
-		ModelRegistry.getInstance().add(this);
+		register(true);
 	}
 
 	public ClientModelObject(String id, String label) {
 		id_ = id;
 		label_ = label;
-		ModelRegistry.getInstance().add(this);
+		register(true);
 	}
 
 	public ClientModelObject(String id, String label, MetaType mt) {
@@ -67,9 +69,9 @@ public class ClientModelObject implements Serializable, ModelElement {
 	}
 
 	public void setId(String id) {
-		ModelRegistry.getInstance().remove(this);
+		unRegister(false);
 		id_ = id;
-		ModelRegistry.getInstance().add(this);
+		register(false);
 	}
 
 	public List<ClientModelObject> getChildren() {
@@ -97,16 +99,18 @@ public class ClientModelObject implements Serializable, ModelElement {
 	}
 
 	public void addAssociation(ClientAssociation a) {
-		if (dispatch(new ProposedConnectionEvent(a.getSource(),a.getTarget(),true))) {
+		if (dispatch(new ProposedConnectionEvent(a.getSource(), a.getTarget(),a,
+				true))) {
 			getAssociations().add(a);
-			dispatch(new ConnectionEvent(a.getSource(),a.getTarget(),true));
+			dispatch(new ConnectionEvent(a.getSource(), a.getTarget(), a, true));
 		}
 	}
 
 	public void removeAssociation(ClientAssociation a) {
-		if (dispatch(new ProposedConnectionEvent(a.getSource(),a.getTarget(),false))) {
+		if (dispatch(new ProposedConnectionEvent(a.getSource(), a.getTarget(), a,
+				false))) {
 			getAssociations().remove(a);
-			dispatch(new ConnectionEvent(a.getSource(),a.getTarget(),false));
+			dispatch(new ConnectionEvent(a.getSource(), a.getTarget(), a, false));
 		}
 	}
 
@@ -178,13 +182,13 @@ public class ClientModelObject implements Serializable, ModelElement {
 	public void setProperties(Map<String, Property> properties) {
 		properties_ = properties;
 	}
-	
-	public void attachProperty(Property prop){
+
+	public void attachProperty(Property prop) {
 		properties_.put(prop.getName(), prop);
 		prop.setOwner(this);
 	}
-	
-	public void detatchProperty(Property prop){
+
+	public void detatchProperty(Property prop) {
 		properties_.remove(prop.getName());
 		prop.setOwner(null);
 	}
@@ -196,25 +200,44 @@ public class ClientModelObject implements Serializable, ModelElement {
 	public void setLabel(String label) {
 		label_ = label;
 	}
-	
+
 	public ModelResource getModelResource() {
 		return modelResource_;
 	}
 
 	public void attachToModelResource(ModelResource modelResource) {
 		modelResource_ = modelResource;
-		for(ClientModelObject child : children_)
+		for (ClientModelObject child : children_)
 			child.attachToModelResource(modelResource);
 	}
 
-	protected boolean propertyChange(PropertyEvent pe){
+	protected boolean propertyChange(PropertyEvent pe) {
 		return dispatch(pe);
 	}
 
 	protected boolean dispatch(ModelEvent evt) {
-		EventDispatcher.get().dispatch(this,evt,listeners_);
-		
+		EventDispatcher.get().dispatch(this, evt, listeners_);
+
 		return !(evt instanceof ProposedEvent)
 				|| !((ProposedEvent) evt).vetoed();
+	}
+
+	public void register(boolean childrentoo) {
+		ModelRegistry.getInstance().add(this);
+
+		if (childrentoo) {
+			for (ClientModelObject child : getChildren()) {
+				child.register(true);
+			}
+		}
+	}
+
+	public void unRegister(boolean childrentoo) {
+		ModelRegistry.getInstance().add(this);
+		if (childrentoo) {
+			for (ClientModelObject child : getChildren()) {
+				child.unRegister(true);
+			}
+		}
 	}
 }

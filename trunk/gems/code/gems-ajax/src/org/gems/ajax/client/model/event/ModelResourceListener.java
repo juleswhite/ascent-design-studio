@@ -1,7 +1,5 @@
 package org.gems.ajax.client.model.event;
 
-import org.gems.ajax.client.model.ModelElement;
-import org.gems.ajax.client.model.resources.ModelResource;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -12,6 +10,5 @@ import org.gems.ajax.client.model.resources.ModelResource;
  * Contributors: Jules White - initial API and implementation
  ****************************************************************************/
 public interface ModelResourceListener {
-	public void resourceChanged(ModelResource res, ModelElement el,
-			ModelEvent evt);
+	public void resourceChanged(ModelResourceEvent mre);
 }

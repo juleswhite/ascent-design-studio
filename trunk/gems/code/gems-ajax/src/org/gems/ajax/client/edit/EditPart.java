@@ -4,6 +4,7 @@ import org.gems.ajax.client.edit.exdata.ExtendedData;
 import org.gems.ajax.client.figures.DiagramElement;
 import org.gems.ajax.client.figures.GEMSDiagram;
 import org.gems.ajax.client.model.ModelHelper;
+import org.gems.ajax.client.model.resources.ModelResource;
 import org.gems.ajax.client.views.View;
 
 /******************************************************************************
@@ -180,4 +181,6 @@ public interface EditPart {
 	 * @return
 	 */
 	public void setView(View v);
+	
+	
 }

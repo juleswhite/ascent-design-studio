@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.gems.ajax.client.model.event.ModelListener;
+import org.gems.ajax.client.model.resources.ModelResource;
 
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -24,8 +25,34 @@ public interface ModelHelper extends Serializable{
 	 */
 	public String getId(Object o);
 	
-	
+	/**
+	 * Returns the type object representing the named
+	 * type that is specified by the model type and
+	 * name parameters.
+	 * 
+	 * @param modeltype
+	 * @param name
+	 * @return
+	 */
 	public Type getTypeForName(String modeltype, String name);	
+	
+	/**
+	 * Returns the model type of a 
+	 * model element.
+	 * @param o
+	 * @return
+	 */
+	public Type getModelType(Object o);
+	
+	/**
+	 * Returns the type of model that the specified
+	 * type is associated with.
+	 * 
+	 * @param objecttype
+	 * @return
+	 */
+	public Type getModelType(Type objecttype);
+	
 	/**
 	 * This method creates a clone/copy of
 	 * the model object passed in.
@@ -215,7 +242,7 @@ public interface ModelHelper extends Serializable{
 	 * @param trg
 	 * @return
 	 */
-	public List getAssociationTypes(Object src, Object trg);
+	public List<Type> getAssociationTypes(Object src, Object trg);
 
 	/**
 	 * This method creates a connection of type assoctype between the specified
@@ -237,7 +264,7 @@ public interface ModelHelper extends Serializable{
 	 *            the type of association object to create
 	 * @return the new association object
 	 */
-	public Object createAssociation(Object assoctype);
+	public Object createAssociation(ModelResource res, Type assoctype);
 	
 	/**
 	 * Returns the object that is the source
@@ -269,10 +296,29 @@ public interface ModelHelper extends Serializable{
 	 * This method creates a new instance of the provided
 	 * type.
 	 * 
+	 * If you are implementing your own ModelHelper, it
+	 * is EXTREMELY important that you send out 
+	 * InstantiationEvents when this method gets called
+	 * so that the server is kept in sync.
+	 * 
 	 * @param type to create an instance of
 	 * @return the new instance of the type
 	 */
-	public Object createInstance(Object type);
+	public Object createInstance(ModelResource res, Object type);
+	
+	/**
+	 * This method creates a new instance of the provided
+	 * type and sets its id to the provided value.
+	 * 
+	 * If you are implementing your own ModelHelper, it
+	 * is EXTREMELY important that you send out 
+	 * InstantiationEvents when this method gets called
+	 * so that the server is kept in sync.
+	 * 
+	 * @param type to create an instance of
+	 * @return the new instance of the type
+	 */
+	public Object createInstance(ModelResource res, Object type, String id);
 	
 	/**
 	 * This method returns the types that can be
@@ -282,4 +328,21 @@ public interface ModelHelper extends Serializable{
 	 * @return the list of valid child types
 	 */
 	public List getAllowedChildTypes(Object type);
+	
+	/**
+	 * Returns the model resource that contains the
+	 * specified element.
+	 * 
+	 * @param o
+	 * @return
+	 */
+	public ModelResource getContainingResource(Object o);
+	
+	/**
+	 * This method attaches the specified element to the
+	 * given model resource.
+	 * @param o
+	 * @param res
+	 */
+	public void attachToResource(Object o, ModelResource res);
 }

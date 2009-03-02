@@ -2,7 +2,6 @@ package org.gems.ajax.client.model.event;
 
 import org.gems.ajax.client.model.ModelElement;
 
-
 /*******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse
@@ -15,11 +14,15 @@ import org.gems.ajax.client.model.ModelElement;
 public class ConnectionEvent extends ModelEvent {
 
 	private ModelElement target_;
+	private ModelElement connection_;
 
-	public ConnectionEvent(){}
-	
-	public ConnectionEvent(ModelElement source, ModelElement target, boolean add) {
+	public ConnectionEvent() {
+	}
+
+	public ConnectionEvent(ModelElement source, ModelElement target,
+			ModelElement connection, boolean add) {
 		super(source, CONNECTION_ADDED);
+		connection_ = connection;
 		target_ = target;
 		if (!add)
 			setType(CONNECTION_REMOVED);
@@ -37,14 +40,19 @@ public class ConnectionEvent extends ModelEvent {
 		return getType() == CONNECTION_ADDED;
 	}
 
-	
+	public ModelElement getConnection() {
+		return connection_;
+	}
+
+	public void setConnection(ModelElement connection) {
+		connection_ = connection;
+	}
+
 	public void dispatchImpl(ModelListener l) {
-		if(isAdd())
+		if (isAdd())
 			l.connectionAdded(this);
 		else
 			l.connectionRemoved(this);
 	}
 
-	
-	
 }
