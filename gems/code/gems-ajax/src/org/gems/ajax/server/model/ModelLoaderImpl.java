@@ -33,7 +33,7 @@ public class ModelLoaderImpl extends RemoteServiceServlet implements ModelLoader
 	public ClientModelObject createModel(){
 		MetaType mt = TypeManager.getOrCreateTypeForName("default","ClientModelObject");
 		mt.getValidChildTypes().add(mt);
-		MetaAssociation ma = new MetaAssociation("Conn",mt,mt);
+		MetaAssociation ma = new MetaAssociation(mt.getModelType(),"Conn",mt,mt);
 		mt.getAssociations().add(ma);
 		
 		ClientModelObject root = new ClientModelObject("root",mt);

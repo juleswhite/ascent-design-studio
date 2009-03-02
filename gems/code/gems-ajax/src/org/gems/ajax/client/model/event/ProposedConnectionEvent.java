@@ -14,8 +14,8 @@ import org.gems.ajax.client.model.ModelElement;
  ****************************************************************************/
 public class ProposedConnectionEvent extends ConnectionEvent implements ProposedEvent{
 
-	public ProposedConnectionEvent(ModelElement source, ModelElement target, boolean add) {
-		super(source, target, add);
+	public ProposedConnectionEvent(ModelElement source, ModelElement target, ModelElement conn, boolean add) {
+		super(source, target, conn, add);
 	}
 
 	public void dispatchImpl(ModelListener l) {

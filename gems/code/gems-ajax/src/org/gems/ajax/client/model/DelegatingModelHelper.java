@@ -3,6 +3,7 @@ package org.gems.ajax.client.model;
 import java.util.List;
 
 import org.gems.ajax.client.model.event.ModelListener;
+import org.gems.ajax.client.model.resources.ModelResource;
 
 public class DelegatingModelHelper implements ModelHelper {
 
@@ -26,6 +27,10 @@ public class DelegatingModelHelper implements ModelHelper {
 			delegate_.addChild(parent, child);
 			doPostDelegation();
 		}
+	}
+
+	public Type getModelType(Type objecttype) {
+		return delegate_.getModelType(objecttype);
 	}
 
 	public void addListener(Object o, ModelListener l) {
@@ -63,19 +68,32 @@ public class DelegatingModelHelper implements ModelHelper {
 		}
 	}
 
-	public Object createAssociation(Object assoctype) {
+	public Object createAssociation(ModelResource res, Type assoctype) {
 		Object a = null;
 		if (doPreDelegation()) {
-			a = delegate_.createAssociation(assoctype);
+			a = delegate_.createAssociation(res, assoctype);
 			doPostDelegation();
 		}
 		return a;
 	}
 
-	public Object createInstance(Object type) {
+	public Object createInstance(ModelResource res, Object type) {
 		Object i = null;
 		if (doPreDelegation()) {
-			i = delegate_.createInstance(type);
+			i = delegate_.createInstance(res,type);
+			doPostDelegation();
+		}
+		return i;
+	}
+	
+	public Type getModelType(Object o) {
+		return delegate_.getModelType(o);
+	}
+
+	public Object createInstance(ModelResource res, Object type, String id) {
+		Object i = null;
+		if (doPreDelegation()) {
+			i = delegate_.createInstance(res,type, id);
 			doPostDelegation();
 		}
 		return i;
@@ -88,7 +106,7 @@ public class DelegatingModelHelper implements ModelHelper {
 		}
 	}
 
-	public List getAssociationTypes(Object src, Object trg) {
+	public List<Type> getAssociationTypes(Object src, Object trg) {
 		return delegate_.getAssociationTypes(src, trg);
 	}
 
@@ -181,4 +199,11 @@ public class DelegatingModelHelper implements ModelHelper {
 	}
 	
 	
+	public ModelResource getContainingResource(Object o){
+		return delegate_.getContainingResource(o);
+	}
+	
+	public void attachToResource(Object o, ModelResource res){
+		delegate_.attachToResource(o, res);
+	}
 }

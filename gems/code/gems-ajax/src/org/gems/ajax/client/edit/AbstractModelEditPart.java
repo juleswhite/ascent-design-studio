@@ -18,9 +18,11 @@ import org.gems.ajax.client.edit.cmd.ConnectCommand;
 import org.gems.ajax.client.edit.cmd.DeleteCommand;
 import org.gems.ajax.client.figures.DiagramPanel;
 import org.gems.ajax.client.model.ModelHelper;
+import org.gems.ajax.client.model.Type;
 import org.gems.ajax.client.model.event.ConnectionEvent;
 import org.gems.ajax.client.model.event.ContainmentEvent;
 import org.gems.ajax.client.model.event.PropertyEvent;
+import org.gems.ajax.client.model.resources.ModelResource;
 
 public abstract class AbstractModelEditPart extends AbstractEditPart implements
 		ModelEditPart, EditConstants {
@@ -93,7 +95,11 @@ public abstract class AbstractModelEditPart extends AbstractEditPart implements
 	}
 
 	public void connectTo(ModelEditPart target, String assoctype) {
-		Object chandle = getModelHelper().createAssociation(assoctype);
+		ModelResource res = getModelHelper().getContainingResource(getModel());
+		Type[] t = getModelHelper().getTypes(getModel());
+		Type mtype = getModelHelper().getModelType(t[0]);
+		Type atype = getModelHelper().getTypeForName(mtype.getName(), assoctype);
+		Object chandle = getModelHelper().createAssociation(res,atype);
 		ConnectionEditPart cep = getFactory().createConnectionEditPart(getView(),chandle);
 		cep.setConnectionLayer(getModelFigure().getDiagram()
 				.getConnectionLayer());

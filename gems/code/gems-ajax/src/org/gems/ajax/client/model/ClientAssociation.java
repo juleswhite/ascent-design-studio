@@ -1,22 +1,14 @@
 package org.gems.ajax.client.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class ClientAssociation implements IsSerializable{
+public class ClientAssociation extends ClientModelObject {
 
 	private ClientModelObject source_;
 
 	private ClientModelObject target_;
 	
-	private MetaAssociation type_;
-
 	private String associationId_;
 	
-	private List<Property> properties_ = new ArrayList<Property>(1);
-
 	protected ClientAssociation(){}
 	
 	public ClientAssociation(String associationId, ClientModelObject source,
@@ -52,27 +44,12 @@ public class ClientAssociation implements IsSerializable{
 	}
 
 	public MetaAssociation getType() {
-		return type_;
+		return (MetaAssociation)getTypes().get(0);
 	}
 
 	public void setType(MetaAssociation type) {
-		type_ = type;
-	}
-
-	public List<Property> getProperties() {
-		return properties_;
-	}
-	
-	public void attachProperty(Property prop){
-		properties_.add(prop);
-	}
-	
-	public void detatchProperty(Property prop){
-		properties_.remove(prop);
-	}
-
-	public void setProperties(List<Property> properties) {
-		properties_ = properties;
+		getTypes().clear();
+		getTypes().add(type);
 	}
 
 	public String toString(){

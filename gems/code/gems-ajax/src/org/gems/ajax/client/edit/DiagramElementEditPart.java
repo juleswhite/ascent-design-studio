@@ -28,6 +28,7 @@ import org.gems.ajax.client.geometry.Rectangle;
 import org.gems.ajax.client.model.ModelHelper;
 import org.gems.ajax.client.model.Property;
 import org.gems.ajax.client.model.Type;
+import org.gems.ajax.client.model.event.InstantiationEvent;
 import org.gems.ajax.client.model.event.ModelListener;
 import org.gems.ajax.client.util.GraphicsConstants;
 import org.gems.ajax.client.util.Util;
@@ -279,6 +280,9 @@ public class DiagramElementEditPart extends AbstractModelEditPart implements
 				el.removeChild(child.getElement());
 			}
 		}
+	}
+
+	public void objectInstantiated(InstantiationEvent evt) {
 	}
 
 	public void onChildAdded(AbstractDiagramElement p) {

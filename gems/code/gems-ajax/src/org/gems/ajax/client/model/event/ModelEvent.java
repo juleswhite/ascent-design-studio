@@ -21,6 +21,7 @@ public abstract class ModelEvent implements Serializable{
 	public static final int CONNECTION_ADDED = 3;
 	public static final int CONNECTION_REMOVED = 4;
 	public static final int PROPERTY_CHANGED = 5;
+	public static final int INSTANTIATION = 6;
 	
 	private boolean vetoed_ = false;
 	private ModelElement source_;

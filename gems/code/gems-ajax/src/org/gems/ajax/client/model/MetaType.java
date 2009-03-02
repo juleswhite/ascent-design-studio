@@ -5,6 +5,8 @@ import java.util.List;
 
 public class MetaType extends Type {
 
+	public static final String META_TYPE_ID = "MetaType";
+
 	private MetaType parentType_;
 	
 	private ModelType modelType_;
@@ -42,7 +44,7 @@ public class MetaType extends Type {
 	}
 
 	public boolean sameType(MetaType mt) {
-		return mt.getName().equals(getName());
+		return mt.getFullName().equals(getFullName());
 	}
 
 	public boolean isAssignableFrom(MetaType mt) {
@@ -115,13 +117,17 @@ public class MetaType extends Type {
 	}
 	
 	public ClientModelObject newInstance(){
-		ClientModelObject o = new ClientModelObject();
+		ClientModelObject o = createBlankTypeInstance();
 		o.getTypes().add(this);
 		for(MetaProperty p : getAllProperties()){
 			Property prop = p.newInstance();
 			o.attachProperty(prop);
 		}
 		return o;
+	}
+	
+	protected ClientModelObject createBlankTypeInstance(){
+		return new ClientModelObject();
 	}
 
 	public ModelType getModelType() {
@@ -132,5 +138,7 @@ public class MetaType extends Type {
 		modelType_ = modelType;
 	}
 	
-	
+	public String getFullName(){
+		return META_TYPE_ID+NAME_PART_SEPARATOR+getModelType()+NAME_PART_SEPARATOR+getName();
+	}
 }

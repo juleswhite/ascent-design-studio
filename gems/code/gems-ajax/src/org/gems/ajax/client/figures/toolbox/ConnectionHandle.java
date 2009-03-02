@@ -1,5 +1,8 @@
 package org.gems.ajax.client.figures.toolbox;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.gems.ajax.client.dnd.DragSource;
 import org.gems.ajax.client.dnd.DragSourceListener;
 import org.gems.ajax.client.dnd.DropTarget;
@@ -8,6 +11,8 @@ import org.gems.ajax.client.edit.EditConstants;
 import org.gems.ajax.client.edit.EditPart;
 import org.gems.ajax.client.edit.cmd.ConnectCommand;
 import org.gems.ajax.client.figures.ImageButton;
+import org.gems.ajax.client.model.ModelHelper;
+import org.gems.ajax.client.model.Type;
 import org.gems.ajax.client.util.GraphicsConstants;
 
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -43,9 +48,14 @@ public class ConnectionHandle implements ToolBoxTool, GraphicsConstants,
 		dragSource_.addListener(new DragSourceListener() {
 
 			public void onExitTarget(DragSource ds, DropTarget t) {
+				getConnectCommand().updateAssociationTypes(null);
 			}
 
 			public void onEnterTarget(DragSource ds, DropTarget t) {
+				EditPart trg = t.getEditPart();
+				if(trg != null){
+					getConnectCommand().setTarget(trg);
+				}
 			}
 
 			public void onDrop(DragSource ds, DropTarget t) {

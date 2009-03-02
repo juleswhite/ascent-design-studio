@@ -132,7 +132,7 @@ public abstract class AbstractAssociationClassPostProcessor implements
 		mods.add(new Delete(cmo));
 
 		for (Property p : cmo.getProperties().values())
-			assoc.getProperties().add(p);
+			assoc.attachProperty(p);
 
 	}
 

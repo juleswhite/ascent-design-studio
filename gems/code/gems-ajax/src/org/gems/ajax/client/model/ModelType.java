@@ -1,6 +1,5 @@
 package org.gems.ajax.client.model;
 
-import java.io.Serializable;
 
 /******************************************************************************
  * Copyright (c) 2007 Jules White. All rights reserved. This program and the
@@ -10,24 +9,15 @@ import java.io.Serializable;
  * 
  * Contributors: Jules White - initial API and implementation
  ****************************************************************************/
-public class ModelType implements Serializable{
+public class ModelType extends Type{
 	
-	private String name_;
-
 	public ModelType() {
+		super("");
 	}
 
 	public ModelType(String name) {
-		super();
-		name_ = name;
+		super(name);
 	}
 
-	public String getName() {
-		return name_;
-	}
-
-	public void setName(String name) {
-		name_ = name;
-	}
-
+	
 }

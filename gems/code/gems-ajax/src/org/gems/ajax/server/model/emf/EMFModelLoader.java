@@ -58,7 +58,7 @@ public class EMFModelLoader implements ModelReader {
 			Model model = new Model();
 			model.setRoot(cmo);
 			model.setId(id);
-			
+
 			return model;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,8 +92,8 @@ public class EMFModelLoader implements ModelReader {
 		ClientModelObject cmo = lookup.get(eobj);
 		if (cmo == null) {
 			cmo = new ClientModelObject();
-			//This makes sure we can lookup the 
-			//EMF object later
+			// This makes sure we can lookup the
+			// EMF object later
 			ClientServerModelMapping.get().put(cmo, eobj);
 			lookup.put(eobj, cmo);
 
@@ -118,16 +118,17 @@ public class EMFModelLoader implements ModelReader {
 			for (EReference ref : eclass.getEReferences()) {
 				if (!ref.isContainment()) {
 					String typename = ref.getName();
-					
+
 					Object val = eobj.eGet(ref);
 					if (val instanceof EList) {
 						EList list = (EList) val;
 						for (Object etrg : list) {
-							addAssociation(typename, cmo, (EObject) etrg, lookup,
-									metalookup);
+							addAssociation(typename, cmo, (EObject) etrg,
+									lookup, metalookup);
 						}
 					} else {
-						addAssociation(typename, cmo, (EObject) val, lookup, metalookup);
+						addAssociation(typename, cmo, (EObject) val, lookup,
+								metalookup);
 					}
 				}
 			}
@@ -136,7 +137,7 @@ public class EMFModelLoader implements ModelReader {
 			// scoped to the specific EClass that is being mirrored?
 			for (EReference contain : eclass.getEAllContainments()) {
 				Object val = eobj.eGet(contain);
-				
+
 				if (val instanceof EObject) {
 					ClientModelObject child = toClientObject((EObject) eobj
 							.eGet(contain), lookup, metalookup);
@@ -154,11 +155,13 @@ public class EMFModelLoader implements ModelReader {
 		return cmo;
 	}
 
-	public void addAssociation(String name, ClientModelObject cmo, EObject etrg,
-			Map<Object, ClientModelObject> lookup,
+	public void addAssociation(String name, ClientModelObject cmo,
+			EObject etrg, Map<Object, ClientModelObject> lookup,
 			Map<Object, MetaType> metalookup) {
 		ClientModelObject trg = toClientObject(etrg, lookup, metalookup);
-		MetaAssociation type = new MetaAssociation(name, cmo.getTypes().get(0), trg.getTypes().get(0));
+		MetaAssociation type = new MetaAssociation(trg.getTypes().get(0)
+				.getModelType(), name, cmo.getTypes().get(0), trg.getTypes()
+				.get(0));
 		ClientAssociation assoc = new ClientAssociation(UUID.randomUUID()
 				.toString(), cmo, trg);
 		assoc.setType(type);
@@ -185,7 +188,8 @@ public class EMFModelLoader implements ModelReader {
 					MetaType src = mt;
 					MetaType trg = toClientMetaType(ref.getEReferenceType(),
 							lookup);
-					MetaAssociation assoc = new MetaAssociation(name, src, trg);
+					MetaAssociation assoc = new MetaAssociation(src
+							.getModelType(), name, src, trg);
 					src.getAssociations().add(assoc);
 				}
 			}
