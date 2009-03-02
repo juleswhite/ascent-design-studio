@@ -131,8 +131,8 @@ Moveable:true;
 }}}
 
 GEMS currently supports the following properties in the GEMS_Props directive:
-  # InitWidth - specifies the initial width of the view. Can be set to any valid value for the CSS width property.
-  # InitHeight - specifies the initial height of the view. Can be set to any valid value for the CSS width property.
+  # !InitWidth - specifies the initial width of the view. Can be set to any valid value for the CSS width property.
+  # !InitHeight - specifies the initial height of the view. Can be set to any valid value for the CSS width property.
 
 = Creating New Template Languages =
 
