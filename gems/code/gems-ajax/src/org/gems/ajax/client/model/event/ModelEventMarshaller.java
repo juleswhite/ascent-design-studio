@@ -98,7 +98,6 @@ public class ModelEventMarshaller {
 		case ModelEvent.INSTANTIATION:
 			InstantiationEvent ie = (InstantiationEvent) evt;
 			map.put(INSTANTIATION_ELEMENT_TYPE_KEY, ie.getTypeName());
-			map.put(INSTANTIATION_MODEL_TYPE_KEY, ie.getModelType());
 			map.put(INSTANTIATED_ELEMENT_ID_KEY, ie.getElementId());
 			break;
 		}
@@ -193,10 +192,9 @@ public class ModelEventMarshaller {
 
 			break;
 		case ModelEvent.INSTANTIATION:
-			String mtype = evt.get(INSTANTIATION_MODEL_TYPE_KEY);
 			String etype = evt.get(INSTANTIATION_ELEMENT_TYPE_KEY);
 			String eid = evt.get(INSTANTIATED_ELEMENT_ID_KEY);
-			mevt = new InstantiationEvent(mtype, etype, eid);
+			mevt = new InstantiationEvent(etype, eid);
 			break;
 		}
 

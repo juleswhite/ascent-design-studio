@@ -48,6 +48,10 @@ public class BasicModelHelper implements ModelHelper {
 		return null;
 	}
 
+	public Type getTypeForFullName(String fullname) {
+		return TypeManager.getOrCreateTypeFromFullName(fullname);
+	}
+
 	public Type getModelType(Type objecttype) {
 		return ((MetaType)objecttype).getModelType();
 	}
@@ -145,7 +149,7 @@ public class BasicModelHelper implements ModelHelper {
 			((ClientModelObject)inst).setId(id);
 		}
 		attachToResource(inst, res);
-		InstantiationEvent evt = new InstantiationEvent(mtype.getModelType().getName(), mtype.getName(), getId(inst));
+		InstantiationEvent evt = new InstantiationEvent(mtype.getFullName(), getId(inst));
 		EventDispatcher.get().dispatch((ModelElement)inst, evt, null);
 		return inst;
 	}
