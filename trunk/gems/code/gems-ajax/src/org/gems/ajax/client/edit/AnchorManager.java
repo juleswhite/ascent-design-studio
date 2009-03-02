@@ -34,6 +34,7 @@ public class AnchorManager implements GraphicsConstants {
 		public int index;
 		public int height;
 		public int width;
+		public int sourceCoord_;
 
 		public AnchorData(int off, int off2, int side, int index) {
 			super();
@@ -53,12 +54,25 @@ public class AnchorManager implements GraphicsConstants {
 			width = bounds.width;
 		}
 
+		public int getSourceCoord() {
+			return sourceCoord_;
+		}
+
+		public void setSourceCoord(int sourceCoord) {
+			sourceCoord_ = sourceCoord;
+		}
+
 	}
 
 	private Comparator<ConnectionAnchor> anchorSorter_ = new Comparator<ConnectionAnchor>() {
 
 		public int compare(ConnectionAnchor o1, ConnectionAnchor o2) {
-			return anchorData_.get(o1).index - anchorData_.get(o2).index;
+			AnchorData o1d = anchorData_.get(o1);
+			AnchorData o2d = anchorData_.get(o2);
+			if (o1d.sourceCoord_ == o2d.sourceCoord_)
+				return o1d.index - o2d.index;
+			else
+				return o1d.sourceCoord_ - o2d.sourceCoord_;
 		}
 
 	};
@@ -123,6 +137,18 @@ public class AnchorManager implements GraphicsConstants {
 		l.add(ca);
 		int cdx = (ca.getDirection() == LEFT || ca.getDirection() == RIGHT) ? d.height
 				: d.width;
+
+		ConnectionAnchor oanc = ca.getOppositeAnchor();
+		if (oanc != null) {
+			int scoord = 0;
+			Widget ow = oanc.getOwner().getDiagramWidget();
+
+			scoord = (ca.getDirection() == LEFT || ca.getDirection() == RIGHT) ? Util
+					.getDiagramY(ow)
+					: Util.getDiagramX(ow);
+			d.setSourceCoord(scoord);
+		}
+
 		if (l.size() > 0)
 			cdx = cdx + anchorSpread_;
 

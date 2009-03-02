@@ -96,6 +96,7 @@ public abstract class AbstractConnectionEditPart extends AbstractEditPart
 			
 			ca.attach(con);
 			cb.attach(con);
+			ca.forceConnectionUpdate();
 //			
 //			System.out.println("attach "+(System.currentTimeMillis()-start));
 //			start = System.currentTimeMillis();

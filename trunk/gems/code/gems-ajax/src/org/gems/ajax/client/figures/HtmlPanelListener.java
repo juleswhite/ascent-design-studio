@@ -11,4 +11,5 @@ package org.gems.ajax.client.figures;
  ****************************************************************************/
 public interface HtmlPanelListener {
 	public void resizeRequested(String w, String h);
+	public void onLoad(HtmlPanel p);
 }

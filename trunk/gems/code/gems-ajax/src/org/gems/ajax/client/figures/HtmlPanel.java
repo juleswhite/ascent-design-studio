@@ -43,6 +43,7 @@ public class HtmlPanel extends DiagramPanel {
 		setResizeable(true);
 		setCollapsible(false);
 		setMoveable(moveable);
+		
 	}
 
 	public void onDeSelect() {
@@ -50,6 +51,12 @@ public class HtmlPanel extends DiagramPanel {
 
 	public void onSelect() {
 		System.out.println("Selected");
+	}
+
+	protected void onLoad() {
+		super.onLoad();
+		for(HtmlPanelListener l : listeners_)
+			l.onLoad(this);
 	}
 
 	public HTMLPanel getBodyHTML() {
