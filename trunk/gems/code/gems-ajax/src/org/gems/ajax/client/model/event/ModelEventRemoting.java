@@ -25,10 +25,12 @@ public class ModelEventRemoting implements ModelResourceListener, CometCallback 
 	
 	private boolean sendVetoedEvents_ = false;
 	private ModelEventMarshaller marshaller_;
+	private ModelEventReplay replayer_;
 
 	public ModelEventRemoting(ModelHelper modelHelper) {
 		super();
 		marshaller_ = new ModelEventMarshaller(modelHelper);
+		replayer_ = new ModelEventReplay(modelHelper);
 	}
 
 	public void start(String host) {
@@ -63,7 +65,7 @@ public class ModelEventRemoting implements ModelResourceListener, CometCallback 
 		ModelElement sender = revt.getSender();
 		ModelResource res = revt.getResource();
 		if(!DojoUtil.getCometClientId().equals(revt.getSourceClient())){
-			
+			replayer_.replay(revt);
 		}
 		else {
 			

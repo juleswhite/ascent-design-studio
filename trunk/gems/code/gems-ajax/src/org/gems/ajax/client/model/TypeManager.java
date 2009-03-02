@@ -56,7 +56,7 @@ public class TypeManager {
 		return modeltype + "::" + metatype;
 	}
 
-	public MetaType getOrCreateMetaType(String basetype, String mtype,
+	public static MetaType getOrCreateMetaType(String basetype, String mtype,
 			String name) {
 
 		if (MetaType.META_TYPE_ID.equals(basetype)) {
@@ -66,7 +66,7 @@ public class TypeManager {
 		}
 	}
 
-	public Type getOrCreateTypeFromFullName(String fullname) {
+	public static Type getOrCreateTypeFromFullName(String fullname) {
 		Type t = null;
 
 		if (fullname != null) {

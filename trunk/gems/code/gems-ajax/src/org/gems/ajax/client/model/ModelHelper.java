@@ -37,6 +37,18 @@ public interface ModelHelper extends Serializable{
 	public Type getTypeForName(String modeltype, String name);	
 	
 	/**
+	 * Returns the type object representing the named
+	 * type that is specified by the fully qualified
+	 * name. The name must be what is returned via
+	 * Type.getFullname();
+	 * 
+	 * @param modeltype
+	 * @param name
+	 * @return
+	 */
+	public Type getTypeForFullName(String fullname);	
+	
+	/**
 	 * Returns the model type of a 
 	 * model element.
 	 * @param o

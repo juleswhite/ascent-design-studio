@@ -11,7 +11,6 @@ package org.gems.ajax.client.model.event;
 public class InstantiationEvent extends ModelEvent {
 
 	private String typeName_;
-	private String modelType_;
 	private String elementId_;
 
 	public InstantiationEvent() {
@@ -19,10 +18,9 @@ public class InstantiationEvent extends ModelEvent {
 		setType(INSTANTIATION);
 	}
 
-	public InstantiationEvent(String modeltype, String typename, String eid) {
+	public InstantiationEvent(String typename, String eid) {
 		super(null, INSTANTIATION);
 		typeName_ = typename;
-		modelType_ = modeltype;
 		elementId_ = eid;
 	}
 
@@ -32,14 +30,6 @@ public class InstantiationEvent extends ModelEvent {
 
 	public void setTypeName(String typeName) {
 		typeName_ = typeName;
-	}
-
-	public String getModelType() {
-		return modelType_;
-	}
-
-	public void setModelType(String modelType) {
-		modelType_ = modelType;
 	}
 
 	public String getElementId() {

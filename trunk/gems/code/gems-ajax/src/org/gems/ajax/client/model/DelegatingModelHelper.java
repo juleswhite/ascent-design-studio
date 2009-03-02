@@ -40,6 +40,10 @@ public class DelegatingModelHelper implements ModelHelper {
 		}
 	}
 
+	public Type getTypeForFullName(String fullname) {
+		return delegate_.getTypeForFullName(fullname);
+	}
+
 	public boolean canAddChild(Object parent, Object child) {
 		return delegate_.canAddChild(parent, child);
 	}
