@@ -108,6 +108,32 @@ The hooks can be seen in the following code snippet:
 
 The "readyif" attribute specifies an optional javascript expression to execute via "eval()" to determine if your script has finished loading. The javascript expression MUST RETURN A BOOLEAN. The "init" attribute specifies an optional javascript expression to execute via "eval()" once the script has successfully loaded (*'readyif' must be specified if 'init' or 'update' are used*). This expression will be executed once for the entire modeling session. If other templates reference the script and the init function, the script will only be loaded once and the init function called a single time. The "onupdate" attribute specifies an optional javascript expression to run each time the template is re-interpreted and the result has been loaded into the view on the client.
 
+The template language also supports a number of properties that can be set to initialize the size and other settings of the view. These properties should be inserted into a comment beginning with "<!--GEMS_Props" as follows:
+{{{
+<!--GEMS_Server-->
+
+<!--GEMS_Props
+TemplateType:Simple;
+InitWidth:150px;
+InitHeight:100px;
+InitX:45px;
+InitY:50px;
+Resizeable:true;
+Moveable:true;
+-->
+
+<html>
+<head>
+...
+</head>
+</body>
+</html>
+}}}
+
+GEMS currently supports the following properties in the GEMS_Props directive:
+  # InitWidth - specifies the initial width of the view. Can be set to any valid value for the CSS width property.
+  # InitHeight - specifies the initial height of the view. Can be set to any valid value for the CSS width property.
+
 = Creating New Template Languages =
 
 Arbitrary template languages can be created for GEMS. The only requirement is that the execution of the template returns a valid HTML string that meets the specifications from the previous section. There are three key steps to creating a new template language and installing it in GEMS:
