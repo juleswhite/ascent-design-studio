@@ -18,11 +18,17 @@ package org.ascent.deployment;
 
 import java.util.ArrayList;
 
+import org.ascent.VectorSolution;
+
 public class KFailureNetMinConfig extends NetMinConfig {
+	
+	private int failures_;
 
 	public KFailureNetMinConfig(Node[] nodes, NetworkLink[] networks,
 			Component[] components, Interaction[] interactions, int failures) {
 		super(nodes, networks, components, interactions);
+		
+		failures_ = failures;
 
 		// Make the components array big enough
 		if (failures != 0) {
@@ -69,4 +75,34 @@ public class KFailureNetMinConfig extends NetMinConfig {
 		}
 
 	}
+	
+	public int[][] getPositionBoundaries(){
+		int[][] bounds = super.getPositionBoundaries();
+		int[][] b2 = new int[bounds.length+1][2];
+		for(int i = 0; i < bounds.length; i++){
+		       b2[i+1] = bounds[i];
+		}
+	
+		//The new addition to the bounds array is the
+		//min and max for the number of nodes.
+		
+		b2[0] = new int[] {failures_+1, (failures_+1)*super.getComponents().length};
+		
+		return b2;
+	}
+	
+	
+	@Override
+	public VectorSolution[] createInitialSolutions(int count){
+		super.createInitialSolutions(count);
+		return null;
+	}
+	
+	public DeploymentPlan getDeploymentPlan(VectorSolution vs){
+		
+		
+		return null;
+		
+	}
+	
 }
