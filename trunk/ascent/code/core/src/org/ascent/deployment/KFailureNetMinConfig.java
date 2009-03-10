@@ -94,8 +94,26 @@ public class KFailureNetMinConfig extends NetMinConfig {
 	
 	@Override
 	public VectorSolution[] createInitialSolutions(int count){
-		super.createInitialSolutions(count);
-		return null;
+		
+		VectorSolution[] sols = super.createInitialSolutions(count); 
+		VectorSolution[] nsols = new VectorSolution[sols.length + 1];
+		for(int j = 0; j < sols.length; ++j){
+			
+		  DeploymentPlan plan = super.getDeploymentPlan(sols[j]);
+		  
+		  //This, I don't think, will work all the time
+		  int totalNodes = plan.getDeploymentConfiguration().getNodes().length * failures_;
+		  int[] temp = new int[sols[j].getPosition().length + 1];
+		  temp[0] = totalNodes;
+		  for (int i = 0; i < sols[j].getPosition().length; ++i){
+			  temp[i+1] = sols[j].getPosition()[i];
+		  }
+		  
+		  nsols[j] = new VectorSolution(temp);
+		
+		}
+
+		return nsols;
 	}
 	
 	public DeploymentPlan getDeploymentPlan(VectorSolution vs){
