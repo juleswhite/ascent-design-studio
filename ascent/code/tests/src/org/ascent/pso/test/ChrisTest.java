@@ -1,15 +1,15 @@
 package org.ascent.pso.test;
 
+import junit.framework.TestCase;
+
 import org.ascent.VectorSolution;
 import org.ascent.deployment.Component;
+import org.ascent.deployment.Interaction;
+import org.ascent.deployment.KFailureNetMinConfig;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.NetworkLink;
 import org.ascent.deployment.Node;
 import org.ascent.pso.Pso;
-
-import com.sun.xml.internal.ws.addressing.ProblemAction;
-
-import junit.framework.TestCase;
 
 public class ChrisTest extends TestCase {
 	
@@ -41,6 +41,34 @@ public class ChrisTest extends TestCase {
 	VectorSolution sol = pso.solve(problem.getFitnessFunction());
 	
 	problem.printSolutionStats(sol);
+	}
+	
+	public void testKFailure(){
+		Node[] nodes = new Node [4];
+		nodes[0] = new Node(0, "P3", new int[] {300});
+		nodes[1] = new Node(1, "P5", new int[] {400});
+		nodes[2] = new Node(2, "P1", new int[] {100});
+		nodes[3] = new Node(3, "P2", new int[] {100});
+		
+		Component[] components = new Component[7];
+		components[0] = new Component(0, "App1", new int[] { 95 });
+		components[1] = new Component(1, "App2", new int[] { 120 });
+		components[2] = new Component(2, "App3", new int[] { 200 });
+		components[3] = new Component(3, "App4", new int[] { 89 });
+		components[4] = new Component(4, "App5", new int[] { 26 });
+		components[5] = new Component(5, "App6", new int[] { 43 });
+		components[6] = new Component(6, "App7", new int[] { 90 });
+		
+		NetworkLink[] nl = new NetworkLink[1];
+		nl[0] = new NetworkLink(0, "LAN", nodes, new int[] {Integer.MAX_VALUE});
+		
+		KFailureNetMinConfig prob = new KFailureNetMinConfig(nodes, nl, components, new Interaction[] {}, 3);
+		prob.init();
+		Pso pso = new Pso(prob);
+		
+		VectorSolution sol = pso.solve(prob.getFitnessFunction());
+		
+		prob.printSolutionStats(sol);
 	}
 	
 }
