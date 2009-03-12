@@ -19,11 +19,11 @@ package org.ascent.deployment;
 import java.util.ArrayList;
 
 import org.ascent.VectorSolution;
-import org.ascent.binpacking.BinPackingProblem;
 
 public class KFailureNetMinConfig extends NetMinConfig {
 	
 	private int failures_;
+
 
 	public KFailureNetMinConfig(Node[] nodes, NetworkLink[] networks,
 			Component[] components, Interaction[] interactions, int failures) {
@@ -117,23 +117,20 @@ public class KFailureNetMinConfig extends NetMinConfig {
 		return nsols;
 	}
 	
+	@Override
 	public DeploymentPlan getDeploymentPlan(VectorSolution vs){
-		/**
-		 * This is supposed to take the ordered deployer and run it
-		 * with the vector solution set
-		 * 
-		 * Rather than using the original bin packing problem, create
-		 * a new bin packing problem based on the dynamically generated
-		 * number of nodes
-		 * 
-		 * Create a new deployment config with the dynamically generated 
-		 * number of nodes and then run the deployer
-		 */
-		
-		BinPackingProblem bpp = new BinPackingProblem();
-		
-		
-		return null;
+
+		//Create a new array of nodes that is large enough
+		//to hold the nodes from the vector solution.
+		//This array will be homogeneous
+		Node[] nodes = new Node[vs.getPosition()[0]];
+		for (int i = 0; i < nodes.length; ++i){
+			nodes[i] = new Node(i, super.getNodes()[1].getLabel(), super.getNodes()[1].getResources());
+		}
+				
+		KFailureNetMinConfig dc = new KFailureNetMinConfig (nodes, super.getNetworks(), super.getComponents(), super.getInteractions(), failures_);
+
+		return new OrderedDeployer(dc).deploy(vs);
 		
 	}
 	
