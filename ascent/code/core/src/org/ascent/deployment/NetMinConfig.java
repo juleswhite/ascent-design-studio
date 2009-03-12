@@ -81,6 +81,9 @@ public class NetMinConfig extends DeploymentConfig {
 	
 
 	public DeploymentPlan getDeploymentPlan(VectorSolution vs) {
+		if (deployer_ == null){
+			deployer_ = new OrderedDeployer(this);
+		}
 		return deployer_.deploy(vs);
 	}
 
@@ -134,4 +137,6 @@ public class NetMinConfig extends DeploymentConfig {
 	public void setFitnessFunction(ValueFunction<VectorSolution> fitnessFunction) {
 		fitnessFunction_ = fitnessFunction;
 	}
+	
+
 }
