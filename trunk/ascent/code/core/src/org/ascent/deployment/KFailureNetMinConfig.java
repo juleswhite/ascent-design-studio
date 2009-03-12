@@ -19,6 +19,7 @@ package org.ascent.deployment;
 import java.util.ArrayList;
 
 import org.ascent.VectorSolution;
+import org.ascent.binpacking.BinPackingProblem;
 
 public class KFailureNetMinConfig extends NetMinConfig {
 	
@@ -96,13 +97,13 @@ public class KFailureNetMinConfig extends NetMinConfig {
 	public VectorSolution[] createInitialSolutions(int count){
 		
 		VectorSolution[] sols = super.createInitialSolutions(count); 
-		VectorSolution[] nsols = new VectorSolution[sols.length + 1];
+		VectorSolution[] nsols = new VectorSolution[sols.length];
 		for(int j = 0; j < sols.length; ++j){
 			
 		  DeploymentPlan plan = super.getDeploymentPlan(sols[j]);
 		  
 		  //This, I don't think, will work all the time
-		  int totalNodes = plan.getDeploymentConfiguration().getNodes().length * failures_;
+		  int totalNodes = plan.getDeploymentConfiguration().getNodes().length;
 		  int[] temp = new int[sols[j].getPosition().length + 1];
 		  temp[0] = totalNodes;
 		  for (int i = 0; i < sols[j].getPosition().length; ++i){
@@ -117,6 +118,19 @@ public class KFailureNetMinConfig extends NetMinConfig {
 	}
 	
 	public DeploymentPlan getDeploymentPlan(VectorSolution vs){
+		/**
+		 * This is supposed to take the ordered deployer and run it
+		 * with the vector solution set
+		 * 
+		 * Rather than using the original bin packing problem, create
+		 * a new bin packing problem based on the dynamically generated
+		 * number of nodes
+		 * 
+		 * Create a new deployment config with the dynamically generated 
+		 * number of nodes and then run the deployer
+		 */
+		
+		BinPackingProblem bpp = new BinPackingProblem();
 		
 		
 		return null;
