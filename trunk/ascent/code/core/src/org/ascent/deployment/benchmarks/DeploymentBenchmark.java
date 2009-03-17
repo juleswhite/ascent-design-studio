@@ -31,7 +31,8 @@ import org.ascent.deployment.Node;
 import org.ascent.deployment.ResourceResidual;
 
 public class DeploymentBenchmark {
-
+	
+	protected DeploymentPlanner planner_;
 	protected DeploymentConfig config_;
 	/**
 	 * This method takes a DeploymentPlanner as input and
@@ -43,14 +44,34 @@ public class DeploymentBenchmark {
 	 */
 	public BenchmarkData test(DeploymentPlanner planner){
 
+		planner_ = planner;
 		long start = System.currentTimeMillis();
-		DeploymentPlan plan = planner.deploy(config_);
+		DeploymentPlan plan = planner_.deploy(config_);
 		long finish = System.currentTimeMillis();
 		
 		//Jakarta Monitoring library profiling
 		
+		BenchmarkData temp = executeTest(plan);
+		temp.setTime(finish-start);
+		return temp;
+		
+		
+	}
+	
+	public DeploymentBenchmark (DeploymentConfig conf){
+		config_ = conf;
+	}
+	
+	
+	public BenchmarkData executeTest(DeploymentPlan plan){
+		
 		BenchmarkData data = new BenchmarkData(config_);
-		data.setAlg(planner.getClass().getName().substring(planner.getClass().getName().lastIndexOf('.') + 1));
+		if (planner_ != null){
+			data.setAlg(planner_.getClass().getName().substring(planner_.getClass().getName().lastIndexOf('.') + 1));
+		}else{
+			data.setAlg("Unknown");
+		}
+		
 		
 		int bw = 0;
 		
@@ -73,17 +94,12 @@ public class DeploymentBenchmark {
         }
         
         data.setScore(config_.scoreDeployment(plan));
-        data.setTime(finish-start);
+        data.setTime(0);
         data.setNumNodes(plan.getDeploymentConfiguration().getNodes().length - nodesFree);
 		data.setDeploymentPlan(plan);
 		
 		return data;
 	}
-	
-	public DeploymentBenchmark (DeploymentConfig conf){
-		config_ = conf;
-	}
-	
 	public static void writeToFile(BenchmarkData[] data){
 		File file = new File("data.csv");
 		
