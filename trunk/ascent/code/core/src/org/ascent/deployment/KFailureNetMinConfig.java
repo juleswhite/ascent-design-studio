@@ -42,6 +42,7 @@ public class KFailureNetMinConfig extends NetMinConfig {
 
 				for (int i = 0; i < failures; ++i) {
 					Component newComponent = new Component(c);
+					newComponent.setLabel(newComponent.getLabel() + "_Copy_" + i);
 					
 					super.getConstraints().add(
 							new NotColocated(c, newComponent));
@@ -69,7 +70,7 @@ public class KFailureNetMinConfig extends NetMinConfig {
 				newArray[i].setId(i);
 			}
 			
-			init();
+			//init();
 			super.setComponents(newArray);
 			init();
 
@@ -101,8 +102,7 @@ public class KFailureNetMinConfig extends NetMinConfig {
 		for(int j = 0; j < sols.length; ++j){
 			
 		  DeploymentPlan plan = super.getDeploymentPlan(sols[j]);
-		  
-		  //This, I don't think, will work all the time
+		 
 		  int totalNodes = plan.getDeploymentConfiguration().getNodes().length;
 		  int[] temp = new int[sols[j].getPosition().length + 1];
 		  temp[0] = totalNodes;
@@ -125,10 +125,10 @@ public class KFailureNetMinConfig extends NetMinConfig {
 		//This array will be homogeneous
 		Node[] nodes = new Node[vs.getPosition()[0]];
 		for (int i = 0; i < nodes.length; ++i){
-			nodes[i] = new Node(i, super.getNodes()[1].getLabel(), super.getNodes()[1].getResources());
+			nodes[i] = new Node(i, super.getNodes()[1].getLabel() + "_Copy_" + i, super.getNodes()[1].getResources());
 		}
 				
-		KFailureNetMinConfig dc = new KFailureNetMinConfig (nodes, super.getNetworks(), super.getComponents(), super.getInteractions(), failures_);
+		KFailureNetMinConfig dc = new KFailureNetMinConfig (nodes, super.getNetworks(), super.getComponents(), super.getInteractions(), 0);
 
 		return new OrderedDeployer(dc).deploy(vs);
 		
