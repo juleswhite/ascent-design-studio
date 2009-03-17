@@ -9,6 +9,7 @@ import org.ascent.deployment.KFailureNetMinConfig;
 import org.ascent.deployment.NetworkBandwidthMinimizingPlanner;
 import org.ascent.deployment.NetworkLink;
 import org.ascent.deployment.Node;
+import org.ascent.deployment.benchmarks.DeploymentBenchmark;
 import org.ascent.pso.Pso;
 
 public class ChrisTest extends TestCase {
@@ -45,10 +46,10 @@ public class ChrisTest extends TestCase {
 	
 	public void testKFailure(){
 		Node[] nodes = new Node [4];
-		nodes[0] = new Node(0, "P3", new int[] {300});
+		nodes[0] = new Node(0, "P3", new int[] {400});
 		nodes[1] = new Node(1, "P5", new int[] {400});
-		nodes[2] = new Node(2, "P1", new int[] {100});
-		nodes[3] = new Node(3, "P2", new int[] {100});
+		nodes[2] = new Node(2, "P1", new int[] {400});
+		nodes[3] = new Node(3, "P2", new int[] {400});
 		
 		Component[] components = new Component[7];
 		components[0] = new Component(0, "App1", new int[] { 95 });
@@ -68,7 +69,10 @@ public class ChrisTest extends TestCase {
 		
 		VectorSolution sol = pso.solve(prob.getFitnessFunction());
 		
-		prob.printSolutionStats(sol);
+		prob.printSolutionStats(prob.getDeploymentPlan(sol));
+		//DeploymentBenchmark db = new DeploymentBenchmark(prob);
+		//System.out.println(db.executeTest(prob.getDeploymentPlan(sol)));
+		
 	}
 	
 }
