@@ -92,6 +92,7 @@ public class ExConnector {
 			for(int i = 0; i < totalCount_; i++) {
 				// Change this so it doesn't have to be hard coded.
 				Object[] val = cells_.get("naomi_put.attr[C,1]");
+				// Change this to test for different types of content.
 				String contents = (val[0]).toString();
 				System.out.println("About to write the value " + contents);
 				Label label = new Label(0, i, contents);
