@@ -21,7 +21,8 @@ public class naomi_excel_xls {
 		ex.readInput(in_file);
 		ex.readAttributes(utils_loc);
 		ex.execute();
-		ex.writeOutput(out_file);
+		// Three possibilities: (in_file,"same"),(in_file,"sheet"),(out_file,"workbook").
+		ex.writeOutput(in_file, "same");
 		
 	}
 
