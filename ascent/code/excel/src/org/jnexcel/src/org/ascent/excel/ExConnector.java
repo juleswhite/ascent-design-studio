@@ -27,8 +27,11 @@ public class ExConnector {
 	
 	private Hashtable<String, Object[]> cells_ = new Hashtable<String, Object[]>();
 	
+	private String inputFile_ = "";
+	
 	public void readInput(String loc) {
 		
+		inputFile_ = loc;
 		File f = new File(loc);
 		
 		totalCount_ = 0;
@@ -124,10 +127,12 @@ public class ExConnector {
 								current_name.indexOf('.')+1, current_name.indexOf('['));
 						System.out.print("Using the attribute " + attr_name);
 						System.out.println(" from utils.");
+						boolean found = false;
 						for (int i = 0; i < attributes.size(); i++) {
 							// Get the actual attribute we want to read in
 							File f = attributes.get(i);
 							if (f.getName().equals(attr_name)) {
+								found = true;
 								NaomiAttribute actual_attr = new NaomiAttribute(f);
 								Resource[] arr = actual_attr.getResource();
 								// Assume the resource we want is the first one, may
@@ -157,6 +162,29 @@ public class ExConnector {
 								}
 							}
 						}
+						if (!found) {
+							// We need to create a new attribute to hold this value.
+							NaomiAttribute actual_attr = new NaomiAttribute();
+							Resource[] arr = new Resource[1];
+							if (current_name.startsWith("naomi_put.")) {
+								Object[] objs = cells_.get(current_name);
+								Resource r = new Resource();
+								r.setName(attr_name + " Resource 1");
+								//r.setChecksum("123456789");
+								r.setUri(objs[0].toString());
+								// Switch this line for the next two to make it
+								// append the modified resource instead of changing
+								// the original.
+								//actual_attr.addResource(r);
+								arr[0] = r;
+								actual_attr.setResource(arr);
+								actual_attr.setFile(new File(utils_loc + 
+										"//attributes//" + attr_name));
+								actual_attr.save();
+								System.out.print("Modified attribute with name "+current_name);
+								System.out.println(" and contents " + objs[0]);
+							}
+						}
 					}
 					else if (num > 1) {	//it is a csv list
 						Object[] objs = cells_.get(current_name);
@@ -167,10 +195,12 @@ public class ExConnector {
 						for(String i : splitInput){
 							String [] splitInput2 = i.split(":");
 							String attr_name = splitInput2[0];
+							Boolean found = false;
 							for (int j = 0; j < attributes.size(); j++) {
 								// Get the actual attribute we want to read in
 								File f = attributes.get(j);
 								if (f.getName().equals(attr_name)) {
+									found = true;
 									NaomiAttribute actual_attr = new NaomiAttribute(f);
 									Resource[] arr = actual_attr.getResource();
 									// Assume the resource we want is the first one, may
@@ -202,8 +232,31 @@ public class ExConnector {
 										actual_attr.setResource(arr);
 										actual_attr.save();
 										System.out.print("Modified attribute with name "+current_name);
-										System.out.println(" and contents " + objs[0]);
+										System.out.println(" and contents " + contents);
 									}
+								}
+							}
+							if (!found) {
+								// We need to create a new attribute to hold this value.
+								NaomiAttribute actual_attr = new NaomiAttribute();
+								Resource[] arr = new Resource[1];
+								if (current_name.startsWith("naomi_put.")) {
+									String contents = splitInput2[1];
+									Resource r = new Resource();
+									r.setName(attr_name + " Resource 1");
+									//r.setChecksum("123456789");
+									r.setUri(contents);
+									// Switch this line for the next two to make it
+									// append the modified resource instead of changing
+									// the original.
+									//actual_attr.addResource(r);
+									arr[0] = r;
+									actual_attr.setResource(arr);
+									actual_attr.setFile(new File(utils_loc + 
+											"//attributes//" + attr_name));
+									actual_attr.save();
+									System.out.print("Modified attribute with name "+current_name);
+									System.out.println(" and contents " + contents);
 								}
 							}
 						}
@@ -241,6 +294,13 @@ public class ExConnector {
 		// Create the new excel file
 		if (opt.equals("workbook")) {
 			try {
+				if (loc.equals(inputFile_)) {
+					System.out.print("You are trying to overwrite the input ");
+					System.out.println("workbook, which is not allowed.");
+					System.out.println("Your output workbook will be placed in: ");
+					System.out.println(loc + ".modified.xls");
+					loc = loc + ".modified.xls";
+				}
 				WritableWorkbook out_workbook = Workbook.createWorkbook(new File(loc));
 				WritableSheet out_sheet = out_workbook.createSheet("First Sheet", 0);
 			
@@ -250,19 +310,44 @@ public class ExConnector {
 				{
 					String current_name = keys.nextElement();
 					Object[] val = cells_.get(current_name);
-					if (val[0] instanceof String) {
-						String contents = (val[0]).toString();
+					if (current_name.indexOf(",",current_name.indexOf(",")+1) == -1) {
+						if (val[0] instanceof String) {
+							String contents = (val[0]).toString();
+							System.out.println("About to write the value " + contents);
+							Label label = new Label(0, i, contents);
+							i++;
+							out_sheet.addCell(label);
+						}
+						else if (val[0] instanceof Integer) {
+							int contents = Integer.parseInt((val[0]).toString());
+							System.out.println("About to write the value " + contents);
+							Number n = new Number(0, i, contents);
+							i++;
+							out_sheet.addCell(n);
+						}
+					}
+					else {
+						int num = Integer.parseInt(current_name.substring(
+								current_name.indexOf(",",current_name.indexOf(","))+1,
+								current_name.indexOf(",",current_name.indexOf(","))+2));
+						String csv_list = val[0].toString();
+						System.out.println("csv_list to output = " + csv_list);
+						String [] splitInput = csv_list.split(",");
+						for (int j = 0; j < num - 1; j++) {
+							String contents = splitInput[j];
+							System.out.println("About to write the value " + contents);
+							Label label = new Label(0, i, contents);
+							i++;
+							out_sheet.addCell(label);
+						}
+						String contents = "";
+						for (int j = num - 1; j < splitInput.length; j++) {
+							contents += splitInput[j];
+						}
 						System.out.println("About to write the value " + contents);
 						Label label = new Label(0, i, contents);
 						i++;
 						out_sheet.addCell(label);
-					}
-					else if (val[0] instanceof Integer) {
-						int contents = Integer.parseInt((val[0]).toString());
-						System.out.println("About to write the value " + contents);
-						Number n = new Number(0, i, contents);
-						i++;
-						out_sheet.addCell(n);
 					}
 				}
 			
@@ -290,19 +375,44 @@ public class ExConnector {
 				{
 					String current_name = keys.nextElement();
 					Object[] val = cells_.get(current_name);
-					if (val[0] instanceof String) {
-						String contents = (val[0]).toString();
+					if (current_name.indexOf(",",current_name.indexOf(",")+1) == -1) {
+						if (val[0] instanceof String) {
+							String contents = (val[0]).toString();
+							System.out.println("About to write the value " + contents);
+							Label label = new Label(0, i, contents);
+							i++;
+							s.addCell(label);
+						}
+						else if (val[0] instanceof Integer) {
+							int contents = Integer.parseInt((val[0]).toString());
+							System.out.println("About to write the value " + contents);
+							Number n = new Number(0, i, contents);
+							i++;
+							s.addCell(n);
+						}
+					}
+					else {
+						int num = Integer.parseInt(current_name.substring(
+								current_name.indexOf(",",current_name.indexOf(","))+1,
+								current_name.indexOf(",",current_name.indexOf(","))+2));
+						String csv_list = val[0].toString();
+						System.out.println("csv_list to output = " + csv_list);
+						String [] splitInput = csv_list.split(",");
+						for (int j = 0; j < num - 1; j++) {
+							String contents = splitInput[j];
+							System.out.println("About to write the value " + contents);
+							Label label = new Label(0, i, contents);
+							i++;
+							s.addCell(label);
+						}
+						String contents = "";
+						for (int j = num - 1; j < splitInput.length; j++) {
+							contents += splitInput[j];
+						}
 						System.out.println("About to write the value " + contents);
 						Label label = new Label(0, i, contents);
 						i++;
 						s.addCell(label);
-					}
-					else if (val[0] instanceof Integer) {
-						int contents = Integer.parseInt((val[0]).toString());
-						System.out.println("About to write the value " + contents);
-						Number n = new Number(0, i, contents);
-						i++;
-						s.addCell(n);
 					}
 				}
 			
@@ -351,40 +461,65 @@ public class ExConnector {
 								String current_name = keys.nextElement();
 								if (current_name.equals(name)) {
 									Object[] val = cells_.get(current_name);
-									if (val[0] instanceof String) {
-										if (c.getType() == CellType.LABEL) {
-											Label l = (Label) c;
-											String contents = (val[0]).toString();
-											l.setString(contents);
+									if (current_name.indexOf(",",current_name.indexOf(",")+1) == -1) {
+										if (val[0] instanceof String) {
+											if (c.getType() == CellType.LABEL) {
+												Label l = (Label) c;
+												String contents = (val[0]).toString();
+												l.setString(contents);
+											}
+											else {
+												String contents = (val[0]).toString();
+												Label label = new Label(c.getColumn(), 
+														c.getRow(), contents);
+												System.out.println("**");
+												label.setCellFeatures(new WritableCellFeatures());
+												label.getCellFeatures().setComment(
+														cf.getComment());
+												System.out.println("***");
+												s.addCell(label);
+											}
 										}
-										else {
-											String contents = (val[0]).toString();
-											Label label = new Label(c.getColumn(), 
-													c.getRow(), contents);
-											System.out.println("**");
-											label.setCellFeatures(new WritableCellFeatures());
-											label.getCellFeatures().setComment(
-													cf.getComment());
-											System.out.println("***");
-											s.addCell(label);
+										else if (val[0] instanceof Integer) {
+											if (c.getType() == CellType.NUMBER) {
+												Number n = (Number) c;
+												int contents = Integer.parseInt((val[0]).toString());
+												n.setValue(contents);
+											}
+											else {
+												int contents = Integer.parseInt(
+														(val[0]).toString());
+												Number n = new Number(c.getColumn(), 
+														c.getRow(), contents);
+												n.setCellFeatures(new WritableCellFeatures());
+												n.getCellFeatures().setComment(
+														cf.getComment());
+												s.addCell(n);
+											}
 										}
 									}
-									else if (val[0] instanceof Integer) {
-										if (c.getType() == CellType.NUMBER) {
-											Number n = (Number) c;
-											int contents = Integer.parseInt((val[0]).toString());
-											n.setValue(contents);
+									else {
+										int num = Integer.parseInt(current_name.substring(
+												current_name.indexOf(",",current_name.indexOf(","))+1,
+												current_name.indexOf(",",current_name.indexOf(","))+2));
+										String csv_list = val[0].toString();
+										System.out.println("csv_list to output = " + csv_list);
+										String [] splitInput = csv_list.split(",");
+										for (int k = 0; k < num - 1; k++) {
+											String contents = splitInput[k];
+											System.out.println("About to write the value " + contents);
+											Label label = new Label(0, i, contents);
+											i++;
+											s.addCell(label);
 										}
-										else {
-											int contents = Integer.parseInt(
-													(val[0]).toString());
-											Number n = new Number(c.getColumn(), 
-													c.getRow(), contents);
-											n.setCellFeatures(new WritableCellFeatures());
-											n.getCellFeatures().setComment(
-													cf.getComment());
-											s.addCell(n);
+										String contents = "";
+										for (int k = num - 1; k < splitInput.length; k++) {
+											contents += splitInput[k];
 										}
+										System.out.println("About to write the value " + contents);
+										Label label = new Label(0, i, contents);
+										i++;
+										s.addCell(label);
 									}
 								}
 							}
