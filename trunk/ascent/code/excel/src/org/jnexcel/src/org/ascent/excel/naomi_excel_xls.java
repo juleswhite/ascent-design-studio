@@ -8,21 +8,23 @@ public class naomi_excel_xls {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		// Change this to read in the filename from the command line
-		// so it doesn't have to be hard-coded.
-		String file_prefix = "";	// Change this to be whatever is necessary on your machine.
-		String in_file = file_prefix + "\\test.xls";
-		//String in_names = "";				//just a place holder for now
-		String out_file = file_prefix + "\\output.xls";
-		//String out_names = "";				//just a place holder for now
-		String utils_loc = file_prefix + "\\Artifacts";
+		String in_file = args[0];
+		String file_prefix = in_file.substring(0,in_file.lastIndexOf("\\"));
+		String out_file = file_prefix + args[1];
+		String utils_loc = args[2];
+		String option = args[3];
 		
 		ExConnector ex = new ExConnector();
 		ex.readInput(in_file);
 		ex.readAttributes(utils_loc);
 		ex.execute();
 		// Three possibilities: (in_file,"same"),(in_file,"sheet"),(out_file,"workbook").
-		ex.writeOutput(in_file, "same");
+		if (option.equals("workbook")) {
+			ex.writeOutput(out_file, option);
+		}
+		else {
+			ex.writeOutput(in_file, option);
+		}
 		
 	}
 
