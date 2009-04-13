@@ -10,7 +10,7 @@ public class naomi_excel_xls {
 
 		String in_file = args[0];
 		String file_prefix = in_file.substring(0,in_file.lastIndexOf("\\"));
-		String out_file = file_prefix + args[1];
+		String out_file = file_prefix + "\\" + args[1];
 		String utils_loc = args[2];
 		String option = args[3];
 		

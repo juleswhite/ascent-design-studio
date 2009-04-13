@@ -2,9 +2,11 @@
 <project basedir="." default="execute" name="JExcel Connector">
 
   <property name="connector.type.name" value="jeconnector" />
-  <property name="jeconnector.home" value="${connector.dir}\${connector.type.name}.home"/>
+  <property name="jeconnector.home" value="${connectors.dir}\${connector.type.name}.home"/>
   <property name="outputFile" value="output1.xls"/>
-  <property name="ouputOption" value="workbook"/>
+  <property name="option" value="workbook"/>
+  <property name="inputFile" value="t"/>
+  <property name="artifactFolder" value="a"/>
   
   
 
@@ -72,7 +74,7 @@
   <echo>Attempting to execute excelConnector</echo>
   <mkdir dir="${models.dir}/${outputFile}"/>
 
-  <java classname="naomi_excel_xls">
+  <java classname="org.ascent.excel.naomi_excel_xls">
          
         
          <arg value="${inputFile}"/> 
