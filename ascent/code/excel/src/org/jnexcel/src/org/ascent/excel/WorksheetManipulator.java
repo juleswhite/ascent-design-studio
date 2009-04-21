@@ -114,8 +114,8 @@ public class WorksheetManipulator {
 
 	public int getColumnCount(Sheet sheet) {
 		int max = sheet.getColumns();
-		int real = 1;
-		for (int i = 1; i < max; i++) {
+		int real = 0;			// Changed 1 to 0 here to catch empty sheets
+		for (int i = 0; i < max; i++) {		// Changed 1 to 0 here also
 			if (sheet.getCell(i, 0).getContents().trim().length() > 0) {
 				real++;
 			} else {
@@ -134,8 +134,8 @@ public class WorksheetManipulator {
 
 	public int getRowCount(Sheet sheet) {
 		int max = sheet.getRows();
-		int real = 1;
-		for (int i = 1; i < max; i++) {
+		int real = 0;			// Changed 1 to 0 here to catch empty sheets
+		for (int i = 0; i < max; i++) {		// Changed 1 to 0 here also
 			if (sheet.getCell(0, i).getContents().trim().length() > 0) {
 				real++;
 			} else {
