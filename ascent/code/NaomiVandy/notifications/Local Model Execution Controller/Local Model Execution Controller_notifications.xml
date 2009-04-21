@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE notifications [
+<!ATTLIST text  xml:space (default|preserve) 'preserve'>
+]>
+
+<notifications xmlns="http://www.atl.lmco.com/naomi/notifications"/>

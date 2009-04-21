@@ -63,4 +63,18 @@
 <executable>true</executable>
 <interface/>
 </model>
+<model>
+<name>ProjectExporter</name>
+<type>ASCENT</type>
+<alias>ProjectExporter</alias>
+<executable>true</executable>
+<interface/>
+</model>
+<model>
+<name>Local Model Execution Controller</name>
+<type>ASCENT</type>
+<alias>Local Model Execution Controller</alias>
+<executable>true</executable>
+<interface/>
+</model>
 </models>
