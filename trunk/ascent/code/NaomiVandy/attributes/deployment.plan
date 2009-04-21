@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<attribute xmlns="http://www.atl.lmco.com/naomi/attributes">
+<owner>AeroDeployment</owner>
+<resource name="deployment.plan" uri="naomi:///models/AeroDeployment/AeroDeployment.result.xls"/>
+<resource name="deployment.plan" uri="naomoi:///models/AeroDeployment/AeroDeployment.result.xls"/>
+</attribute>

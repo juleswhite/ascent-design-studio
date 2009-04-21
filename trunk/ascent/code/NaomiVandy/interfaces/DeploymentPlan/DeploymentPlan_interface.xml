@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<interface xmlns="http://www.atl.lmco.com/naomi/interfaces">
+<name>DeploymentPlan</name>
+<type>ASCENT</type>
+<input>vanderbilt.deployment.constraints</input>
+<output>vanderbilt.deployment.plan</output>
+<output>vanderbilt.deployment.stats</output>
+</interface>

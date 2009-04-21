@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<interface xmlns="http://www.atl.lmco.com/naomi/interfaces">
+<name>Dashboard</name>
+<type>Excel</type>
+<input>deployment.reliable</input>
+<input>total_cost</input>
+<input>arch.fault.tolerant</input>
+</interface>

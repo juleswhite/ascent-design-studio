@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<interface xmlns="http://www.atl.lmco.com/naomi/interfaces">
+<name>FooModel</name>
+<type>FooModel</type>
+<input>Foo</input>
+<input>FooFile.txt</input>
+</interface>

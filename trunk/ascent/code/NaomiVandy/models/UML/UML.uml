@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/2.1.0/UML" xmi:id="_qb8akM37EdqwVrslYOdUDA">
+  <packagedElement xmi:type="uml:Package" xmi:id="_w8IxIM37EdqwVrslYOdUDA" name="FlightAvionics">
+    <packagedElement xmi:type="uml:Class" xmi:id="_7WY-kC3yEd6SQLdTbWiklw" name="App 1"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_Cz-KcC3zEd6SQLdTbWiklw" name="App 2"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_FYVkoC3zEd6SQLdTbWiklw" name="App 3"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_GQ9OsC3zEd6SQLdTbWiklw" name="App 4"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_HYoocC3zEd6SQLdTbWiklw" name="App 5"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_IU-78C3zEd6SQLdTbWiklw" name="App 6"/>
+  </packagedElement>
+</uml:Model>
