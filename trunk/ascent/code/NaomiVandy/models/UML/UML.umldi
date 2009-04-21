@@ -116,5 +116,22 @@
         </semanticModel>
       </contained>
     </contained>
+    <contained xsi:type="di:GraphNode" xmi:id="_LQj60C54Ed6SQLdTbWiklw" position="450,92" size="100,-1">
+      <semanticModel xsi:type="di:EMFSemanticModelBridge" xmi:id="_LQj60S54Ed6SQLdTbWiklw" presentation="default">
+        <element href="UML.uml#_LQj62C54Ed6SQLdTbWiklw"/>
+      </semanticModel>
+      <contained xsi:type="di:GraphNode" xmi:id="_LQj60i54Ed6SQLdTbWiklw">
+        <property xmi:id="_LQj60y54Ed6SQLdTbWiklw" key="eStructuralFeatureID" value="37"/>
+        <semanticModel xsi:type="di:EMFSemanticModelBridge" xmi:id="_LQj61C54Ed6SQLdTbWiklw" presentation="default">
+          <element href="UML.uml#_LQj62C54Ed6SQLdTbWiklw"/>
+        </semanticModel>
+      </contained>
+      <contained xsi:type="di:GraphNode" xmi:id="_LQj61S54Ed6SQLdTbWiklw">
+        <property xmi:id="_LQj61i54Ed6SQLdTbWiklw" key="eStructuralFeatureID" value="47"/>
+        <semanticModel xsi:type="di:EMFSemanticModelBridge" xmi:id="_LQj61y54Ed6SQLdTbWiklw" presentation="default">
+          <element href="UML.uml#_LQj62C54Ed6SQLdTbWiklw"/>
+        </semanticModel>
+      </contained>
+    </contained>
   </diagrams>
 </diagrams:Diagrams>

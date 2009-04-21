@@ -4,5 +4,6 @@
 <type>Excel</type>
 <input>Foo</input>
 <input>deployment.plan</input>
+<input>uml.classes</input>
 <output>arch.fault.tolerant</output>
 </interface>
