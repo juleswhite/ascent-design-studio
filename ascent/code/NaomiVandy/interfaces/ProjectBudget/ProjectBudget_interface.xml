@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<interface xmlns="http://www.atl.lmco.com/naomi/interfaces">
+<name>ProjectBudget</name>
+<type>Excel</type>
+<input>hardware.cost</input>
+<input>uml.classes</input>
+<output>total_cost</output>
+</interface>

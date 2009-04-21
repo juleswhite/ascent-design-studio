@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/2.1.0/UML" xmi:id="_qb8akM37EdqwVrslYOdUDA">
+  <packagedElement xmi:type="uml:Package" xmi:id="_w8IxIM37EdqwVrslYOdUDA" name="TestModel">
+    <packagedElement xmi:type="uml:Class" xmi:id="_Rp858COwEd6_d4-gJ5T1kg" name="FirstClass">
+      <ownedOperation xmi:id="_YDTzQCOxEd6_d4-gJ5T1kg" name="method1"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_TqZHuCOwEd6_d4-gJ5T1kg" name="SecondClass">
+      <generalization xmi:id="_ZSQvIyOwEd6_d4-gJ5T1kg" general="_Rp858COwEd6_d4-gJ5T1kg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_85r6mCOwEd6_d4-gJ5T1kg" name="NewClass" clientDependency="_Rjt5pSOxEd6_d4-gJ5T1kg">
+      <interfaceRealization xmi:id="_Rjt5pSOxEd6_d4-gJ5T1kg" name="InterfaceRealization1" supplier="_PoC3ICOxEd6_d4-gJ5T1kg" client="_85r6mCOwEd6_d4-gJ5T1kg" contract="_PoC3ICOxEd6_d4-gJ5T1kg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Interface" xmi:id="_PoC3ICOxEd6_d4-gJ5T1kg" name="MyInterface"/>
+    <packagedElement xmi:type="uml:DataType" xmi:id="_S-LFcCOxEd6_d4-gJ5T1kg" name="type"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_fyVUeiOxEd6_d4-gJ5T1kg" name="A_&lt;firstClass>_&lt;newClass>" memberEnd="_fyVUeyOxEd6_d4-gJ5T1kg _fyVUfiOxEd6_d4-gJ5T1kg">
+      <ownedEnd xmi:id="_fyVUeyOxEd6_d4-gJ5T1kg" name="firstClass" type="_Rp858COwEd6_d4-gJ5T1kg" association="_fyVUeiOxEd6_d4-gJ5T1kg">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fyVUfCOxEd6_d4-gJ5T1kg" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fyVUfSOxEd6_d4-gJ5T1kg" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_fyVUfiOxEd6_d4-gJ5T1kg" name="newClass" type="_85r6mCOwEd6_d4-gJ5T1kg" association="_fyVUeiOxEd6_d4-gJ5T1kg">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fyVUfyOxEd6_d4-gJ5T1kg" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fyVUgCOxEd6_d4-gJ5T1kg" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+  </packagedElement>
+</uml:Model>
