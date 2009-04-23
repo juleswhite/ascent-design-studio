@@ -2,5 +2,5 @@
 <interface xmlns="http://www.atl.lmco.com/naomi/interfaces">
 <name>AeroDeployment</name>
 <type>ASCENT</type>
-<output>deployment.plan</output>
+<output checksum="a9bb96c934f56c85e382ba1123ab65bca2e7b0c1">deployment.plan</output>
 </interface>
