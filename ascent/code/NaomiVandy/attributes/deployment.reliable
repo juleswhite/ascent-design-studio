@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <attribute xmlns="http://www.atl.lmco.com/naomi/attributes">
 <owner>Reliability</owner>
-<value>false</value>
+<value>0.0</value>
 </attribute>
