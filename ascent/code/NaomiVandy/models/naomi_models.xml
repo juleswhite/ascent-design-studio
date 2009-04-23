@@ -77,4 +77,18 @@
 <executable>true</executable>
 <interface/>
 </model>
+<model>
+<name>Software Cost Estimation</name>
+<type>Excel</type>
+<alias>Software Cost Estimation</alias>
+<executable>true</executable>
+<interface/>
+</model>
+<model>
+<name>Real-time Scheduling</name>
+<type>Excel</type>
+<alias>Real-time Scheduling</alias>
+<executable>true</executable>
+<interface/>
+</model>
 </models>
