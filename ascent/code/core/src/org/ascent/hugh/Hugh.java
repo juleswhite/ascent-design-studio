@@ -38,7 +38,7 @@ public class Hugh {
 	}
 	
 	public State placeBet(Bettor bettor){
-		State betToPlace = bbpacker_.makeState(bettor.getFavNums_());
+		State betToPlace = bbpacker_.makeState(bettor.getFavNums());
 		return betToPlace;
 	}
 	
@@ -90,8 +90,8 @@ public class Hugh {
 				PlayerData pd = new PlayerData(p.getName_());
 				System.out.println("pd is " + pd.getName());
 				ArrayList<Integer> fakeNums = makeFakeNums(p.getSpread_());
-				Bettor player = new Bettor(p, fakeNums, pd);
-			    player.setBp_(bpList_.get(0));
+				Bettor player = new Bettor(p, fakeNums, pd, 14);
+			    player.setBp(bpList_.get(0));
 				System.out.println("player is " + player);
 				playerList_.add(player);
 				numBettors--;
@@ -254,15 +254,15 @@ public class Hugh {
 			jasonsBets = new ArrayList();
 			testState = testHugh.placeBet(jason);
 			if(jasonsBet.getStatus() == 0){
-				wagerAmount = wagerAmount * jason.getBp_().getStartMultiplier();
+				wagerAmount = wagerAmount * jason.getBp().getStartMultiplier();
 			}
 			
 			else if(jasonsBet.getStatus() == 1){
-				wagerAmount = wagerAmount * jason.getBp_().getWin();
+				wagerAmount = wagerAmount * jason.getBp().getWin();
 			}
 			
 			else{
-				wagerAmount = wagerAmount * jason.getBp_().getLoss();
+				wagerAmount = wagerAmount * jason.getBp().getLoss();
 			}
 			
 			if(wagerAmount > jasonsBankroll){

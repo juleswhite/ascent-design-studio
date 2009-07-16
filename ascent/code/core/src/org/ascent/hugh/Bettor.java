@@ -26,27 +26,30 @@ public class Bettor {
 	Personality myPersona_;
 	PlayerData pd_;
 	BettingProgression bp_;
-	
+	int favNumRange_;
 	public Bettor(){
 		myPersona_ = new Personality();
 		favNums_ = new ArrayList();
 		pd_ = new PlayerData();
 		bp_ = new BettingProgression();
+		favNumRange_ = 10;
 	}
 	
 	
-	public Bettor(Personality persona, ArrayList<Integer> nums, PlayerData pd, BettingProgression bp){
+	public Bettor(Personality persona, ArrayList<Integer> nums, PlayerData pd, BettingProgression bp, int fnr){
 		myPersona_ = persona;
 		favNums_ = nums;
 		pd_= pd;
 		bp_ = bp;
 		bankroll_ = 500;
+		favNumRange_ = fnr;
 	}
 	
-	public Bettor(Personality persona, ArrayList<Integer> nums, PlayerData pd){
+	public Bettor(Personality persona, ArrayList<Integer> nums, PlayerData pd, int fnr){
 		myPersona_ = persona;
 		favNums_ = nums;
 		pd_ = pd;
+		favNumRange_ = fnr;
 	}
 
 	public String toString(){
@@ -64,43 +67,101 @@ public class Bettor {
 	}
 
 
-	public ArrayList<Integer> getFavNums_() {
+	public ArrayList<Integer> getFavNums() {
 		return favNums_;
 	}
 
 
-	public void setFavNums_(ArrayList<Integer> favNums_) {
+	public void setFavNums(ArrayList<Integer> favNums_) {
 		this.favNums_ = favNums_;
 	}
 
 
-	public Personality getMyPersona_() {
+	public Personality getMyPersona() {
 		return myPersona_;
 	}
 
 
-	public void setMyPersona_(Personality myPersona_) {
+	public void setMyPersona(Personality myPersona_) {
 		this.myPersona_ = myPersona_;
 	}
 
 
-	public PlayerData getPd_() {
+	public PlayerData getPd() {
 		return pd_;
 	}
 
 
-	public void setPd_(PlayerData pd_) {
+	public void setPd(PlayerData pd_) {
 		this.pd_ = pd_;
 	}
 
 
-	public BettingProgression getBp_() {
+	public BettingProgression getBp() {
 		return bp_;
 	}
 
 
-	public void setBp_(BettingProgression bp_) {
+	public void setBp(BettingProgression bp_) {
 		this.bp_ = bp_;
+	}
+	
+	public void reBet(Bet lastBet){
+		if(lastBet.getStatus() == -1){
+			lostBet(lastBet);
+		}
+		else{
+			wonBet(lastBet);
+		}
+	}
+	
+	private void lostBet(Bet lastBet){
+		ArrayList<Integer> oldFavNums = favNums_;
+    	favNums_ = new ArrayList<Integer>();
+    	for(Integer num : oldFavNums){
+    		double r  = Math.random();
+		    double baseLine = r * 10.0;
+		    double superst= myPersona_.getSuperstitious_();
+		    double spread =  myPersona_.getSpread_();
+		    superst= superst + baseLine;
+		    System.out.println("Lost the bet. Tenac is "+superst+" and oldFavNums are " + favNums_);
+    		if(superst<10.0){
+	    		int lilNum =(int)(Math.round((num * spread)) % favNumRange_);
+	    		int safetyCount = 0;
+	    		while(oldFavNums.contains(new Integer(lilNum)) && safetyCount < favNumRange_){
+	    			lilNum = (lilNum+1) % favNumRange_;
+	    			safetyCount++;
+	    		}
+	    		favNums_.add(new Integer(lilNum));
+    		}
+    	}
+	    
+	    System.out.println("New favNums_ = " + favNums_);
+	}
+	
+	
+	private void wonBet(Bet lastBet){
+		ArrayList<Integer> oldFavNums = favNums_;
+    	favNums_ = new ArrayList<Integer>();
+    	for(Integer num : oldFavNums){
+    		double r  = Math.random();
+		    double baseLine = r * 10.0;
+		    double tenac = myPersona_.getTenac_();
+		    double spread =  myPersona_.getSpread_();
+		    tenac = tenac + baseLine;
+		    System.out.println("Lost the bet. Tenac is "+tenac+" and oldFavNums are " + favNums_);
+    		if(tenac<10.0){
+	    		int lilNum =(int)(Math.round((num * spread)) % favNumRange_);
+	    		int safetyCount = 0;
+	    		while(oldFavNums.contains(new Integer(lilNum)) && safetyCount < favNumRange_){
+	    			lilNum = (lilNum+1) % favNumRange_;
+	    			safetyCount++;
+	    		}
+	    		favNums_.add(new Integer(lilNum));
+    		}
+    	}
+	    
+	    System.out.println("New favNums_ = " + favNums_);
 	}
 	
 	
