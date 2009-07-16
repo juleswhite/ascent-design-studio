@@ -66,4 +66,8 @@ public class State {
 		this.stateArray_ = stateArray_;
 	}
 	
+	public double score(){
+		
+		return numBins_;
+	}
 }

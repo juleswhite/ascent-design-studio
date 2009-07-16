@@ -78,5 +78,6 @@ public class Personality {
 	public void setName_(String name_) {
 		this.name_ = name_;
 	}
+	
 			
 }

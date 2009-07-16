@@ -49,16 +49,13 @@ public class TheHouse {
 	
 	public boolean evaluateBet(State state){
 		//ArrayList<ClassicItem> stateItems = state.getStateArray_();
-		if(state.getNumBins() < pastBest_){
+		if(state.score() < pastBest_){
 			pastBest_ = state.getNumBins();
-			
 			System.out.println("Winning bet with bins reduced to " + pastBest_);
 			return true; // we won. yay.
 		}
 		
 		return false;
-		
-		
 	}
 	
 	public double payout(Bet wager){
