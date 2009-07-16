@@ -124,7 +124,7 @@ public class Bettor {
 		    double superst= myPersona_.getSuperstitious_();
 		    double spread =  myPersona_.getSpread_();
 		    superst= superst + baseLine;
-		    System.out.println("Lost the bet. Tenac is "+superst+" and oldFavNums are " + favNums_);
+		    System.out.println("Lost the bet. Superstitious is "+superst+" and oldFavNums are " + favNums_);
     		if(superst<10.0){
 	    		int lilNum =(int)(Math.round((num * spread)) % favNumRange_);
 	    		int safetyCount = 0;
@@ -133,6 +133,11 @@ public class Bettor {
 	    			safetyCount++;
 	    		}
 	    		favNums_.add(new Integer(lilNum));
+    		}
+    		else{
+    			Integer lastFavNum = oldFavNums.get(0);
+    			lastFavNum = (lastFavNum + 1) % favNumRange_;
+    			favNums_.set(0, lastFavNum);
     		}
     	}
 	    
@@ -149,7 +154,7 @@ public class Bettor {
 		    double tenac = myPersona_.getTenac_();
 		    double spread =  myPersona_.getSpread_();
 		    tenac = tenac + baseLine;
-		    System.out.println("Lost the bet. Tenac is "+tenac+" and oldFavNums are " + favNums_);
+		    System.out.println("Won the bet. Tenac is "+tenac+" and oldFavNums are " + favNums_);
     		if(tenac<10.0){
 	    		int lilNum =(int)(Math.round((num * spread)) % favNumRange_);
 	    		int safetyCount = 0;
@@ -158,6 +163,11 @@ public class Bettor {
 	    			safetyCount++;
 	    		}
 	    		favNums_.add(new Integer(lilNum));
+    		}
+    		else{
+    			Integer lastFavNum = oldFavNums.get(0);
+    			lastFavNum = (lastFavNum + 1) % favNumRange_;
+    			favNums_.set(0, lastFavNum);
     		}
     	}
 	    
