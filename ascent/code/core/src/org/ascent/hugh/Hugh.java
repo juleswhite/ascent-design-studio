@@ -279,8 +279,10 @@ public class Hugh {
 			jasonsBets.add(jasonsBet);
 			
 			jasonsBankroll += testHughHouse.spinWheel(jasonsBets);
+			jason.reBet(jasonsBet);
 			System.out.println("jasons bet status : " + jasonsBet.getStatus());
 		    System.out.println("Jasons BankRoll is " + jasonsBankroll);
+		    
 		    testHugh.prepareBP();
 		}
 		
