@@ -1,6 +1,7 @@
 package org.crush.deployment;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +24,7 @@ public class SoloMonitor implements Monitor{
 	private Map highest_ =new HashMap<String, Map<String,Double>>();
 	private Map lowest_ =new HashMap<String, Map<String,Double>>();
 	private Map allData_=new HashMap<String, Map<String, ArrayList<String>>>();
-	
-	
+	private Map systemData_ = new HashMap<String, Map< String, ArrayList<String>>>();//Overall System data from top	
 
 	private static final Logger logger_ = Logger
 	.getLogger(SoloMonitor.class.getName());
@@ -56,7 +56,10 @@ public class SoloMonitor implements Monitor{
 		average_.put(pid, blankMap);
 		HashMap<String,ArrayList<String>>blankMap2 = new HashMap();//(HashMap) setResources(blankMap);//might need to go through an initialize all the values for that pid
 		blankMap2.put("%CPU", new ArrayList());
+		
 		allData_.put(pid, blankMap2);
+		blankMap2 = new HashMap();
+		
 		System.out.println("lowest = "+lowest_);
 		System.out.println("average_ = " +average_);
 		processList_.add(processData.get("PID"));
@@ -85,10 +88,56 @@ public class SoloMonitor implements Monitor{
 		updateLowest(processData);
 		System.out.println("About to update all Data");
 		updateAllData(processData);
+		
 		System.out.println("allData = " +allData_);
 		System.out.println("lowest = " +lowest_);
 		System.out.println("average = " + average_);
 		
+	}
+	
+	private void addSystemKeys(Map<String,Map<String,String>> systemData){
+		Collection keys = systemData.keySet();
+		Iterator it = keys.iterator();
+		System.out.println("addSystemKeys = " + keys);
+		while(it.hasNext()){
+			String key = (String) it.next();
+			HashMap outter =  (HashMap)  systemData.get(key);
+			Iterator innerIt = outter.keySet().iterator();
+			HashMap<String, ArrayList> inner = new HashMap<String,ArrayList>();
+			while( innerIt.hasNext()){;
+				String innerKey = (String) innerIt.next();
+				inner.put(innerKey,new ArrayList());
+				
+			}
+			systemData_.put(key,inner);
+		}
+		System.out.println("systemData = " + systemData_);
+		
+	}
+	
+	public void updateAllSystemData(Map<String,Map<String,String>> systemData ){
+		if( systemData_.keySet().size()==0){
+			addSystemKeys(systemData);
+		}
+		System.out.println("systemData_ = " + systemData_);
+		System.out.println("systemData_ keySet  = " + systemData_.keySet());
+		System.out.println("System Data  keySet  = " + systemData.keySet());
+		for(String resource : systemData.keySet()){
+			Map <String,ArrayList<String>> resourceMap = (Map<String, ArrayList<String>>) systemData_.get(resource);
+			if(systemData_.containsKey(resource) ){
+				Map <String, String> newValues = systemData.get(resource);
+				Iterator newValuesIt = newValues.keySet().iterator();
+				Map<String,ArrayList> updateList = new HashMap<String,ArrayList>();
+				while( newValuesIt.hasNext()){
+					String key = (String) newValuesIt.next();
+					String value = newValues.get(key);
+					ArrayList<String> oldValues = resourceMap.get(key);
+					oldValues.add(value);
+					updateList.put(key,oldValues);
+				}
+				systemData_.put(resource, updateList);
+			}
+		}
 	}
 	
 	private void updateAllData(Map <String,String> processData){
@@ -112,15 +161,18 @@ public class SoloMonitor implements Monitor{
 	    Iterator iterator = pids.iterator();
 	    while(iterator.hasNext()){
 	    	String pid = (String) iterator.next();
-	    	Map <String,ArrayList<String>> resourceMap = (Map<String, ArrayList<String>>) allData_.get(pid);
-			for(String resource : resourceMap.keySet()){
-				output += resource ;
-				ArrayList<String> resourceHistory =  resourceMap.get(resource);
-				for(String rs : resourceHistory){
-					output+=","+rs;
-				}
-				output += "\n";
+	    	System.out.println("pid = " + pid);
+	    	if(pid != "System"){
+		    	Map <String,ArrayList<String>> resourceMap = (Map<String, ArrayList<String>>) allData_.get(pid);
+				for(String resource : resourceMap.keySet()){
+					output += resource ;
+					ArrayList<String> resourceHistory =  resourceMap.get(resource);
+					for(String rs : resourceHistory){
+						output+=","+rs;
+					}
+					output += "\n";
 			}
+	    	}
 	    }
 	    SyrupyParser.writeFile(filename, output);
 		
