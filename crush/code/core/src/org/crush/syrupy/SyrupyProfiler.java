@@ -22,11 +22,11 @@ public class SyrupyProfiler implements org.crush.deployment.Profiler {
 		
 	}
 	
-	public SyrupyProfiler(String iterations, String pid, String outputFile){
+	public SyrupyProfiler(String iterations, String pid){
 		iterations_ = iterations;
 		pid_ = pid;
-		outputFile_ = outputFile;
-		sp_ = new SyrupyParser(outputFile_);
+		
+		sp_ = new SyrupyParser();
 	}
 	
 	
@@ -57,8 +57,12 @@ public class SyrupyProfiler implements org.crush.deployment.Profiler {
 			    sp_.parseInput(cmd.run(execString_));
 				
 				//Thread.sleep(2000);
-				HashMap<String,String> map = (HashMap) sp_.processTop();
+				HashMap<String,String> map = (HashMap) sp_.processTopPID();
+				System.out.println("#####About to examine System info ####");
+				sp_.processTopSystemInfo();
 				sm_.updateProcess(map);
+				sm_.updateAllSystemData(sp_.processTopSystemInfo());
+				
 				total++;
 			}
 			System.out.println(sm_.getAllData_());
@@ -76,7 +80,7 @@ public class SyrupyProfiler implements org.crush.deployment.Profiler {
 	}
 	
 	public static void main( String args[]){
-		SyrupyProfiler sp = new SyrupyProfiler(args[0],args[1],args[2]);
+		SyrupyProfiler sp = new SyrupyProfiler(args[0],args[1]);
 		sp.constructExecString();
 		System.out.println(" Exec string = " + sp.getExecString_());
 		sp.execute();

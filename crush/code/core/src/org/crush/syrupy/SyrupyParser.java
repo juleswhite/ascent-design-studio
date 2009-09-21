@@ -21,6 +21,10 @@ public class SyrupyParser {
 		outputFile_ = new File(filePath);
 	}
 	
+	public SyrupyParser(){
+		
+	}
+	
 	public void readFile(){
 		try {
 			System.out.println("in read file");
@@ -45,8 +49,9 @@ public class SyrupyParser {
 	    	System.out.println(e);
 	    }
 	    
-	    processTop();
+	    //processTop();
 	}
+	
 	public void parseInput(String st){
 		System.out.println("in parseInput");
 		splitContent_ = new ArrayList();
@@ -54,6 +59,7 @@ public class SyrupyParser {
         String [] splitstr = st.split("\n");
         for( int i = 0 ; i < splitstr.length; i ++) {
         	String str = splitstr[i];
+        	System.out.println("ln+"+ i + str);
             String [] withSpaces = (str.split(" "));
             //System.out.println("str  = " +str);
             ArrayList withoutSpaces = new ArrayList();
@@ -68,7 +74,7 @@ public class SyrupyParser {
         }
        
 	    
-	    processTop();
+	   // processTop();
 	}
 	
 	public static void writeFile( String filename, String content){
@@ -84,7 +90,7 @@ public class SyrupyParser {
 	    
 	}
 	
-	public Map<String,String> processTop (){
+	public Map<String,String> processTopPID (){
 		
 		//System.out.println("fileContent = " +fileContent_);
 		//System.out.println(" should be usage =  " + splitContent_.get(3).get(1));
@@ -101,15 +107,71 @@ public class SyrupyParser {
 			//System.out.println(",value  = "+value);
 			processMap.put(name, value);
 		}
+		
+		
 		//System.out.println(" processMap = " + processMap);
 		//outputFile_.delete();
 		
 		return processMap;
 		
-		
-		
-		//
-		
+	}
+	
+	public Map<String, Map<String,String>> processTopSystemInfo(){
+		Map<String, String> innerMap = new HashMap<String,String>();
+		Map<String, Map<String,String>> systemMap = new HashMap<String,Map<String,String>> ();
+	    innerMap.put("total",splitContent_.get(13).get(1));
+	    innerMap.put("running",splitContent_.get(13).get(3));
+	    innerMap.put("sleeping",splitContent_.get(13).get(5));
+	    innerMap.put("threads",splitContent_.get(13).get(7));
+	    systemMap.put("Processes",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("date",splitContent_.get(14).get(0));
+	    innerMap.put("time",splitContent_.get(14).get(1));
+	    systemMap.put("Time",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("0",splitContent_.get(15).get(2));
+	    innerMap.put("1",splitContent_.get(15).get(3));
+	    innerMap.put("2",splitContent_.get(15).get(4));
+	    systemMap.put("Load Avg",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("user",splitContent_.get(16).get(2));
+	    innerMap.put("sys",splitContent_.get(16).get(4));
+	    innerMap.put("idle",splitContent_.get(16).get(6));
+	    systemMap.put("CPU usage",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("resident",splitContent_.get(17).get(1));
+	    innerMap.put("data",splitContent_.get(17).get(3));
+	    innerMap.put("linkedit",splitContent_.get(17).get(5));
+	    systemMap.put("SharedLibs",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("total",splitContent_.get(18).get(1));
+	    innerMap.put("resident",splitContent_.get(18).get(3));
+	    innerMap.put("private",splitContent_.get(18).get(5));
+	    innerMap.put("shared",splitContent_.get(18).get(7));
+	    systemMap.put("MemRegions",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("wired",splitContent_.get(19).get(1));
+	    innerMap.put("active",splitContent_.get(19).get(3));
+	    innerMap.put("inactive",splitContent_.get(19).get(5));
+	    innerMap.put("used",splitContent_.get(19).get(7));
+	    innerMap.put("free",splitContent_.get(19).get(9));
+	    systemMap.put("PhysMem",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("vsize",splitContent_.get(20).get(1));
+	    innerMap.put("framework vsize",splitContent_.get(20).get(3));
+	    innerMap.put("pageins",splitContent_.get(20).get(6));
+	    innerMap.put("pageouts",splitContent_.get(20).get(8));
+	    systemMap.put("VM",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("packets in",splitContent_.get(21).get(2));
+	    innerMap.put("packets out",splitContent_.get(21).get(4));
+	    systemMap.put("Networks",innerMap);
+	    innerMap = new HashMap<String,String>();
+	    innerMap.put("read",splitContent_.get(22).get(1));
+	    innerMap.put("written",splitContent_.get(22).get(3));
+	    systemMap.put("Disks",innerMap);
+	    System.out.println(systemMap);
+	    return systemMap;
 	}
 	
 }
