@@ -56,7 +56,21 @@ public class ComponentSchedulingHandler extends AbstractWorksheetHandler {
 
 			double tutil = 0;
 			String pk = getPrimaryKey(schedule, i);
+			
+			if(pk == null)
+				throw new ExcelDeploymentConfigException(
+						"Invalid component id:"
+								+ pk, COMPONENTS_SCHEDULING_SHEET,
+						i + 1, 0);
+			
 			Component comp = comps.get(pk);
+			
+			if(comp == null)
+				throw new ExcelDeploymentConfigException(
+						"Invalid component id:"
+								+ pk, COMPONENTS_SCHEDULING_SHEET,
+						i + 1, 0);
+			
 			for (int j = 1; j < headers.length; j++) {
 
 				Cell c = schedule.getCell(j, i);
