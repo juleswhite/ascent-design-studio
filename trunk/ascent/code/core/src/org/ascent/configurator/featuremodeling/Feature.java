@@ -267,6 +267,39 @@ public class Feature implements Serializable {
 			}
 		}
 	}
+	
+	public void observe(Map<Feature,Boolean> sel, int errorrate, boolean o) {
+		sel.put(this, o);
+
+		for (Feature f : requiredChildren_) {
+			int r = random(0, errorrate);
+			if (maxObservationErrors_ > 0 && r == 0) {
+				maxObservationErrors_--;
+			} else {
+				r = 1;
+			}
+			if (r == 0 && o) {
+				f.observe(sel, errorrate, false);
+			} else if (r == 0 && !o) {
+				f.observe(sel, errorrate, true);
+			} else {
+				f.observe(sel, errorrate, o);
+			}
+		}
+
+		for (Feature f : optionalChildren_) {
+			boolean s = random(0, 1) == 1;
+			f.observe(sel, errorrate, s);
+		}
+		if (xorChildren_.size() > 0 && o) {
+			int s = random(0, xorChildren_.size()-1);
+			xorChildren_.get(s).observe(sel, errorrate, true);
+			for (int i = 0; i < xorChildren_.size(); i++) {
+				if(s != i)
+					xorChildren_.get(i).observe(sel, errorrate, false);
+			}
+		}
+	}
 
 	public void insertAndClear(RefreshCore core) {
 		for (Feature f : requiredChildren_) {

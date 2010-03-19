@@ -16,31 +16,34 @@
 
 package org.ascent.deployment;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ascent.Util;
 import org.ascent.VectorSolution;
 import org.ascent.binpacking.BinPackingProblem;
 import org.ascent.binpacking.FFDBinPacker;
 import org.ascent.binpacking.LeastBoundPacker;
 
 /**
- * This class provides a method to setup a bin-packer to
- * place items in bins per a set order. The deploy 
- * method forces an FFDBinPacker variant to perform as
- * if it was solving an online bin-packing problem. This
- * is class is typically used by solvers that want to
- * store the solution state as a permutation of the inputs
- * to a bin-packing problem. 
+ * This class provides a method to setup a bin-packer to place items in bins per
+ * a set order. The deploy method forces an FFDBinPacker variant to perform as
+ * if it was solving an online bin-packing problem. This is class is typically
+ * used by solvers that want to store the solution state as a permutation of the
+ * inputs to a bin-packing problem.
+ * 
  * @author jules
- *
+ * 
  */
 public class OrderedDeployer {
 
 	private BinPackingProblem binProblem_;
 	private DeploymentConfig conf_;
 	private Map mapping_;
+	private boolean randomizeNodes_ = false;
 
 	public OrderedDeployer(DeploymentConfig conf) {
 		conf_ = conf;
@@ -51,10 +54,25 @@ public class OrderedDeployer {
 		Map mapping = new HashMap();
 		BinPackingProblem bp = new BinPackingProblem();
 		bp.getResourcePolicies().putAll(conf_.getResourceConsumptionPolicies());
-		for (Node n : conf_.getNodes()) {
-			HardwareNode hn = new HardwareNode(n.getLabel(), n.getResources());
-			bp.getBins().add(hn);
-			mapping.put(hn, n);
+		if (!randomizeNodes_) {
+			for (Node n : conf_.getNodes()) {
+				HardwareNode hn = new HardwareNode(n.getLabel(), n
+						.getResources());
+				bp.getBins().add(hn);
+				mapping.put(hn, n);
+			}
+		} 
+		else {
+			ArrayList<Node> tmp = new ArrayList<Node>();
+			tmp.addAll(Arrays.asList(conf_.getNodes()));
+			while(tmp.size() > 0){
+				int index = Util.random(0, tmp.size()-1);
+				Node n = tmp.remove(index);
+				HardwareNode hn = new HardwareNode(n.getLabel(), n
+						.getResources());
+				bp.getBins().add(hn);
+				mapping.put(hn, n);
+			}
 		}
 		for (Component c : conf_.getComponents()) {
 			SoftwareComponent cn = new SoftwareComponent(c.getLabel(), c
@@ -88,51 +106,53 @@ public class OrderedDeployer {
 		mapping_ = mapping;
 		binProblem_ = bp;
 	}
-	
-	/**\
-	 * This method uses an FFDBinPacker and the specified packing
-	 * order and configures the packer to pack the items in
-	 * the predefined order. The method returns the result
-	 * of packing the items in the given order with the
-	 * FFDBinPacker.
+
+	/**
+	 * \ This method uses an FFDBinPacker and the specified packing order and
+	 * configures the packer to pack the items in the predefined order. The
+	 * method returns the result of packing the items in the given order with
+	 * the FFDBinPacker.
 	 * 
-	 * @param order - the order to pack items in
+	 * @param order
+	 *            - the order to pack items in
 	 * @return
 	 */
 	public DeploymentPlan deploy(VectorSolution order) {
-		return deploy(new LeastBoundPacker(),order);
+		return deploy(new LeastBoundPacker(), order);
 	}
 
-	/**\
-	 * This method takes a bin-packer and a specified packing
-	 * order and configures the packer to pack the items in
-	 * the predefined order. The method returns the result
-	 * of packing the items in the given order with the
-	 * provided bin-packer.
+	/**
+	 * \ This method takes a bin-packer and a specified packing order and
+	 * configures the packer to pack the items in the predefined order. The
+	 * method returns the result of packing the items in the given order with
+	 * the provided bin-packer.
 	 * 
 	 * 
-	 * @param core - the bin-packer to use
-	 * @param order - the order to pack items in
+	 * @param core
+	 *            - the bin-packer to use
+	 * @param order
+	 *            - the order to pack items in
 	 * @return
 	 */
-	public DeploymentPlan deploy(FFDBinPacker core,
-			VectorSolution order) {
+	public DeploymentPlan deploy(FFDBinPacker core, VectorSolution order) {
 
-		//Setup the bin packer with the constraints
+		// Setup the bin packer with the constraints
 		core.configure(binProblem_);
 
-		//Force the bin packer to select source items in
-		//the required order
+		// Force the bin packer to select source items in
+		// the required order
 		for (int i = 0; i < order.getPosition().length; i++) {
-			core.getPreSelectionQueue().add(
-					mapping_.get(conf_.getComponents()[order.getPosition()[i]]));
+			core.getPreSelectionQueue()
+					.add(
+							mapping_.get(conf_.getComponents()[order
+									.getPosition()[i]]));
 		}
 
-		//Find a packing
+		// Find a packing
 		Map<Object, List> sol = core.nextMapping();
 
-		//Now map the packing solution back to the
-		//components used by the problem
+		// Now map the packing solution back to the
+		// components used by the problem
 		int[] pos = new int[conf_.getComponents().length];
 		for (int j = 0; j < conf_.getComponents().length; j++) {
 			SoftwareComponent c = (SoftwareComponent) mapping_.get(conf_
@@ -150,7 +170,16 @@ public class OrderedDeployer {
 			}
 		}
 
-		//Turn the solution into a deploymentplan
+		// Turn the solution into a deploymentplan
 		return new DeploymentPlan(conf_, new VectorSolution(pos));
 	}
+
+	public boolean isRandomizeNodes() {
+		return randomizeNodes_;
+	}
+
+	public void setRandomizeNodes(boolean randomizeNodes) {
+		randomizeNodes_ = randomizeNodes;
+	}
+	
 }

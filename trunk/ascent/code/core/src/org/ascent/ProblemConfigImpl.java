@@ -17,6 +17,7 @@
 package org.ascent;
 
 
+
 public class ProblemConfigImpl implements ProblemConfig {
 
 	private VectorSolution[] seeds_;
@@ -27,6 +28,7 @@ public class ProblemConfigImpl implements ProblemConfig {
 		for (int i = 0; i < boundaries_.length; i++) {
 			boundaries_[i] = new int[] { bmin, bmax };
 		}
+		
 	}
 
 	public VectorSolution[] createInitialSolutions(int count) {
