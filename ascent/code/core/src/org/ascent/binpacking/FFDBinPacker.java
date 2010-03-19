@@ -237,6 +237,9 @@ public class FFDBinPacker extends RefreshBinPackingCore {
 			if (willFit(ss, ts)) {
 				return t;
 			}
+			else {
+				boolean a = true;
+			}
 		}
 		return null;
 	}

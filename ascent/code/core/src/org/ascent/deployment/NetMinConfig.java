@@ -130,9 +130,6 @@ public class NetMinConfig extends DeploymentConfig {
 //		}
 	}
 
-	public ValueFunction<VectorSolution> getFitnessFunction() {
-		return fitnessFunction_;
-	}
 
 	public void setFitnessFunction(ValueFunction<VectorSolution> fitnessFunction) {
 		fitnessFunction_ = fitnessFunction;

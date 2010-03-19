@@ -34,7 +34,7 @@ import org.ascent.binpacking.RandomItemPacker;
 import org.ascent.binpacking.ValueFunction;
 
 public class DeploymentConfig extends ProblemConfigImpl {
-	
+
 	private ValueFunction<VectorSolution> scoringFunction_ = new ValueFunction<VectorSolution>() {
 
 		public double getValue(VectorSolution src) {
@@ -45,7 +45,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 			return (Integer) src.getArtifact();
 		}
 	};
-	
+
 	protected NetworkLink[] networks_;
 	protected Component[] components_;
 	protected Node[] nodes_;
@@ -55,6 +55,7 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	protected Packer packer_ = new Packer();
 	protected boolean acceptInfeasibleSolutions_ = true;
 
+	private boolean seedWithBinPacking_ = true;
 	private boolean singleNetwork_ = false;
 	private Map<String, NetworkLink[]> linkCache_ = new HashMap<String, NetworkLink[]>();
 	private List<Node> nStart_ = new ArrayList<Node>();
@@ -378,92 +379,98 @@ public class DeploymentConfig extends ProblemConfigImpl {
 	}
 
 	public VectorSolution[] createInitialSolutions(int count) {
-
-		Map mapping = new HashMap();
-		BinPackingProblem bp = new BinPackingProblem();
-		bp.getResourcePolicies().putAll(getResourceConsumptionPolicies());
-		for (Node n : getNodes()) {
-			HardwareNode hn = new HardwareNode(n.getLabel(), n.getResources());
-			bp.getBins().add(hn);
-			mapping.put(hn, n);
-			mapping.put(n, hn);
-		}
-		for (Component c : getComponents()) {
-			SoftwareComponent cn = new SoftwareComponent(c.getLabel(), c
-					.getResources());
-			cn.setRealTimeTasks(c.getRealTimeTasks());
-			bp.getItems().add(cn);
-			mapping.put(c, cn);
-		}
-
-		for (DeploymentConstraint con : constraints_) {
-			if (con instanceof NotColocated) {
-				NotColocated ncon = (NotColocated) con;
-				SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
-						.getSource());
-
-				for (Component c : ncon.getTargets()) {
-					SoftwareComponent tc = (SoftwareComponent) mapping.get(c);
-					sc.getExclusions().add(tc);
-				}
+		if (seedWithBinPacking_) {
+			Map mapping = new HashMap();
+			BinPackingProblem bp = new BinPackingProblem();
+			bp.getResourcePolicies().putAll(getResourceConsumptionPolicies());
+			for (Node n : getNodes()) {
+				HardwareNode hn = new HardwareNode(n.getLabel(), n
+						.getResources());
+				bp.getBins().add(hn);
+				mapping.put(hn, n);
+				mapping.put(n, hn);
 			}
-			if (con instanceof Colocated) {
-				Colocated ncon = (Colocated) con;
-				SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
-						.getSource());
-
-				for (Component c : ncon.getTargets()) {
-					SoftwareComponent tc = (SoftwareComponent) mapping.get(c);
-					sc.getDependencies().add(tc);
-				}
+			for (Component c : getComponents()) {
+				SoftwareComponent cn = new SoftwareComponent(c.getLabel(), c
+						.getResources());
+				cn.setRealTimeTasks(c.getRealTimeTasks());
+				bp.getItems().add(cn);
+				mapping.put(c, cn);
 			}
 
-			if (con instanceof PlacementConstraint) {
-				PlacementConstraint pcon = (PlacementConstraint) con;
-				SoftwareComponent sc = (SoftwareComponent) mapping.get(pcon
-						.getSource());
-				sc.setValidBins(new ArrayList<Bin>());
-				for (Node n : pcon.getValidHosts()) {
-					HardwareNode hn = (HardwareNode) mapping.get(n);
-					sc.getValidBins().add(hn);
+			for (DeploymentConstraint con : constraints_) {
+				if (con instanceof NotColocated) {
+					NotColocated ncon = (NotColocated) con;
+					SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
+							.getSource());
+
+					for (Component c : ncon.getTargets()) {
+						SoftwareComponent tc = (SoftwareComponent) mapping
+								.get(c);
+						sc.getExclusions().add(tc);
+					}
 				}
-			}
-		}
+				if (con instanceof Colocated) {
+					Colocated ncon = (Colocated) con;
+					SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
+							.getSource());
 
-		List<Map<Object, List>> binsols = new ArrayList<Map<Object, List>>();
-		for (int i = 0; i < count - 2; i++) {
-			RandomItemPacker packer = new RandomItemPacker(bp);
-			Map<Object, List> sol = packer.nextMapping();
-			binsols.add(sol);
-		}
-		binsols.add((new FFDBinPacker(bp)).nextMapping());
+					for (Component c : ncon.getTargets()) {
+						SoftwareComponent tc = (SoftwareComponent) mapping
+								.get(c);
+						sc.getDependencies().add(tc);
+					}
+				}
 
-		int stotal = Math.min(binsols.size(), count);
-		VectorSolution[] sols = new VectorSolution[stotal];
-
-		for (int i = 0; i < stotal; i++) {
-			int[] pos = new int[getComponents().length];
-			Map<Object, List> sol = binsols.get(i);
-
-			for (int j = 0; j < getComponents().length; j++) {
-				SoftwareComponent c = (SoftwareComponent) mapping
-						.get(getComponents()[j]);
-				if (c != null && sol != null && sol.get(c) != null) {
-
-					HardwareNode host = (HardwareNode) sol.get(c).get(0);
-					Node node = (Node) mapping.get(host);
-					for (int k = 0; k < getNodes().length; k++) {
-						if (getNodes()[k] == node) {
-							pos[j] = k;
-							break;
-						}
+				if (con instanceof PlacementConstraint) {
+					PlacementConstraint pcon = (PlacementConstraint) con;
+					SoftwareComponent sc = (SoftwareComponent) mapping.get(pcon
+							.getSource());
+					sc.setValidBins(new ArrayList<Bin>());
+					for (Node n : pcon.getValidHosts()) {
+						HardwareNode hn = (HardwareNode) mapping.get(n);
+						sc.getValidBins().add(hn);
 					}
 				}
 			}
-			sols[i] = new VectorSolution(pos);
-		}
 
-		return sols;
+			List<Map<Object, List>> binsols = new ArrayList<Map<Object, List>>();
+			for (int i = 0; i < count - 2; i++) {
+				RandomItemPacker packer = new RandomItemPacker(bp);
+				Map<Object, List> sol = packer.nextMapping();
+				binsols.add(sol);
+			}
+			binsols.add((new FFDBinPacker(bp)).nextMapping());
+
+			int stotal = Math.min(binsols.size(), count);
+			VectorSolution[] sols = new VectorSolution[stotal];
+
+			for (int i = 0; i < stotal; i++) {
+				int[] pos = new int[getComponents().length];
+				Map<Object, List> sol = binsols.get(i);
+
+				for (int j = 0; j < getComponents().length; j++) {
+					SoftwareComponent c = (SoftwareComponent) mapping
+							.get(getComponents()[j]);
+					if (c != null && sol != null && sol.get(c) != null) {
+
+						HardwareNode host = (HardwareNode) sol.get(c).get(0);
+						Node node = (Node) mapping.get(host);
+						for (int k = 0; k < getNodes().length; k++) {
+							if (getNodes()[k] == node) {
+								pos[j] = k;
+								break;
+							}
+						}
+					}
+				}
+				sols[i] = new VectorSolution(pos);
+			}
+
+			return sols;
+		} else {
+			return super.createInitialSolutions(count);
+		}
 	}
 
 	public Map<Component, Node> getPrePlacedComponents() {
@@ -482,9 +489,9 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		DeploymentPlan plan = getDeploymentPlan(vs);
 		printSolutionStats(plan);
 	}
-	
-	public DeploymentPlan getDeploymentPlan(VectorSolution sol){
-		return new DeploymentPlan(this,sol);
+
+	public DeploymentPlan getDeploymentPlan(VectorSolution sol) {
+		return new DeploymentPlan(this, sol);
 	}
 
 	public void printSolutionStats(DeploymentPlan plan) {
@@ -534,12 +541,21 @@ public class DeploymentConfig extends ProblemConfigImpl {
 		str += "}";
 		return str;
 	}
-	
-	public ValueFunction<VectorSolution> getFitnessFunction(){
+
+	public ValueFunction<VectorSolution> getFitnessFunction() {
 		return scoringFunction_;
 	}
 
 	public double getScore(VectorSolution vs) {
 		return scoreDeployment(getDeploymentPlan(vs));
 	}
+
+	public boolean isSeedingWithBinPacking() {
+		return seedWithBinPacking_;
+	}
+
+	public void setSeedWithBinPacking(boolean seedWithBinPacking) {
+		seedWithBinPacking_ = seedWithBinPacking;
+	}
+	
 }
