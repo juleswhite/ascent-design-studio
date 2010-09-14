@@ -65,7 +65,7 @@ public class SpruceEmulabServer {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		int port = 8081;
+		int port = 8090;
 		Properties props = new Properties();
 		if (args.length > 0) {
 			try {
@@ -73,6 +73,7 @@ public class SpruceEmulabServer {
 				
 				
 				props.load(new FileInputStream(".spruce"));
+				System.out.println(" The properties are "+props);
 			} catch (Exception e) {
 				// Need to modify this to print the correct usage...
 				logger_.log(Level.SEVERE, "Probably an invalid port number:"
@@ -97,10 +98,22 @@ public class SpruceEmulabServer {
 
 		server_ = new Server(port);
 		Context context = new Context(server_, "/", Context.SESSIONS);
-
+		System.out.println(" url = "+url);
 		HttpServlet servlet = new EmulabConnectorServlet(url,user,pass);
+		HttpServlet wlservlet = new SpruceWriteLaunchServlet(url,user,pass);
+		HttpServlet ilservlet = new IntermediateLaunchServlet(url,user,pass);
+		HttpServlet mkexservlet = new SpruceMakeExpServlet(url,user,pass);
+		context.addServlet(new ServletHolder(wlservlet), "/writeLaunch");
 		context.addServlet(new ServletHolder(servlet), "/emulab/*");
 		context.addServlet(new ServletHolder(new SpruceEmulabResultsServlet()), "/results/*");
+		context.addServlet(new ServletHolder(new IsisLabLogin()), "/login");
+		context.addServlet(new ServletHolder(mkexservlet), "/makeExp");
+		context.addServlet(new ServletHolder(ilservlet), "/inter");
+		//context.addServlet(new ServletHolder(new SpruceWriteLaunchServlet(url)), "/writeLaunch");
+		//context.addServlet(new ServletHolder(new IsisLabValidateServlet(url)), "/validate");
+		//context.addServlet(new ServletHolder(new SpruceExperimentsServlet(url)), "/expList");
+		context.addServlet(new ServletHolder(new SpruceParamsServlet(url)), "/validate");
+		context.addServlet(new ServletHolder(new SpruceConfigServlet(url)), "/config");
 		context.setResourceBase((new File(".")).getAbsolutePath());
 		ResourceHandler resource_handler = new ResourceHandler();
 		resource_handler.setBaseResource(context.getBaseResource());

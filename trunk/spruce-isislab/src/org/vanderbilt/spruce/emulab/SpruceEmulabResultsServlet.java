@@ -49,6 +49,7 @@ public class SpruceEmulabResultsServlet extends HttpServlet {
          HttpServletResponse response)throws ServletException, IOException {
     	    String content = request.getParameter("content");
     	    String eid = request.getParameter("exp");
+    	   // System.out.println("content received from post parmaeter is " + content);
     	    String fileContent = readFile(eid+"/results.html");
     	    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	        Date date = new Date();
@@ -59,6 +60,14 @@ public class SpruceEmulabResultsServlet extends HttpServlet {
     	    content = content.replaceAll("</body>", "");
     	    content = "<html><body>"+content+"</body></html>";
     	    writeFile("results.html",content,eid);//(//eid +"/results.html"),content);
+    	    System.out.println(" about to see if there is params.txt post param");
+    	    
+    	    if(request.getParameter("params.txt") != null){
+    	    	System.out.println(" found params.txt");
+        	    writeFile("params.txt",request.getParameter("params.txt"),"/home/briand/"+eid);
+    	    }
+    	    System.out.println("About to write the "+eid+"parametersForm.txt file with data:");// +request.getParameter("parameterForm"));
+    	    writeFile(eid+"parametersForm.txt",request.getParameter("parameterForm"),eid );
     	    response.getWriter().write(content);
     	    
 	 		doGet(request, response);
