@@ -1,0 +1,13 @@
+<argStart>
+<arg>
+<name> My arg name </name>
+<description> My arg Description </description>
+<type> my arg Type </type>
+</arg>
+
+<arg>
+<name> My arg name2 </name>
+<description> My arg Description </description>
+<type> my arg Type </type>
+</arg>
+</argStart>

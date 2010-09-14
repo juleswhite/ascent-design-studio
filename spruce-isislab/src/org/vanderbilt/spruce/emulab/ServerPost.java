@@ -7,6 +7,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
@@ -45,13 +46,34 @@ public class ServerPost {
     BufferedReader br = null;
     
     PostMethod method = new PostMethod("http://afrl-gift.dre.vanderbilt.edu:8090/results");
+    System.out.println(" I am in the main of Server Post");
     String expId = args[0];
     String fileContent = args[1];                     
     fileContent = s.readFile(args[1]);
     method.addParameter("exp", expId);
     method.addParameter("content",fileContent);
-
-    try{
+    System.out.println("results content = " + fileContent);
+    String projectName_ = "LMATLProject";
+	String paramsForm = "None";
+	String filePath = "/proj"+"/"+projectName_+"/"+expId+"parameters.txt";
+	System.out.println(" Searching for file " + filePath);
+	boolean paramsFile = (new File(filePath)).exists();
+	System.out.println ("params file exists? = " +paramsFile);
+	
+	if(paramsFile){
+		//method.addParameter(params)
+		ParamParser p = new ParamParser(filePath);
+		
+		paramsForm = p.prepareForm();
+		p.getContents(new File(filePath));
+		method.addParameter("params.txt",p.getContents(new File(filePath)));
+	}
+	method.addParameter("parameterForm",paramsForm);
+	File f = new File("/proj/LMATLProjext/spruce/done.txt");
+	System.out.println(" about to scp from server post");
+	Scp copier = new Scp("/proj/LMATLProject/spruce/done.txt", "/home/briand/"+expId+"/done.txt", "pass", "briand", "afrl-gift.dre.vanderbilt.edu");
+    System.out.println("done scp'in");
+	try{
       int returnCode = client.executeMethod(method);
 
       if(returnCode == HttpStatus.SC_NOT_IMPLEMENTED) {
