@@ -9,6 +9,7 @@ public class ExecutionMaker {
 		appNames_ = appNames;
 	}
 	
+
 	public String writeSchedule(ArrayList<SchedulableTask> sched, String pd, boolean optimized){
     	String outputSchedule = "#include <iostream>\n";
     	outputSchedule += "#include <fstream>\n";
@@ -40,12 +41,30 @@ public class ExecutionMaker {
     			"i =0;\n\t\t"+
     			"while(i < executions){\n\t\t\t";
     	Scheduler scheduler = new Scheduler(sched);
+    	scheduler.clearSchedule();
     	System.out.println("schedduler tasks in EM = " + scheduler.getTasks_().size());
     	projectDirectory = pd;
-    	for(SchedulableTask st : scheduler.scheduleTasks(optimized)){
+    	int numTasks =0;
+    	ArrayList<SchedulableTask> schedulableTasks = new ArrayList();
+    	schedulableTasks = scheduler.scheduleTasks(optimized);
+    	if(optimized){
+	    	ScheduleOptimizer so = new ScheduleOptimizer(schedulableTasks,8);
+			System.out.println(" Optimized Schedule length = " + schedulableTasks.size());
+			so.printSchedule();
+			so.optimize();
+			so.removeDoubles();
+			schedulableTasks = so.getAllFinalTasks();
+			//so.printSchedule();
+    	}
+    	System.out.println("schedulableTasks size = " + schedulableTasks.size());
+    	for(SchedulableTask st : schedulableTasks ){
+    		numTasks++;
     		outputSchedule += st.getAppName_()+"."+st.getTaskName_()+"();//rate"+st.getRate_()+"\n\t\t\t";
+    		
     		outputSchedule +="c.CacheFlush();\n\t\t\t";
     	}
+    	scheduler.printTotal();
+    	System.out.println("num tasks = "+numTasks);
     	outputSchedule += "\n\t\t\ti++;\n\t\t}\n" +
     			"\t\t finishClock = clock();\n"+
     			"\t\t myfile<<(finishClock-startClock)/1000<<std::endl;\n\t\t"+

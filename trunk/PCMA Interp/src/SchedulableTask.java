@@ -4,6 +4,7 @@ public class SchedulableTask{
 		int current_;
 		int stride_; 
 		int pass_;
+		int rateInt_;
 		String rate_;
 		String appName_;
 		
@@ -26,6 +27,16 @@ public class SchedulableTask{
 			pass_ = stride;
 			rate_ = rate;
 			appName_ = appName;
+			String rateString ="";
+			if(rate.length()> 1){
+				for(int i = 2; i < rate.length(); i++){
+					rateString += rate.charAt(i);
+				}
+				rateInt_ = new Integer(rateString);
+			}
+			else{
+				rateInt_ = 1;
+			}
 		}
 		
 		public String getTaskName_() {
@@ -53,6 +64,10 @@ public class SchedulableTask{
 		}
 		public String getRate_(){
 			return rate_;
+		}
+
+		public int getRateInt_() {
+			return rateInt_;
 		}
 
 
