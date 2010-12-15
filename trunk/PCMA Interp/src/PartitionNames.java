@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -19,6 +20,10 @@ public class PartitionNames {
 	ArrayList<String> floatsReferenced_; 
 	ArrayList<String> leftSides_ = new ArrayList();
 	ArrayList<String> vars_ = new ArrayList();
+	ArrayList<String> sharedFloats =new ArrayList();
+	ArrayList<String> sharedInts =new ArrayList();
+	int maxOffset;
+	double shareProbability =100;
 	int intNum_ =0;
 	int floatNum_ =0;
 	HashMap <String, ArrayList<String>> rates = new HashMap();
@@ -26,13 +31,19 @@ public class PartitionNames {
 	ArrayList<String> taskNames_ = new ArrayList();
 	int [] start_ = new int [2];
 	int [] last = new int [2];
+	int totalVars =0;
+	int sharedVars = 0;
 	String appName_;
 	int adder_ = 0;
-	public PartitionNames(String projectDirectory, double minRate,String appName, int [] start, int adder){
+	float multiplier;
+	float probShared_;
+	public PartitionNames(String projectDirectory, double minRate,String appName, int [] start, int adder, float multiply, float probShared){
 		projectDirectory_ = projectDirectory;
 		floatNameIndex = start[0];
+		multiplier = multiply;
 		intNameIndex = start[1];
 		vars_ = new ArrayList();
+		probShared_ = probShared;
 		adder_ = adder;
 		intsReferenced_ = new ArrayList();
 		floatsReferenced_ = new ArrayList();
@@ -58,7 +69,7 @@ public class PartitionNames {
 			content += "      int " + intMemoryNames.get(i) + ";\n";
 		}*/
 		System.out.println("Content in DAC = " + startcontent);
-		ArrayList<String> taskContents = makeTaskMethods(appName);
+		ArrayList<String> taskContents = makeTaskMethods(appName, (float)probShared_);
 		
 		String taskContent = taskContents.get(0);
 		makeSchedule(minRate);
@@ -91,7 +102,7 @@ public class PartitionNames {
 
 	
 	
-	public ArrayList<String> makeTaskMethods(String appName){
+	public ArrayList<String> makeTaskMethods(String appName, float sp){
 		String content = "";
 		ArrayList<String> results = new ArrayList();
 		String headerContent = "#ifndef APPLICATION"+appName+"_H\n";
@@ -99,40 +110,42 @@ public class PartitionNames {
 		headerContent += "#include <iostream>\n";
 		headerContent += "class Application"+appName+"{\n";
 		headerContent += "\tpublic:\n";
-		 float multiplier = (float) 2.5;
+		 //float multiplier = (float) 3;
+		 
 		String headerContent3 = "";
 		ArrayList<String> contents = new ArrayList();
-		contents = DefineTask(appName, "01", "P1", 4000*multiplier, 0.05f);
+		int taskSize = 5000;
+		contents = DefineTask(appName, "01", "P1", taskSize*multiplier, sp);
 		content += "\n"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
 		//content += DefineTask(appName, "01", "P1", 4000, 0.05f);
-		contents = DefineTask(appName, "02", "P1", 2500*multiplier, 0.1f);
+		contents = DefineTask(appName, "02", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		contents = DefineTask(appName, "03", "P1", 1000*multiplier, 0.1f);
+		contents = DefineTask(appName, "03", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		contents = DefineTask(appName, "04", "P1", 3000*multiplier, 0.01f);
+		contents = DefineTask(appName, "04", "P1", taskSize*multiplier, sp);
 		content += "\n"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
 		//content += DefineTask(appName, "01", "P1", 4000, 0.05f);
-		contents = DefineTask(appName, "05", "P1", 4000*multiplier, 0.1f);
+		contents = DefineTask(appName, "05", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		contents = DefineTask(appName, "06", "P1", 2000*multiplier, 0.1f);
+		contents = DefineTask(appName, "06", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		contents = DefineTask(appName, "07", "P1", 500*multiplier, 0.01f);
+		contents = DefineTask(appName, "07", "P1", taskSize*multiplier, sp);
 		content += "\n"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
 		//content += DefineTask(appName, "01", "P1", 4000, 0.05f);
-		contents = DefineTask(appName, "08", "P1", 400*multiplier, 0.01f);
+		contents = DefineTask(appName, "08", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		contents = DefineTask(appName, "09", "P1", 1000*multiplier, 0.01f);
+		contents = DefineTask(appName, "09", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		contents = DefineTask(appName, "10", "P1", 600*multiplier, 0.01f);
+		contents = DefineTask(appName, "10", "P1", taskSize*multiplier, sp);
 		content += "\n"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
 		headerContent3 += "\tvoid executeTasks(int);\n";
@@ -255,7 +268,7 @@ public class PartitionNames {
 	     }
 	     catch(Exception e)
 	     {
-	          
+	          System.out.println("CAUGHT EXCEPTION " +e);
 	     }
 	}
 	
@@ -273,9 +286,12 @@ public class PartitionNames {
 		String content = "";
 		taskName = "Task"+ApplicationName+TaskNumber;
 		taskNames_.add(taskName);
-		
+		int maxShared = (int)(MemoryTotal*SharedProbability);
+		System.out.println(" max shared = " + maxShared);
+		int sharedCount = 0;
 		headerContent += "void " + taskName +"(void);\n";
 		taskFileName = taskName + ".txt";
+		
 		for (int i = 0; i < MemoryTotal; i++) {
 			if(Math.random() < .5){
 				referenceType = "float";
@@ -283,15 +299,55 @@ public class PartitionNames {
 			else{
 				referenceType = "int";
 			}
-			if ( Math.random() < SharedProbability){
-				//System.out.println("less than shard Probability");
+			if ( Math.random() < SharedProbability && sharedCount<maxShared){
+				//System.out.println("less than shared Probability");
+				totalVars++;
+				sharedVars++;
+				sharedCount++;
+				//if()
 				referenceName = makeRandomPartition(referenceType);
+				if( referenceType =="float"){
+					if(floatsReferenced_.isEmpty()){
+						sharedFloats.add(referenceName);
+					}
+					else{
+						referenceName = floatsReferenced_.get((int) (Math.random() *floatsReferenced_.size()));
+						System.out.println("Shared float from floats referenced is " + referenceName);
+						sharedFloats.add(referenceName);
+					}
+				}
+				else{	
+					if(intsReferenced_.isEmpty()){
+						sharedInts.add(referenceName);
+					}
+					else{
+						referenceName = intsReferenced_.get((int) (Math.random() *intsReferenced_.size()));
+						System.out.println("Shared int from ints referenced is " + referenceName);
+						sharedInts.add(referenceName);
+					}
+				}
+				System.out.println("less than shared Probability.Adding "+referenceName);
 			}
 			else{
 				//System.out.println("GREATER than shard Probability");
 				referenceName = definePartitionMemory(referenceType);
+				totalVars++;
+				if( referenceType =="float"){
+					while(sharedFloats.contains(referenceName) ){
+						referenceName = makeRandomPartition(referenceType);
+					}
+				}
+				else{
+					while(sharedInts.contains(referenceName) ){
+						referenceName = makeRandomPartition(referenceType);
+					}
+				}
+				System.out.println("GREATER than shard Probability. Adding "+referenceName);
 			}
+			System.out.println("About to add Reference: " + referenceName);
 			if( referenceType == "float"){
+				
+				
 				floatsReferenced_.add(referenceName);
 			}
 			else{
@@ -302,7 +358,7 @@ public class PartitionNames {
 		 * Russell had some stuff in here to "save" all the taskVariables (to file it looks like) but I don't see
 		 * it used. Leaving it out for now
 		 */
-		Collections.shuffle(intsReferenced_);
+		Collections.shuffle(intsReferenced_);/*this is a post probability thing. might need to uncomment*/
 		Collections.shuffle(floatsReferenced_);
 		content += "void Application"+ApplicationName+"::" + taskName +"(void)\n";
 		content+= "{\n";
@@ -323,9 +379,9 @@ public class PartitionNames {
 		String computation ="";
 		while((intNum < intsReferenced_.size()-1) && (floatNum  < floatsReferenced_.size()-1)){
 			count = 0;
-			while(intNum < intsReferenced_.size()-1 && count < 8){
+			while(intNum < intsReferenced_.size()-1 && count < 10){
 				//computation = computation + " + I." + intsReferenced_.get(intNum);
-				computation = computation  + " + " + floatsReferenced_.get(floatNum);
+				computation = computation  + " + " + intsReferenced_.get(intNum);
 				
 				count++;
 				intNum++;
@@ -462,98 +518,136 @@ public class PartitionNames {
     	return outputSchedule;
     }
 	public static void main( String args[]){
-		String destinationDirectory = "/Users/briandougherty/PCMA-2.5-10";
-		//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
-		int [] go = {20000,20000};
-		PartitionNames pn1 = new PartitionNames(destinationDirectory, 8.0, "redApp",go,0);
-		pn1.makeSchedule(8.0);
-		ArrayList<SchedulableTask> allTasks= new ArrayList(); 
-		allTasks.addAll(pn1.getSchedTasks_());
-		//pn1.writeSchedule();
-		System.out.println("Last[0] " +pn1.getLast()[0] +" and the other "+ pn1.getLast()[1]);
-		PartitionNames pn2 = new PartitionNames(destinationDirectory, 8.0, "blueApp", pn1.getLast(),100000);
-		pn2.makeSchedule(8.0);
-		allTasks.addAll(pn2.getSchedTasks_());
-		PartitionNames pn3 = new PartitionNames(destinationDirectory, 8.0, "yellowApp", pn2.getLast(),200000);
-		pn3.makeSchedule(8.0);
-		ArrayList<String> appNames = new ArrayList();
-		//pn2.writeSchedule();
-		System.out.println("Last[0] " +pn2.getLast()[0] +" and the other "+ pn3.getLast()[1]);
-		PartitionNames pn4 = new PartitionNames(destinationDirectory, 8.0, "greenApp", pn3.getLast(),300000);
-		pn4.makeSchedule(8.0); 
-		allTasks.addAll(pn4.getSchedTasks_());
-		//pn2.writeSchedule();
-		System.out.println("Last[0] " +pn4.getLast()[0] +" and the other "+ pn4.getLast()[1]);
-		PartitionNames pn5 = new PartitionNames(destinationDirectory, 8.0, "purpleApp", pn4.getLast(),400000);
-		pn5.makeSchedule(8.0);
-		allTasks.addAll(pn5.getSchedTasks_());
-		
-		//pn2.writeSchedule();
-		System.out.println("Last[0] " +pn5.getLast()[0] +" and the other "+ pn5.getLast()[1]);
-		PartitionNames pn6 = new PartitionNames(destinationDirectory, 8.0, "orangeApp", pn5.getLast(),500000);
-		pn6.makeSchedule(8.0);
-		allTasks.addAll(pn6.getSchedTasks_());
-		//pn2.writeSchedule();
-		System.out.println("Last[0] " +pn6.getLast()[0] +" and the other "+ pn6.getLast()[1]);
-		PartitionNames pn7 = new PartitionNames(destinationDirectory, 8.0, "brownApp", pn6.getLast(),600000);
-		pn7.makeSchedule(8.0);
-		allTasks.addAll(pn7.getSchedTasks_());
-		//pn2.writeSchedule();
-		System.out.println("Last[0] " +pn7.getLast()[0] +" and the other "+ pn7.getLast()[1]);
-		PartitionNames pn8 = new PartitionNames(destinationDirectory, 8.0, "blackApp", pn7.getLast(),700000);
-		pn8.makeSchedule(8.0);
-		allTasks.addAll(pn8.getSchedTasks_());
-		//pn2.writeSchedule();
-		System.out.println("Last[0] " +pn8.getLast()[0] +" and the other "+ pn8.getLast()[1]);
-		PartitionNames pn9 = new PartitionNames(destinationDirectory, 8.0, "whiteApp", pn8.getLast(),800000);
-		pn9.makeSchedule(8.0);
-		allTasks.addAll(pn9.getSchedTasks_());
-		//pn2.writeSchedule();
-		System.out.println("Last[0] " +pn9.getLast()[0] +" and the other "+ pn9.getLast()[1]);
-		PartitionNames pn10 = new PartitionNames(destinationDirectory, 8.0, "pinkApp", pn9.getLast(),900000);
-		pn9.makeSchedule(8.0);
-		allTasks.addAll(pn10.getSchedTasks_());
-		
-		
-		appNames.add("redApp");
-		appNames.add("blueApp");
-		appNames.add("yellowApp");
-		appNames.add("greenApp");
-		appNames.add("purpleApp");
-		appNames.add("orangeApp");
-		appNames.add("brownApp");
-		appNames.add("blackApp");
-		appNames.add("whiteApp");
-		appNames.add("pinkApp");
-		
-		//appNames.add("redApp");
-		//appNames.add("blueApp");
-		//appNames.add("yellowApp");
-		allTasks.addAll(pn3.getSchedTasks_());
-		ExecutionMaker em = new ExecutionMaker(appNames);
-		ArrayList<SchedulableTask> st ;//= new ArrayList();
-		st = new ArrayList();
-		for(SchedulableTask schedTask : allTasks){
-			SchedulableTask s = new SchedulableTask(schedTask.getTaskName_(), schedTask.getStride_(), schedTask.getRate_(), schedTask.getAppName_());
-			st.add(s);
+		float probShared = 0;
+		ArrayList<SchedulableTask> allTasks= new ArrayList();
+		//ArrayList<SchedulableTask> unoptSched = unopt
+		while(probShared <=1.01){
+			DecimalFormat df = new DecimalFormat("#.##");
+			double d = new Double(df.format(probShared)).doubleValue();
+			String destinationDirectory = "/Users/briandougherty/Shared-Prob-Run/sharedProb"+d;
+			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
+			int [] go = {20000,20000};
+			float multi = (float) 1;
+			PartitionNames pn1 = new PartitionNames(destinationDirectory, 8.0, "redApp",go,0,multi, probShared);
+			pn1.makeSchedule(8.0);
+			 
+			
+			//pn1.writeSchedule();
+			System.out.println("Last[0] " +pn1.getLast()[0] +" and the other "+ pn1.getLast()[1]);
+			PartitionNames pn2 = new PartitionNames(destinationDirectory, 8.0, "blueApp", pn1.getLast(),100000,multi,probShared);
+			pn2.makeSchedule(8.0);
+			
+			PartitionNames pn3 = new PartitionNames(destinationDirectory, 8.0, "yellowApp", pn2.getLast(),200000,multi, probShared);
+			pn3.makeSchedule(8.0);
+			ArrayList<String> appNames = new ArrayList();
+			//pn2.writeSchedule();
+			System.out.println("Last[0] " +pn2.getLast()[0] +" and the other "+ pn3.getLast()[1]);
+			PartitionNames pn4 = new PartitionNames(destinationDirectory, 8.0, "greenApp", pn3.getLast(),300000, multi, probShared);
+			pn4.makeSchedule(8.0); 
+			
+			//pn2.writeSchedule();
+			System.out.println("Last[0] " +pn4.getLast()[0] +" and the other "+ pn4.getLast()[1]);
+			PartitionNames pn5 = new PartitionNames(destinationDirectory, 8.0, "purpleApp", pn4.getLast(),400000,multi,probShared);
+			pn5.makeSchedule(8.0);
+			if(probShared == 0){
+				allTasks.addAll(pn1.getSchedTasks_());
+				allTasks.addAll(pn2.getSchedTasks_());
+				allTasks.addAll(pn3.getSchedTasks_());
+				allTasks.addAll(pn4.getSchedTasks_());
+				allTasks.addAll(pn5.getSchedTasks_());
+			}
+			/*
+			//pn2.writeSchedule();
+			System.out.println("Last[0] " +pn5.getLast()[0] +" and the other "+ pn5.getLast()[1]);
+			PartitionNames pn6 = new PartitionNames(destinationDirectory, 8.0, "orangeApp", pn5.getLast(),500000);
+			pn6.makeSchedule(8.0);
+			allTasks.addAll(pn6.getSchedTasks_());
+			//pn2.writeSchedule();
+			System.out.println("Last[0] " +pn6.getLast()[0] +" and the other "+ pn6.getLast()[1]);
+			PartitionNames pn7 = new PartitionNames(destinationDirectory, 8.0, "brownApp", pn6.getLast(),600000);
+			pn7.makeSchedule(8.0);
+			allTasks.addAll(pn7.getSchedTasks_());
+			//pn2.writeSchedule();
+			System.out.println("Last[0] " +pn7.getLast()[0] +" and the other "+ pn7.getLast()[1]);
+			PartitionNames pn8 = new PartitionNames(destinationDirectory, 8.0, "blackApp", pn7.getLast(),700000);
+			pn8.makeSchedule(8.0);
+			allTasks.addAll(pn8.getSchedTasks_());
+			//pn2.writeSchedule();
+			System.out.println("Last[0] " +pn8.getLast()[0] +" and the other "+ pn8.getLast()[1]);
+			PartitionNames pn9 = new PartitionNames(destinationDirectory, 8.0, "whiteApp", pn8.getLast(),800000);
+			pn9.makeSchedule(8.0);
+			allTasks.addAll(pn9.getSchedTasks_());
+			//pn2.writeSchedule();
+			System.out.println("Last[0] " +pn9.getLast()[0] +" and the other "+ pn9.getLast()[1]);
+			PartitionNames pn10 = new PartitionNames(destinationDirectory, 8.0, "pinkApp", pn9.getLast(),900000);
+			pn9.makeSchedule(8.0);
+			allTasks.addAll(pn10.getSchedTasks_());*/
+			
+			
+			appNames.add("redApp");
+			appNames.add("blueApp");
+			appNames.add("yellowApp");
+			appNames.add("greenApp");
+			appNames.add("purpleApp");
+		/*	appNames.add("orangeApp");
+			appNames.add("brownApp");
+			appNames.add("blackApp");
+			appNames.add("whiteApp");
+			appNames.add("pinkApp");
+			*/
+			//appNames.add("redApp");
+			//appNames.add("blueApp");
+			//appNames.add("yellowApp");
+			
+			
+			ExecutionMaker em = new ExecutionMaker(appNames);
+			ArrayList<SchedulableTask> st ;//= new ArrayList();
+			st = new ArrayList();
+			for(SchedulableTask schedTask : allTasks){
+				SchedulableTask s = new SchedulableTask(schedTask.getTaskName_(), schedTask.getStride_(), schedTask.getRate_(), schedTask.getAppName_());
+				st.add(s);
+			}
+			System.out.println("BEFORE st == allTasks: "+st.equals(allTasks));
+		/*	
+			*/em.writeSchedule(allTasks,destinationDirectory, true, "optimizedEx.cpp","");
+			System.out.println("allTasks size " + allTasks.size());
+			//allTasks = new ArrayList();
+			System.out.println("DURING st == allTasks: "+st.equals(allTasks));
+			em.writeSchedule(st,destinationDirectory, false,"unoptimizedEx.cpp", "");
+			System.out.println("AFTER st == allTasks: "+st.equals(allTasks));
+			System.out.println(" St size = " + st.size());
+			em.writeSchedule(st,destinationDirectory, false,"BextEx.cpp", "best");
+			
+			em.writeSchedule(st,destinationDirectory, false,"WorstEx.cpp", "worst");
+			System.out.println(" shshared vars " + pn1.getSharedVars()+" and total vars = "+ pn1.getTotalVars()+" shared ratio = " +(float)pn1.getSharedVars()/(float)pn3.getTotalVars());
+			
+			System.out.println(" shshared vars " + pn2.getSharedVars()+" and total vars = "+ pn2.getTotalVars()+" shared ratio = " +(float)pn2.getSharedVars()/(float)pn3.getTotalVars());
+			
+			System.out.println(" shshared vars " + pn3.getSharedVars()+" and total vars = "+ pn3.getTotalVars()+" shared ratio = " +(float)pn3.getSharedVars()/(float)pn3.getTotalVars());
+		//	em.writeSchedule(allTasks,"/Users/briandougherty/brian2/optimized/", true);
+		//	em.writeSchedule(allTasks,"/Users/briandougherty/brian2/optimized/", false);
+			//pn3.writeSchedule(allTasks);
+			probShared +=.05;
 		}
-		System.out.println("BEFORE st == allTasks: "+st.equals(allTasks));
-	/*	
-		*/em.writeSchedule(allTasks,destinationDirectory+"optimized", true);
-		System.out.println("allTasks size " + allTasks.size());
-		//allTasks = new ArrayList();
-		System.out.println("DURING st == allTasks: "+st.equals(allTasks));
-		em.writeSchedule(st,destinationDirectory, false);
-		System.out.println("AFTER st == allTasks: "+st.equals(allTasks));
-		System.out.println(" St size = " + st.size());
-		
-	//	em.writeSchedule(allTasks,"/Users/briandougherty/brian2/optimized/", true);
-	//	em.writeSchedule(allTasks,"/Users/briandougherty/brian2/optimized/", false);
-		//pn3.writeSchedule(allTasks);
-
 		
 
 		
 		//pn.makePartition("P1");*/
+	}
+
+	public int getTotalVars() {
+		return totalVars;
+	}
+
+	public void setTotalVars(int totalVars) {
+		this.totalVars = totalVars;
+	}
+
+	public int getSharedVars() {
+		return sharedVars;
+	}
+
+	public void setSharedVars(int sharedVars) {
+		this.sharedVars = sharedVars;
 	}
 }
