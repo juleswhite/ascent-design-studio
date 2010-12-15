@@ -23,11 +23,11 @@ public class ScheduleOptimizer {
 		appNames_.add("redApp");
 		appNames_.add("greenApp");
 		appNames_.add("purpleApp");
-		appNames_.add("orangeApp");
+		/*appNames_.add("orangeApp");
 		appNames_.add("brownApp");
 		appNames_.add("blackApp");
 		appNames_.add("whiteApp");
-		appNames_.add("pinkApp");
+		appNames_.add("pinkApp");*/
 	}
 	
 	public ArrayList<SchedulableTask> getTasks_(){
@@ -43,7 +43,7 @@ public class ScheduleOptimizer {
 		int currentIndex =0;
 		int moverSize = 0;
 		int run =0;
-		ArrayList<SchedulableTask> movers = new ArrayList();
+		ArrayList<SchedulableTask> movers; //= new ArrayList();
 		while( currentRate <= maxRate_ && tasks_.size()>0){
 			//System.out.println(" CurrentRate = " + currentRate +" and maxRate = " + maxRate_);
 			movers = new ArrayList();

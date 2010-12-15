@@ -194,7 +194,7 @@ public class Scheduler  {
 		    
 		    tasks_.add(st);
 		    if(!optimized){
-		    	Collections.shuffle(tasks_);
+		    	Collections.shuffle(tasks_);// MIGHT NEED TO UNCOMMENT
 		    	
 		    }
 		    Collections.sort(tasks_,new byStride());
