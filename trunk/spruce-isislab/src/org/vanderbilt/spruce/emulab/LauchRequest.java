@@ -1,6 +1,6 @@
 package org.vanderbilt.spruce.emulab;
 
-
+/*swaps in experiment of the launchUrl for execution*/
 
 public class LauchRequest implements Runnable{
 	private String url_;

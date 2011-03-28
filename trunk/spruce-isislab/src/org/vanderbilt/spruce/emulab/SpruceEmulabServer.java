@@ -1,7 +1,7 @@
 package org.vanderbilt.spruce.emulab;
 
 /*******************************************************************************
- * Copyright 2009 Jules White
+ * Copyright 2009 Jules White,Brian Dougherty
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -32,10 +32,10 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
 /**
- * This class is the entry point for the WreckWatch server. The class spawns an
- * HTTP server and registers the core WreckWatch servlets.
+ * This class is the entry point for the Spruce Testbed Integration (STI) server. The class spawns an
+ * HTTP server and registers the core STI servlets.
  * 
- * @author jules
+ * @author jules,brian
  * 
  */
 public class SpruceEmulabServer {
@@ -65,14 +65,15 @@ public class SpruceEmulabServer {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		int port = 8090;
+		int port = 8090; //opens up server on port 8090
 		Properties props = new Properties();
 		if (args.length > 0) {
 			try {
 				port = Integer.parseInt(args[0]);
 				
 				
-				props.load(new FileInputStream(".spruce"));
+				props.load(new FileInputStream(".spruce")); // loads the .spruce properties file. contains the properties "uo"
+				//the operating user and "op" is the password
 				System.out.println(" The properties are "+props);
 			} catch (Exception e) {
 				// Need to modify this to print the correct usage...
@@ -82,11 +83,11 @@ public class SpruceEmulabServer {
 			}
 		}
 
-		(new SpruceEmulabServer()).start(port,args[1],props.getProperty("uo"),props.getProperty("op"));
+		(new SpruceEmulabServer()).start(port,args[1],props.getProperty("uo"),props.getProperty("op")); //call to actually load the server
 	}
 
 	/**
-	 * Starts the WreckWatch server on the specified port.
+	 * Starts the STI server on the specified port.
 	 * 
 	 * @param port
 	 */
@@ -97,27 +98,25 @@ public class SpruceEmulabServer {
 		running_ = true;
 
 		server_ = new Server(port);
-		Context context = new Context(server_, "/", Context.SESSIONS);
-		System.out.println(" url = "+url);
-		HttpServlet servlet = new EmulabConnectorServlet(url,user,pass);
-		HttpServlet wlservlet = new SpruceWriteLaunchServlet(url,user,pass);
-		HttpServlet ilservlet = new IntermediateLaunchServlet(url,user,pass);
-		HttpServlet mkexservlet = new SpruceMakeExpServlet(url,user,pass);
+		Context context = new Context(server_, "/", 1);
+		System.out.println(" url = " + url);
+		HttpServlet servlet = new EmulabConnectorServlet(url, user, pass);
+		HttpServlet wlservlet = new SpruceWriteLaunchServlet(url, user, pass);
+		HttpServlet pVservlet = new ParamValidator(url, user, pass);
+		HttpServlet ilservlet = new IntermediateLaunchServlet(url, user, pass);
+		HttpServlet mkexservlet = new SpruceMakeExpServlet(url, user, pass);
 		context.addServlet(new ServletHolder(wlservlet), "/writeLaunch");
+		context.addServlet(new ServletHolder(pVservlet), "/pValidate");
 		context.addServlet(new ServletHolder(servlet), "/emulab/*");
 		context.addServlet(new ServletHolder(new SpruceEmulabResultsServlet()), "/results/*");
 		context.addServlet(new ServletHolder(new IsisLabLogin()), "/login");
 		context.addServlet(new ServletHolder(mkexservlet), "/makeExp");
 		context.addServlet(new ServletHolder(ilservlet), "/inter");
-		//context.addServlet(new ServletHolder(new SpruceWriteLaunchServlet(url)), "/writeLaunch");
-		//context.addServlet(new ServletHolder(new IsisLabValidateServlet(url)), "/validate");
-		//context.addServlet(new ServletHolder(new SpruceExperimentsServlet(url)), "/expList");
 		context.addServlet(new ServletHolder(new SpruceParamsServlet(url)), "/validate");
 		context.addServlet(new ServletHolder(new SpruceConfigServlet(url)), "/config");
-		context.setResourceBase((new File(".")).getAbsolutePath());
+		context.setResourceBase(new File(".").getAbsolutePath());
 		ResourceHandler resource_handler = new ResourceHandler();
 		resource_handler.setBaseResource(context.getBaseResource());
-		
 		HandlerList handlers = new HandlerList();
 		handlers.setHandlers(new Handler[] { resource_handler, context });
 		server_.setHandler(handlers);
