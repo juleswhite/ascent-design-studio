@@ -55,7 +55,7 @@ public class SpruceExperimentsServlet extends HttpServlet {
 				tableContent += "<tr>";
 				tableContent += "<td>"+pnameArray[i]+"</td>";
 				tableContent += "<td>"+expnameArray[i]+"</td>";
-				tableContent += "<td><a href=\"http://afrl-gift.dre.vanderbilt.edu:8090/emulab?exp=" + eidArray[i]+"\">Execute Experiment</a></tr>";
+				tableContent += "<td><a href=\""+ContentHolder.rootURL+"/emulab?exp=" + eidArray[i]+"\">Execute Experiment</a></tr>";
 			}
 			tableContent += "</table></body></html>";
 

@@ -298,18 +298,23 @@ public class IsisLabUtil {
 				System.out.println(" ProjectName is " + projectName + " and expName is " + expName);
 				String eaurl = "https://www.isislab.vanderbilt.edu/"+anchorUrl;
 				System.out.println("eaurl =  " + eaurl);
-				expPage = (HtmlPage) webClient.getPage(eaurl);
-				ArrayList<String>expAnchs = getAnchorByPrefix( expPage, "swapexp.php3");
-				for( String expAnch : expAnchs){
-					System.out.println("\n expAnch =" + expAnch +"\n ");
-					String expId = getExpId(expAnch);
-					System.out.println("\n expId =" + expId +"\n ");
-					expData.put("eid", expId);
-					expData.put(projectName,expId);
-					
-					
+				try{
+					expPage = (HtmlPage) webClient.getPage(eaurl);
+					ArrayList<String>expAnchs = getAnchorByPrefix( expPage, "swapexp.php3");
+					for( String expAnch : expAnchs){
+						System.out.println("\n expAnch =" + expAnch +"\n ");
+						String expId = getExpId(expAnch);
+						System.out.println("\n expId =" + expId +"\n ");
+						expData.put("eid", expId);
+						expData.put(projectName,expId);
+						
+						
+					}
+					expIds.add(expData);
 				}
-				expIds.add(expData);
+				catch(Exception e){
+					System.out.println(" Experiment " + expName +" is already swapped in");
+				}
 			}
 			System.out.println("\n expIds = " + expIds);
 			//System.out.println("page2 as text = "+ page2.asText());

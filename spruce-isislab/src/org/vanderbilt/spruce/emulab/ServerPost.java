@@ -64,7 +64,7 @@ public class ServerPost {
 		//method.addParameter(params)
 		ParamParser p = new ParamParser(filePath);
 		
-		paramsForm = p.prepareForm();
+		paramsForm = p.prepareForm(filePath);
 		p.getContents(new File(filePath));
 		method.addParameter("params.txt",p.getContents(new File(filePath)));
 	}

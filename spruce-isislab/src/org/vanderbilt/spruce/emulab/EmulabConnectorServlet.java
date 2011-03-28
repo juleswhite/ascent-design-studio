@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class EmulabConnectorServlet extends HttpServlet {
-
+	/*
+	 * Creates launch request for experiments that do not require parameters
+	 */
 	private String user_;
 	private String pass_;
 	private String url_;
@@ -42,7 +44,7 @@ public class EmulabConnectorServlet extends HttpServlet {
 		
 				int eid = Integer.parseInt(eidnum);
 				LauchRequest lr = new LauchRequest(url_,user_,pass_,eidnum);
-				executor_.execute(lr);
+				executor_.execute(lr); //Requires a threadpool to execute the experiment
 			}
 		} catch (Exception e) {
 		
@@ -64,7 +66,7 @@ public class EmulabConnectorServlet extends HttpServlet {
 		try {
 			eidnum = req.getParameter("exp");
 
-			if (eidnum != null && eidnum.trim().length() > 0) {
+			if (eidnum != null && eidnum.trim().length() > 0) {// If an experiment ID is given, launch the experiment
 
 				int eid = Integer.parseInt(eidnum);
 				LauchRequest lr = new LauchRequest(url_,user_,pass_,eidnum);
