@@ -64,6 +64,7 @@ public class SpruceConfigServlet extends HttpServlet
     paramForm = formTop + paramForm;
 
     resp.setContentType("text/html");
-    resp.getWriter().write("<html><body>" + paramForm + "</body></html>");
+    //%resp.getWriter().write("<html><body>" + paramForm + "</body></html>");
+    resp.getWriter().write(paramForm);
   }
 }
