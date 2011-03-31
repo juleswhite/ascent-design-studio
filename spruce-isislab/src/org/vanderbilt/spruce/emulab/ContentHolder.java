@@ -4,5 +4,5 @@ public class ContentHolder {
 
 	public static String chTopContent = "top";
 	public static String chBottomeContent="bottom";
-	public static String rootURL="http://localhost:8090";
+	public static String rootURL="http://dev.sprucecommunity.org:8090";
 }
