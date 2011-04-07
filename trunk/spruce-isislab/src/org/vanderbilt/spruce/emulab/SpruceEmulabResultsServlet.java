@@ -50,7 +50,8 @@ public class SpruceEmulabResultsServlet extends HttpServlet {
     	    String content = request.getParameter("content");
     	    String eid = request.getParameter("exp");
     	   // System.out.println("content received from post parmaeter is " + content);
-    	    String fileContent = readFile(eid+"/results.html");
+    	    //String fileContent = readFile(eid+"/results.html");
+    	    String fileContent = readFile("C:\\Vanderbilt\\"+eid+"\\results.html");
     	    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	        Date date = new Date();
     	    content  = fileContent +"<div>"+dateFormat.format(date)+"</div>"+content;
@@ -58,13 +59,13 @@ public class SpruceEmulabResultsServlet extends HttpServlet {
     	    content = content.replaceAll("</html>", "");
     	    content = content.replaceAll("<body>", "");
     	    content = content.replaceAll("</body>", "");
-    	    content = "<html><body>"+content+"</body></html>";
-    	    writeFile("results.html",content,eid);//(//eid +"/results.html"),content);
+    	   // content = "<html><body>"+content+"</body></html>";
+    	    writeFile("C:\\Vanderbilt\\"+eid+"\\results.html",content,eid);//(//eid +"/results.html"),content);
     	    System.out.println(" about to see if there is params.txt post param");
     	    
     	    if(request.getParameter("params.txt") != null){
     	    	System.out.println(" found params.txt");
-        	    writeFile("params.txt",request.getParameter("params.txt"),"/home/briand/"+eid);
+        	    writeFile("C:\\Vanderbilt\\"+eid+"\\params.txt",request.getParameter("params.txt"),"C:\\Vanderbilt\\"+eid);
     	    }
     	    System.out.println("About to write the "+eid+"parametersForm.txt file with data:");// +request.getParameter("parameterForm"));
     	    writeFile(eid+"parametersForm.txt",request.getParameter("parameterForm"),eid );
@@ -80,7 +81,7 @@ public class SpruceEmulabResultsServlet extends HttpServlet {
 	          //must use a try/catch statement for it to work
 	     try
 	     {     
-	          Output = new FileOutputStream(strDirectory+"/"+name,false);
+	          Output = new FileOutputStream(name,false);
 	          file = new PrintStream(Output);
 	          file.print(content);
 	        

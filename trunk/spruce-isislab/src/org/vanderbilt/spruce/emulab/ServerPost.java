@@ -45,7 +45,7 @@ public class ServerPost {
     ServerPost s = new ServerPost();
     BufferedReader br = null;
     
-    PostMethod method = new PostMethod("http://"+ContentHolder.rootURL+"/results");
+    PostMethod method = new PostMethod(ContentHolder.rootURL+"/results");
     System.out.println(" I am in the main of Server Post");
     String expId = args[0];
     String fileContent = args[1];                     
