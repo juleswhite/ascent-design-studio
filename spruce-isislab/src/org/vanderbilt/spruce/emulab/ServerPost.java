@@ -45,7 +45,7 @@ public class ServerPost {
     ServerPost s = new ServerPost();
     BufferedReader br = null;
     
-    PostMethod method = new PostMethod("http://afrl-gift.dre.vanderbilt.edu:8090/results");
+    PostMethod method = new PostMethod("http://"+ContentHolder.rootURL+"/results");
     System.out.println(" I am in the main of Server Post");
     String expId = args[0];
     String fileContent = args[1];                     
@@ -69,10 +69,10 @@ public class ServerPost {
 		method.addParameter("params.txt",p.getContents(new File(filePath)));
 	}
 	method.addParameter("parameterForm",paramsForm);
-	File f = new File("/proj/LMATLProjext/spruce/done.txt");
-	System.out.println(" about to scp from server post");
-	Scp copier = new Scp("/proj/LMATLProject/spruce/done.txt", "/home/briand/"+expId+"/done.txt", "pass", "briand", "afrl-gift.dre.vanderbilt.edu");
-    System.out.println("done scp'in");
+	File f = new File("/proj/LMATLProject/spruce/done.txt");
+	//System.out.println(" about to scp from server post");
+	//Scp copier = new Scp("/proj/LMATLProject/spruce/done.txt", "/home/briand/"+expId+"/done.txt", "pass", "briand", "afrl-gift.dre.vanderbilt.edu");
+   // System.out.println("done scp'in");
 	try{
       int returnCode = client.executeMethod(method);
 
