@@ -105,7 +105,7 @@ public class ParamValidator extends HttpServlet
       System.out.println(" parameterContent = " + parameterContent);
       try
       {
-        FileWriter fstream = new FileWriter("/home/briand/" + eid + "/expArgs.txt");
+        FileWriter fstream = new FileWriter("C:\\Vanderbilt\\" + eid + "\\expArgs.txt");
         BufferedWriter out = new BufferedWriter(fstream);
         out.write(parameterContent);
         out.close();
@@ -116,7 +116,7 @@ public class ParamValidator extends HttpServlet
     }
 
     System.out.println(" About to scp");
-    Scp scp = new Scp("/home/briand/" + eid + "/expArgs.txt", this.projectDirectory_ + this.projectName_ + "/" + eid + "/expArgs.txt", "brianjules", "sprcebot", "users.isislab.vanderbilt.edu");
+    Scp scp = new Scp("C:\\Vanderbilt\\" + eid + "\\expArgs.txt", this.projectDirectory_ + this.projectName_ + "/" + eid + "/expArgs.txt", "brianjules", "sprcebot", "users.isislab.vanderbilt.edu");
     System.out.println("done scp'n and abotu to doGet");
 
     doGet(request, response);
@@ -151,7 +151,8 @@ public class ParamValidator extends HttpServlet
       paramForm = formTop + paramForm;
 
       resp.setContentType("text/html");
-      resp.getWriter().write("<html><body>" + paramForm + "</body></html>");
+     // resp.getWriter().write("<html><body>" + paramForm + "</body></html>");
+      resp.getWriter().write(paramForm);
     }
     else
     {
@@ -164,7 +165,7 @@ public class ParamValidator extends HttpServlet
         if ((eidnum != null) && (eidnum.trim().length() > 0)) {
           System.out.println(" about to execute lauch request");
           int eid = Integer.parseInt(eidnum);
-          System.out.println(" from the WriteLaunch reqeuest the url is " + this.url_);
+          System.out.println(" from the WriteLaunch request the url is " + this.url_);
           System.out.println(" The user is " + this.user_);
           System.out.println(" The pass is " + this.pass_);
           LauchRequest lr = new LauchRequest(this.url_, this.user_, this.pass_, eidnum);
