@@ -106,7 +106,7 @@ public class ScheduleOptimizer {
 		
 	}
 
-	public void removeDoubles(){
+	/*public void removeDoubles(){//Ignore. We originally though that removing single consecutive instances of tasks would be helpful.
 		int rate = finalTasks_.get(0).getRateInt_();
 		int currentIndex =0;
 		int lastIndex = 0;
@@ -116,7 +116,7 @@ public class ScheduleOptimizer {
 		/*
 		 * Map of app names for each rate. The array list has the count of each App run steak, the index it starts, and the index it stops
 		 * This will tell us where the doubles are so we can take care of them.
-		 */
+		 
 		int currentRate = 1;
 		while(currentIndex < finalTasks_.size() && currentRate <= maxRate_){
 			map= new HashMap();
@@ -199,7 +199,7 @@ public class ScheduleOptimizer {
 				 * 3.)split them up within the rate, without splitting any runs of other applications. Last resort.
 				 * our int value of doubleMoves corresponds to the moves we've done.
 				 *
-				 */
+				 *
 				if(appInfo.get(0) ==2){
 					if(finalTasksNoDoubles_.size()==0){
 						doubleMoves =1;
@@ -261,7 +261,7 @@ public class ScheduleOptimizer {
 		//	System.out.println("FTND____" + ftd.getTaskName_() + "rate "+ ftd.getRateInt_());
 		}
 		
-	}
+	}*/
 		
 	public ArrayList<SchedulableTask> getAllFinalTasks(){
 		return allFinalTasks_;

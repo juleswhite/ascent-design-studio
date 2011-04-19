@@ -19,8 +19,9 @@ public class ExecutionMaker {
     	outputSchedule += "#include <time.h>\n";
     	outputSchedule += "#include <ctime>\n";
     	outputSchedule += "#include <sys/time.h>\n";
+    	outputSchedule += "#include <map>\n";
     	outputSchedule += "#include \"Execute.h\"\n";
-    	outputSchedule +="#include \"CacheTrasher.h\"\n";
+    	//outputSchedule +="#include \"CacheTrasher.h\"\n";
     	for(String appName : appNames_){
     		outputSchedule += "#include \"Application"+appName+".h\"\n";
     	}
@@ -30,6 +31,7 @@ public class ExecutionMaker {
     	outputSchedule +="\t clock_t startClock,finishClock;\n";
 		outputSchedule +="\t double timeCount;\n";
 		outputSchedule +="\t startClock = clock();\n\t";
+		outputSchedule +="std::map<string, std::map<int, int> > timeMap;\n\t";
 		int overlaps =0;
 		for(String appName : appNames_){
 			outputSchedule += "Application"+appName+" " +appName+";\n\t";
@@ -47,7 +49,7 @@ public class ExecutionMaker {
 			System.out.println(" Optimized Schedule length = " + schedulableTasks.size());
 			so.printSchedule();
 			so.optimize();
-			so.removeDoubles();
+			//so.removeDoubles(); I don't think this should be here, but haven't tested it since.
 			schedulableTasks = so.getAllFinalTasks();
 			//so.printSchedule();
     	}
@@ -153,9 +155,12 @@ public class ExecutionMaker {
     	outputSchedule +="int i = 0; \n \t " +
 		"ofstream myfile;\n\t"+
 		"myfile.open(\"output"+scheduleName+"-Overlaps:+"+overlaps+"\");\n\t"+
+		"ofstream excelOutput;\n\t"+
+		"excelOutput.open(\"excelOutput-"+scheduleName+".txt\");\n\t"+
 		//"CacheTrasher c;\n\t"+
 		//"c.CacheFlusherSetup(12000000,512);\n\t" +
 		"int totalExec = 50; \n\t"+
+		"clock_t midStartClock, midFinishClock;\n\t"+
 		"while(totalExec >0){\n\t\t"+
 		"startClock = clock();\n\t\t"+
 		"i =0;\n\t\t"+
@@ -163,7 +168,12 @@ public class ExecutionMaker {
     	System.out.println("schedulableTasks size = " + schedulableTasks.size());
     	for(SchedulableTask st : schedulableTasks ){
     		numTasks++;
-    		outputSchedule += st.getAppName_()+"."+st.getTaskName_()+"();//rate"+st.getRate_()+"\n\n\t\t\t";
+    		outputSchedule += "midStartClock = clock();\n\t\t\t";
+    		outputSchedule += st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"();//rate"+st.getRate_()+"\n\n\t\t\t";
+    		
+    		outputSchedule += "midFinishClock = clock();\n\t\t\t"+
+			"timeMap[\""+st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"\"][i] = midFinishClock-midStartClock;\n\t\t\t";
+			
     		
     		//outputSchedule +="c.CacheFlush();\n\t\t\t";
     	}
@@ -173,9 +183,42 @@ public class ExecutionMaker {
     			"\t\t finishClock = clock();\n"+
     			"\t\t myfile<<(finishClock-startClock)/1000<<std::endl;\n\t\t"+
     			"totalExec--;}\n\t"+
-    			"myfile.close();\n\t"+
-    			"\n}\n";
-    	PartitionNames.writeFile(scheduleName, outputSchedule, projectDirectory);
+    	"std::map<std::string, std::map<int,int> >::iterator iter;\n\t" +
+    	"std::map<int,int>::iterator insideIter;\n\t"+
+    	"std::string taskName;\n\t"+
+    	"for (iter = timeMap.begin(); iter != timeMap.end(); iter++) {\n\t\t"+
+    	"double totalTime = 0;\n\t\t"+
+    	"int maxTime = 0;\n\t\t"+
+    	"int minTime = 5000000;\n\t\t"+
+    	"int currentTime;\n\t\t"+
+    	"double averageTime;\n\t\t"+
+    	"taskName = iter->first;\n\t\t"+
+    	"excelOutput<<taskName;\n\t\t"+
+    	"for (insideIter = iter->second.begin(); insideIter != iter->second.end(); insideIter++) {\n\t\t\t"+
+    	"currentTime = insideIter->second;\n\t\t\t"+
+    			//excelOutput<<",";
+    			//excelOutput<<insideIter->second;
+    	"if(currentTime > maxTime){\n\t\t\t\t"+
+    	"maxTime = currentTime;\n\t\t\t"+
+    	"}\n\t\t\t"+
+    	"if(currentTime < minTime){\n\t\t\t\t"+
+    	"minTime = currentTime;\n\t\t\t"+
+    	"}\n\t\t\t"+
+    	"totalTime = totalTime + insideIter->second;\n\t\t"+
+    	"}\n\t\t"+
+    	"averageTime = totalTime/timeMap[taskName].size();\n\t\t"+
+    	"excelOutput<<\",\";\n\t\t"+
+    	"excelOutput<<averageTime;\n\t\t"+
+    	"excelOutput<<\",\";\n\t\t"+
+    	"excelOutput<<minTime;\n\t\t"+
+    	"excelOutput<<\",\";\n\t\t"+
+    	"excelOutput<<maxTime;\n\t\t"+
+    	"excelOutput<<std::endl;\n\t"+
+    	"}\n\t"+
+    	"excelOutput.close();\n\t"+
+    	"myfile.close();\n\t"+
+    	"\n}\n";
+    	Application.writeFile(scheduleName, outputSchedule, projectDirectory);
     	String executeHeader = "#ifndef EXECUTE_H\n"+
     	"#define EXECUTE_H\n"+
     	"#include <iostream>\n"+
@@ -184,7 +227,7 @@ public class ExecutionMaker {
     	"void executeTasks(int);\n"+
     	"};\n"+
     	"#endif";
-    	PartitionNames.writeFile("Execute.h", executeHeader, projectDirectory);
+    	Application.writeFile("Execute.h", executeHeader, projectDirectory);
     	//return outputSchedule;
     	return schedulableTasks;
     }
