@@ -96,7 +96,9 @@ public class ScheduleOptimizer {
 			ArrayList<SchedulableTask> tn = fullTasks.get(str);
 			
 	*/		//System.out.println (tn + " : " + fullTasks.get(tn));
+		System.out.println("fullTasks length " + fullTasks.size());
 		for(ArrayList<SchedulableTask>tn : fullTasks){
+			System.out.println("Number of tasks in each fulltask" + tn.size());
 			for( SchedulableTask t : tn){
 					//System.out.println("FULL TASK: " + t.getTaskName_() +" rate "+ t.getRateInt_());
 					finalTasks_.add(t);
@@ -266,7 +268,9 @@ public class ScheduleOptimizer {
 	public ArrayList<SchedulableTask> getAllFinalTasks(){
 		return allFinalTasks_;
 	}
-		
+	public ArrayList<SchedulableTask> getFinalTasks(){
+		return finalTasks_;
+	}	
 		
 	
 	/*public void optimize(){

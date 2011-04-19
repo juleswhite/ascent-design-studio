@@ -312,7 +312,7 @@ public class Application {
 					}
 					else{
 						referenceName = floatsReferenced_.get((int) (Math.random() *floatsReferenced_.size()));
-						System.out.println("Shared float from floats referenced is " + referenceName);
+						//System.out.println("Shared float from floats referenced is " + referenceName);
 						sharedFloats.add(referenceName);
 					}
 				}
@@ -322,11 +322,11 @@ public class Application {
 					}
 					else{
 						referenceName = intsReferenced_.get((int) (Math.random() *intsReferenced_.size()));
-						System.out.println("Shared int from ints referenced is " + referenceName);
+						//System.out.println("Shared int from ints referenced is " + referenceName);
 						sharedInts.add(referenceName);
 					}
 				}
-				System.out.println("less than shared Probability.Adding "+referenceName);
+				//System.out.println(" Probability.Adding "+referenceName);
 			}
 			else{
 				//System.out.println("GREATER than shard Probability");
@@ -342,9 +342,9 @@ public class Application {
 						referenceName = makeRandomPartition(referenceType);
 					}
 				}
-				System.out.println("GREATER than shard Probability. Adding "+referenceName);
+				//System.out.println("GREATER than shard Probability. Adding "+referenceName);
 			}
-			System.out.println("About to add Reference: " + referenceName);
+			//System.out.println("About to add Reference: " + referenceName);
 			if( referenceType == "float"){
 				
 				
@@ -524,10 +524,10 @@ public class Application {
 		while(probShared <=1.01){
 			DecimalFormat df = new DecimalFormat("#.##");
 			double d = new Double(df.format(probShared)).doubleValue();
-			String destinationDirectory = "/Users/briandougherty/Shared-Prob-Run/sharedProb-Revised"+d;
+			String destinationDirectory = "/Users/Brian/Shared-Prob-Run/sharedProb-Revised"+d;
 			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
 			int [] go = {20000,20000};
-			float multi = (float) 1;
+			float multi = (float) .1;
 			Application pn1 = new Application(destinationDirectory, 8.0, "redApp",go,0,multi, probShared);
 			pn1.makeSchedule(8.0);
 			 
