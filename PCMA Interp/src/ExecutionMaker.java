@@ -44,13 +44,15 @@ public class ExecutionMaker {
     	int numTasks =0;
     	ArrayList<SchedulableTask> schedulableTasks = new ArrayList();
     	schedulableTasks = scheduler.scheduleTasks(optimized);
+    	System.out.println(" About to enter the optimized segment of EM");
     	if(optimized&& bw ==""){
 	    	ScheduleOptimizer so = new ScheduleOptimizer(schedulableTasks,8);
 			System.out.println(" Optimized Schedule length = " + schedulableTasks.size());
 			so.printSchedule();
 			so.optimize();
-			//so.removeDoubles(); I don't think this should be here, but haven't tested it since.
-			schedulableTasks = so.getAllFinalTasks();
+		//	so.removeDoubles(); //I don't think this should be here, but haven't tested it since.
+			schedulableTasks = so.getFinalTasks();
+			System.out.println("After final tasks " + schedulableTasks.size());
 			//so.printSchedule();
     	}
     	if( bw == "best"){
@@ -169,7 +171,8 @@ public class ExecutionMaker {
     	for(SchedulableTask st : schedulableTasks ){
     		numTasks++;
     		outputSchedule += "midStartClock = clock();\n\t\t\t";
-    		outputSchedule += st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"();//rate"+st.getRate_()+"\n\n\t\t\t";
+    		
+    		outputSchedule += st.getAppName_()+"."+st.getTaskName_()+"();//rate"+st.getRate_()+"\n\n\t\t\t";
     		
     		outputSchedule += "midFinishClock = clock();\n\t\t\t"+
 			"timeMap[\""+st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"\"][i] = midFinishClock-midStartClock;\n\t\t\t";
@@ -186,6 +189,8 @@ public class ExecutionMaker {
     	"std::map<std::string, std::map<int,int> >::iterator iter;\n\t" +
     	"std::map<int,int>::iterator insideIter;\n\t"+
     	"std::string taskName;\n\t"+
+    	"excelOutput<<\"Task Name, Average Exe Time, Min Exe Time, Max Exe Time\";\n\t"+
+    	"excelOutput<<std::endl;\n\t"+
     	"for (iter = timeMap.begin(); iter != timeMap.end(); iter++) {\n\t\t"+
     	"double totalTime = 0;\n\t\t"+
     	"int maxTime = 0;\n\t\t"+
