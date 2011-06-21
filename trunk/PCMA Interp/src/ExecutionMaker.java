@@ -14,12 +14,14 @@ public class ExecutionMaker {
 	
 
 	public ArrayList writeSchedule(ArrayList<SchedulableTask> sched, String pd, boolean optimized,String scheduleName, String bw){
-    	String outputSchedule = "#include <iostream>\n";
+    	String outputSchedule = "#include <sched.h>";
+    	outputSchedule += "#include <iostream>\n";
     	outputSchedule += "#include <fstream>\n";
     	outputSchedule += "#include <time.h>\n";
     	outputSchedule += "#include <ctime>\n";
     	outputSchedule += "#include <sys/time.h>\n";
     	outputSchedule += "#include <map>\n";
+    	outputSchedule += "rdtsc.h";
     	outputSchedule += "#include \"Execute.h\"\n";
     	//outputSchedule +="#include \"CacheTrasher.h\"\n";
     	for(String appName : appNames_){
@@ -27,11 +29,12 @@ public class ExecutionMaker {
     	}
     	outputSchedule +="using namespace std;\n";
 		outputSchedule += "void Execute::executeTasks(int executions){\n";
-    	
+		outputSchedule += "\t struct sched_param sched_p;\n";
+		outputSchedule += "\t long long unsigned int startClockTicks, finishClockTicks, elapseClockTicks, elapseClockNs;\n";
     	outputSchedule +="\t clock_t startClock,finishClock;\n";
 		outputSchedule +="\t double timeCount;\n";
 		outputSchedule +="\t startClock = clock();\n\t";
-		outputSchedule +="std::map<string, std::map<int, int> > timeMap;\n\t";
+		outputSchedule +="std::map<string, std::map<int, long> > timeMap;\n\t";
 		int overlaps =0;
 		for(String appName : appNames_){
 			outputSchedule += "Application"+appName+" " +appName+";\n\t";
@@ -161,21 +164,31 @@ public class ExecutionMaker {
 		"excelOutput.open(\"excelOutput-"+scheduleName+".txt\");\n\t"+
 		//"CacheTrasher c;\n\t"+
 		//"c.CacheFlusherSetup(12000000,512);\n\t" +
-		"int totalExec = 50; \n\t"+
+		"int totalExec = 5; \n\t"+
 		"clock_t midStartClock, midFinishClock;\n\t"+
+		"long long unsigned int midStartClockTicks, midFinishClockTicks, midElapseClockTicks, midElapseClockNs;\n\t"+
+		"calculate_ticks_per_usec()\n\t"+
+		"sched_p.sched_priority = 10;\n\t"+
+		"if (sched_setscheduler(getpid(), SCHED_FIFO, &sched_p) <0){\n\t"+
+		"  perror(\"Could not changed to fixed priority. Use \\\"sudo <cmd>\\\"\");\n\t}\n\t"+
 		"while(totalExec >0){\n\t\t"+
+		"startClockTicks=rdtsc();\n\t\t\t"+
 		"startClock = clock();\n\t\t"+
 		"i =0;\n\t\t"+
 		"while(i < executions){\n\t\t\t";
     	System.out.println("schedulableTasks size = " + schedulableTasks.size());
     	for(SchedulableTask st : schedulableTasks ){
     		numTasks++;
-    		outputSchedule += "midStartClock = clock();\n\t\t\t";
+    		//outputSchedule += "midStartClock = clock();\n\t\t\t";
+    		outputSchedule += "midStartClockTicks = rdtsc()\n\t\t\t";
     		
+    		//outputSchedule += "startClock= clock();\n\t\t\t";
     		outputSchedule += st.getAppName_()+"."+st.getTaskName_()+"();//rate"+st.getRate_()+"\n\n\t\t\t";
-    		
-    		outputSchedule += "midFinishClock = clock();\n\t\t\t"+
-			"timeMap[\""+st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"\"][i] = midFinishClock-midStartClock;\n\t\t\t";
+    		outputSchedule += "midFinishClockTicks=rdtsc();\n\t\t\t";
+    		outputSchedule += "midElapseClockTicks = midFinishClockTicks - midStartClockTicks;\n\t\t\t";
+    		outputSchedule += "midElapseClockNs = ticks2ns(midElapseClockTicks);\n\t\t\t";
+    		//outputSchedule += "midFinishClock = clock();\n\t\t\t"+
+			outputSchedule += "timeMap[\""+st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"\"][i] = midElapseClockNs\n\t\t\t";// midFinishClock-midStartClock;\n\t\t\t";
 			
     		
     		//outputSchedule +="c.CacheFlush();\n\t\t\t";
