@@ -18,14 +18,14 @@ public class ExecutionMaker {
 	
 
 	public ArrayList writeSchedule(ArrayList<SchedulableTask> sched, String pd, boolean optimized,String scheduleName, String bw){
-    	String outputSchedule = "#include <sched.h>";
+    	String outputSchedule = "#include <sched.h>\n";
     	outputSchedule += "#include <iostream>\n";
     	outputSchedule += "#include <fstream>\n";
     	outputSchedule += "#include <time.h>\n";
     	outputSchedule += "#include <ctime>\n";
     	outputSchedule += "#include <sys/time.h>\n";
     	outputSchedule += "#include <map>\n";
-    	outputSchedule += "rdtsc.h";
+    	outputSchedule += "#include \"rdtsc.h\"\n";
     	outputSchedule += "#include \"Execute.h\"\n";
     	//outputSchedule +="#include \"CacheTrasher.h\"\n";
     	for(String appName : appNames_){
@@ -171,7 +171,7 @@ public class ExecutionMaker {
 		"int totalExec = 5; \n\t"+
 		"clock_t midStartClock, midFinishClock;\n\t"+
 		"long long unsigned int midStartClockTicks, midFinishClockTicks, midElapseClockTicks, midElapseClockNs;\n\t"+
-		"calculate_ticks_per_usec()\n\t"+
+		"calculate_ticks_per_usec();\n\t"+
 		"sched_p.sched_priority = 10;\n\t"+
 		"if (sched_setscheduler(getpid(), SCHED_FIFO, &sched_p) <0){\n\t"+
 		"  perror(\"Could not changed to fixed priority. Use \\\"sudo <cmd>\\\"\");\n\t}\n\t"+
@@ -184,7 +184,7 @@ public class ExecutionMaker {
     	for(SchedulableTask st : schedulableTasks ){
     		numTasks++;
     		//outputSchedule += "midStartClock = clock();\n\t\t\t";
-    		outputSchedule += "midStartClockTicks = rdtsc()\n\t\t\t";
+    		outputSchedule += "midStartClockTicks = rdtsc();\n\t\t\t";
     		
     		//outputSchedule += "startClock= clock();\n\t\t\t";
     		outputSchedule += st.getAppName_()+"."+st.getTaskName_()+"();//rate"+st.getRate_()+"\n\n\t\t\t";
@@ -192,7 +192,7 @@ public class ExecutionMaker {
     		outputSchedule += "midElapseClockTicks = midFinishClockTicks - midStartClockTicks;\n\t\t\t";
     		outputSchedule += "midElapseClockNs = ticks2ns(midElapseClockTicks);\n\t\t\t";
     		//outputSchedule += "midFinishClock = clock();\n\t\t\t"+
-			outputSchedule += "timeMap[\""+st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"\"][i] = midElapseClockNs\n\t\t\t";// midFinishClock-midStartClock;\n\t\t\t";
+			outputSchedule += "timeMap[\""+st.getAppName_()+"."+st.getTaskName_()+"-"+st.getRate_()+"\"][i] = midElapseClockNs;\n\t\t\t";// midFinishClock-midStartClock;\n\t\t\t";
 			
     		
     		//outputSchedule +="c.CacheFlush();\n\t\t\t";
@@ -240,7 +240,7 @@ public class ExecutionMaker {
     	"excelOutput.close();\n\t"+
     	"myfile.close();\n\t"+
     	"\n}\n";
-    	Application.writeFile(scheduleName, outputSchedule, projectDirectory);
+    	Application.writeFile(scheduleName+".cpp", outputSchedule, projectDirectory);
     	String executeHeader = "#ifndef EXECUTE_H\n"+
     	"#define EXECUTE_H\n"+
     	"#include <iostream>\n"+
@@ -250,9 +250,10 @@ public class ExecutionMaker {
     	"};\n"+
     	"#endif";
     	Application.writeFile("Execute.h", executeHeader, projectDirectory);
+    	writeMakeFile(scheduleName);
     	try {
 			Copy("rdtsc.h", projectDirectory+"/rdtsc.h");
-			Copy("Launcher.h", projectDirectory+"/Launcher.h");
+			Copy("Launcher.cpp", projectDirectory+"/Launcher.cpp");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -306,6 +307,26 @@ public class ExecutionMaker {
 		    }
 		    in.close();
 		    out.close();
+	}
+	
+	private void writeMakeFile(String scheduleName){
+		String makeContent = "";
+		makeContent = scheduleName +".exe: " + scheduleName + ".o"  + " Launcher.o ";
+		for(String appName : appNames_){
+    		makeContent += "Application"+appName+".o "; 
+    	}
+		makeContent += "\n\t\t g++ " + scheduleName + ".o"  + " Launcher.o ";
+		for(String appName : appNames_){
+    		makeContent += "Application"+appName+".o "; 
+    	}
+		makeContent += " -o "+scheduleName + "\n\n";
+		for(String appName : appNames_){
+    		makeContent += "Application"+appName+".o: " + "Application"+appName+".h\n\t\t"+"g++ -c " + "Application"+appName+".cpp\n\n"; 
+    	}
+		makeContent += "\n"+scheduleName+".o:" + " Execute.h\n\t\t" + "g++ -c "+scheduleName +".cpp" + " -o "+scheduleName+".o\n\n";
+		makeContent += "\nLauncher.o:" + " Launcher.cpp Execute.h\n\t\t" + "g++ -c Launcher.cpp";
+		
+		Application.writeFile("make"+scheduleName, makeContent, projectDirectory);
 	}
 		
 }

@@ -524,7 +524,7 @@ public class Application {
 		while(probShared <=1.01){
 			DecimalFormat df = new DecimalFormat("#.##");
 			double d = new Double(df.format(probShared)).doubleValue();
-			String destinationDirectory = "/Users/Brian/Shared-Prob-Run/sharedProb-Revised"+d;
+			String destinationDirectory = "/Users/Brian/SEI-PCMA/revisedGenerator"+d;
 			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
 			int [] go = {20000,20000};
 			float multi = (float) .1;
@@ -609,16 +609,16 @@ public class Application {
 			}
 			System.out.println("BEFORE st == allTasks: "+st.equals(allTasks));
 		/*	
-			*/em.writeSchedule(allTasks,destinationDirectory, true, "optimizedEx.cpp","");
+			*/em.writeSchedule(allTasks,destinationDirectory, true, "optimizedEx","");
 			System.out.println("allTasks size " + allTasks.size());
 			//allTasks = new ArrayList();
 			System.out.println("DURING st == allTasks: "+st.equals(allTasks));
-			em.writeSchedule(st,destinationDirectory, false,"unoptimizedEx.cpp", "");
+			em.writeSchedule(st,destinationDirectory, false,"unoptimizedEx", "");
 			System.out.println("AFTER st == allTasks: "+st.equals(allTasks));
 			System.out.println(" St size = " + st.size());
-			em.writeSchedule(st,destinationDirectory, false,"BextEx.cpp", "best");
+			em.writeSchedule(st,destinationDirectory, false,"BextEx", "best");
 			
-			em.writeSchedule(st,destinationDirectory, false,"WorstEx.cpp", "worst");
+			em.writeSchedule(st,destinationDirectory, false,"WorstEx", "worst");
 			System.out.println(" shshared vars " + pn1.getSharedVars()+" and total vars = "+ pn1.getTotalVars()+" shared ratio = " +(float)pn1.getSharedVars()/(float)pn3.getTotalVars());
 			
 			System.out.println(" shshared vars " + pn2.getSharedVars()+" and total vars = "+ pn2.getTotalVars()+" shared ratio = " +(float)pn2.getSharedVars()/(float)pn3.getTotalVars());
