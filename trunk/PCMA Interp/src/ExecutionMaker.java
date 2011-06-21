@@ -199,8 +199,8 @@ public class ExecutionMaker {
     			"\t\t finishClock = clock();\n"+
     			"\t\t myfile<<(finishClock-startClock)/1000<<std::endl;\n\t\t"+
     			"totalExec--;}\n\t"+
-    	"std::map<std::string, std::map<int,int> >::iterator iter;\n\t" +
-    	"std::map<int,int>::iterator insideIter;\n\t"+
+    	"std::map<std::string, std::map<int,long> >::iterator iter;\n\t" +
+    	"std::map<int,long>::iterator insideIter;\n\t"+
     	"std::string taskName;\n\t"+
     	"excelOutput<<\"Task Name, Average Exe Time, Min Exe Time, Max Exe Time\";\n\t"+
     	"excelOutput<<std::endl;\n\t"+
