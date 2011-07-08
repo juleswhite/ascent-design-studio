@@ -62,7 +62,7 @@ extern "C" {
   susecs = tday.tv_usec + (1000000L)* tday.tv_sec;
   eusecs = susecs;
 
-  usleep(5000000);
+  usleep(5000);
   
   gettimeofday(&tday,NULL);
   eusecs = tday.tv_usec + (1000000L)* tday.tv_sec;

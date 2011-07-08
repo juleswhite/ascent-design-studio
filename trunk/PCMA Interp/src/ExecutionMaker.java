@@ -177,7 +177,7 @@ public class ExecutionMaker {
 		"  perror(\"Could not changed to fixed priority. Use \\\"sudo <cmd>\\\"\");\n\t}\n\t"+
 		"while(totalExec >0){\n\t\t"+
 		"startClockTicks=rdtsc();\n\t\t\t"+
-		"startClock = clock();\n\t\t"+
+		"startClock = rdtsc();\n\t\t"+
 		"i =0;\n\t\t"+
 		"while(i < executions){\n\t\t\t";
     	System.out.println("schedulableTasks size = " + schedulableTasks.size());
@@ -200,7 +200,7 @@ public class ExecutionMaker {
     	scheduler.printTotal();
     	System.out.println("num tasks = "+numTasks);
     	outputSchedule += "\n\t\t\ti++;\n\t\t}\n" +
-    			"\t\t finishClock = clock();\n"+
+    			"\t\t finishClock = rdtsc();\n"+
     			"\t\t myfile<<(finishClock-startClock)/1000<<std::endl;\n\t\t"+
     			"totalExec--;}\n\t"+
     	"std::map<std::string, std::map<int,long> >::iterator iter;\n\t" +
@@ -254,6 +254,8 @@ public class ExecutionMaker {
     	try {
 			Copy("rdtsc.h", projectDirectory+"/rdtsc.h");
 			Copy("Launcher.cpp", projectDirectory+"/Launcher.cpp");
+			Copy("HistoryMaker.py",projectDirectory+"/HistoryMaker.py");
+			Copy("ResultsFetcher.py",projectDirectory+"/ResultsFetcher.py");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
