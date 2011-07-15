@@ -193,6 +193,13 @@ def makeMakeFiles(otag):
         tagCount = tagCount + 1
     outputMakeScript.close()
     outputExeScript.close()
+    outputExeScript2 = open(directory+"backExeAll.sh",'w')
+    tagCount = tagCount-1
+    while(tagCount >0):
+        outputFileName = outputFileString+str(tagCount)
+        outputExeScript2.write("sudo ./" + outputFileName+"\n")
+        tagCount = tagCount -1 
+    outputExeScript2.close()
     
     
 print(outputFileTag)
