@@ -2,7 +2,7 @@ import string
 import sys
 import os
 import itertools
-sys.argv = ['redApp.TaskredApp02();', 0, 1, 6,"TrialRun",  'WorstEx3.cpp'] #Target task, Min history Length, Max History Length, Highest Task Number, OutputFile Name, SourceFile to Reorder
+#sys.argv = ['redApp.TaskredApp02();', 0, 1, 6,"TrialRun",  'WorstEx3.cpp'] #Target task, Min history Length, Max History Length, Highest Task Number, OutputFile Name, SourceFile to Reorder
 maxTaskNum = sys.argv[3]
 directory = os.getcwd()+"/"
 sourceName = sys.argv[5]
