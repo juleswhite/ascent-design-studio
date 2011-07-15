@@ -3,17 +3,18 @@ import sys
 import os
 import itertools
 #sys.argv = ['redApp.TaskredApp02();', 0, 1, 6,"TrialRun",  'WorstEx3.cpp'] #Target task, Min history Length, Max History Length, Highest Task Number, OutputFile Name, SourceFile to Reorder
-maxTaskNum = sys.argv[3]
+maxTaskNum = int(sys.argv[4])
 directory = os.getcwd()+"/"
-sourceName = sys.argv[5]
+sourceName = sys.argv[6]
+#print(sys.argv)
 inputFileName = directory+sourceName
 inputfile = open(inputFileName, 'r') 
 inputfile1 = open(inputFileName, 'r') 
-outputFileString = sys.argv[4]
+outputFileString = sys.argv[5]
 outputFileTag = 0
 linesInFile = []
-minLength = sys.argv[1]
-maxLength = sys.argv[2]
+minLength = int(sys.argv[2])
+maxLength = int(sys.argv[3])
 Apps = ["purpleApp.TaskpurpleApp", "yellowApp.TaskyellowApp","redApp.TaskredApp","blueApp.TaskblueApp","greenApp.TaskgreenApp"]
 tasks = []
 taskNum = 1
@@ -28,7 +29,7 @@ for line in inputfile1.readlines():
         line = "\texcelOutput.open(\"excelOutput-"+outputFileString+str(outputFileTag)+"\");\n" 
     if(throughTop == False):
         if(line.find("while(i < executions){") != -1):
-            print("should be while i < exe ", line)
+           # print("should be while i < exe ", line)
             throughTop = True
         topContent.append(line)
     else:
@@ -40,9 +41,10 @@ for line in inputfile1.readlines():
         else:
             bottomContent.append(line)
         
-
+print("Got Bottom Content")
         
 for app in Apps:
+    print("examining app " + app)
     while(taskNum < maxTaskNum):
         if taskNum <10:
             newTask = app+"0"+str(taskNum)+"();"
@@ -50,8 +52,10 @@ for app in Apps:
             newTask = app+str(taskNum)+"();"
         tasks.append(newTask)
         taskNum = taskNum + 1
+        #print("tasknum = " + str(taskNum))
     taskNum = 0
-    
+
+print ("got apps")
 
 
 for line in inputfile.readlines():
@@ -61,9 +65,9 @@ for line in inputfile.readlines():
         line = line.strip(' ')
         line = line.strip("\t")
         linesInFile.append(line)
-
+print("got lines")
 overlaps = 0
-maxWindow = 6
+maxWindow = sys.argv[2]
 maybe =tasks[0].split('.')[0]
 print ("Maybe !" + maybe)
 window = -1
@@ -85,8 +89,8 @@ for i in range(len(tasksInFile)) :
         used.append(task)
 
 #print("Making history around task %s",argv[0])
-historyLength = sys.argv[2]
-targetTask = sys.argv[0]
+historyLength = sys.argv[3]
+targetTask = sys.argv[1]
 hists = []
 
 if(historyLength >= len(used)):
