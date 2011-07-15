@@ -15,9 +15,10 @@ for dir in dirList:
 outputVtune = open('VTune-Results-Fetcher.sh','w')
 for rd in resultDirs:
     trial = rd.split('-')[1]
-    trial = trial.split('l')[0]+"lRun"+trial.split('l')[1]
-    print(trial)
-    print("about to write file")
+    print("trial is " + trial)
+   # trial = trial.split('l')[0]+"l"+trial.split('l')[1]
+    
+    print("about to write to "+trial)
     outputVtune.write('sudo amplxe-cl -report hw-events -r '+rd+' -csv-delimiter \"|\" > \"VTuneResult-'+trial+'-output.txt\"\n') 
     print(" File written")
 outputVtune.close()

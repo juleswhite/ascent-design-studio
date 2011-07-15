@@ -133,6 +133,7 @@ print ("$$$")
 orderedAgOutput = open("agFile.txt",'w')
 keyCount = 0
 cacheInfo = getCacheInfo(ttdict.keys())
+print(ttdict.keys())
 topString = "TRIAL,TASKNAME, AVERAGE EXE TIME, TASK COUNT, TOTAL TRIAL TIME"
 for cResultTitle in cacheInfo.values():
     avoider = 0

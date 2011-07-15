@@ -2,7 +2,7 @@ import string
 import sys
 import os
 import itertools
-sys.argv = ['redApp.TaskredApp02();', 0, 2, 6,"TrialRun",  'WorstEx3.cpp'] #Target task, Min history Length, Max History Length, Highest Task Number, OutputFile Name, SourceFile to Reorder
+sys.argv = ['redApp.TaskredApp02();', 0, 1, 6,"TrialRun",  'WorstEx3.cpp'] #Target task, Min history Length, Max History Length, Highest Task Number, OutputFile Name, SourceFile to Reorder
 maxTaskNum = sys.argv[3]
 directory = os.getcwd()+"/"
 sourceName = sys.argv[5]
@@ -187,7 +187,7 @@ def makeMakeFiles(otag):
         outputFile.write("ApplicationgreenApp.o: ApplicationgreenApp.h\n\t\t\tg++ -c ApplicationgreenApp.cpp\n\n")
         outputFile.write(outputFileName+".o: Execute.h\n\t\t\t g++ -c "+outputFileName+".cpp -o " + outputFileName+".o \n\nLauncher.o: Launcher.cpp Execute.h\n\t\t\t g++ -c Launcher.cpp")
         outputFile.close()
-        outputExeScript.write("sudo ./" + outputFileName+"\n")
+        outputExeScript.write("sudo amplxe-cl -collect $1 -result-dir  VTuneResult-"+outputFileName+" "+directory+"/"+outputFileName +" $2\n")
         outputMakeScript.write("make -j2 -f "+''.join(concatList1)+"\n")
 
         tagCount = tagCount + 1
