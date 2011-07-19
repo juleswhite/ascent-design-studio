@@ -256,6 +256,8 @@ public class ExecutionMaker {
 			Copy("Launcher.cpp", projectDirectory+"/Launcher.cpp");
 			Copy("HistoryMaker.py",projectDirectory+"/HistoryMaker.py");
 			Copy("ResultsFetcher.py",projectDirectory+"/ResultsFetcher.py");
+			Copy("exeExtender.py",projectDirectory+"/exeExtender.py");
+			Copy("VTune-RF.py",projectDirectory+"/VTune-RF.py");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
