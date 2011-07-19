@@ -15,7 +15,7 @@ for fname in dirList:
         resultFileNames.append(fname)
     if(fname.find("TotalTimes-") != -1):
         totalTimeNames.append(fname)
-        
+
 for rfn in resultFileNames:
     openedFile = open( rfn, 'r')
     #print("checking file "+ rfn)
@@ -27,7 +27,10 @@ for rfn in resultFileNames:
                taskNames[splitLine[0]] = []
             #   print(splitLine[0])
             #print(taskNames[splitLine[0]])
-            taskNames[splitLine[0]].append(splitLine[1]+","+rfn)
+            taskNames[splitLine[0]].append(splitLine[1]+","+splitLine[2]+","+splitLine[3].strip()+","+rfn)
+           # taskNames[splitLine[0]].append(splitLine[2]+","+rfn)
+           # taskNames[splitLine[0]].append(splitLine[3]+","+rfn)
+           
 print(taskNames)
 
 from collections import defaultdict
@@ -65,7 +68,19 @@ def comparator(x, y):
     else:
         return -1
         
-            
+def getTasksFromTrial(filename):
+    taskOrder = []
+    returnList = []
+    opened = open(filename,'r')
+    taskString = ""
+    for line in opened:
+        if (line.find("timeMap[\"") != -1):
+           taskOrder.append(line.split("\"")[1])
+    for task in taskOrder:
+        taskString = taskString +"|"+task
+    returnList.append(taskString)
+    returnList.append(str(len(taskOrder)))
+    return returnList
     
 
 ttdict = {}
@@ -76,7 +91,7 @@ for ttn in totalTimeNames:
     for line in ttnFile.readlines():
         total = total + float(line)
         count = count + 1
-        average = total/count
+    average = total/count
     ttdict[ttn.split('-')[1]] = average
 
 print(ttdict)
@@ -133,8 +148,8 @@ print ("$$$")
 orderedAgOutput = open("agFile.txt",'w')
 keyCount = 0
 cacheInfo = getCacheInfo(ttdict.keys())
-print(ttdict.keys())
-topString = "TRIAL,TASKNAME, AVERAGE EXE TIME, TASK COUNT, TOTAL TRIAL TIME"
+
+topString = "TRIAL,TASKNAME, AVERAGE EXE TIME, MIN EXE TIME, MAX EXE TIME, TASKS, TASK COUNT, TOTAL TRIAL TIME"
 for cResultTitle in cacheInfo.values():
     avoider = 0
     for crt in cResultTitle[0]:
@@ -148,8 +163,8 @@ orderedAgOutput.write (topString)
 print(cacheInfo)
 for k in taskNames:
     for time in sorted(taskNames[k],  key =convertItem):
-        print(" checking if " +time.split(',')[1].split('-')[1]+ " is in cacheInfo")
-        trialTitle = time.split(',')[1].split('-')[1]
+        print(" checking if " +time.split(',')[3].split('-')[1]+ " is in cacheInfo")
+        trialTitle = time.split(',')[3].split('-')[1]
         if(trialTitle in cacheInfo.keys()):
             cacheInfoString = ","
             count = 0
@@ -164,9 +179,9 @@ for k in taskNames:
                         cacheInfoString = cacheInfoString+str(cacheData) +", "
             cacheInfoString = cacheInfoString + "\n"
             print("Cache info string = " + cacheInfoString)
-            orderedAgOutput.write( time.split(',')[1].split('-')[1]+","+k + ", "+time.split(',')[0]+"," + str(len(taskNames)) +"," + str(ttdict[time.split(',')[1].split('-')[1]])+cacheInfoString)
+            orderedAgOutput.write( time.split(',')[3].split('-')[1]+","+k + ", "+time.split(',')[0]+"," +time.split(',')[1] +","+time.split(',')[2] +","+getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[0] +"," +getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[1] +"," + str(ttdict[time.split(',')[3].split('-')[1]])+cacheInfoString)
         else:
-            orderedAgOutput.write( time.split(',')[1].split('-')[1]+","+k + ", "+time.split(',')[0]+"," + str(len(taskNames)) +"," + str(ttdict[time.split(',')[1].split('-')[1]])+"\n")
+            orderedAgOutput.write( time.split(',')[3].split('-')[1]+","+k + ", "+time.split(',')[0]+"," +time.split(',')[1] +","+time.split(',')[2]+","+str(len(taskNames)) +"," + str(ttdict[time.split(',')[3].split('-')[1]])+"\n")
     orderedAgOutput.write("\n")
     #orderedAgOutput.write(sorted(taskNames[k],key=str.lower)[keyCount].split(',')[1]+","+k + ", "+sorted(taskNames[k],key=str.lower)[keyCount].split(',')[0]+"\n")
 orderedAgOutput.close()

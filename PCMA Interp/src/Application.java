@@ -121,17 +121,17 @@ public class Application {
 		//content += DefineTask(appName, "01", "P1", 4000, 0.05f);
 		contents = DefineTask(appName, "02", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
-		headerContent3 += "\t"+contents.get(1);/*
+		headerContent3 += "\t"+contents.get(1);
 		contents = DefineTask(appName, "03", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
-		headerContent3 += "\t"+contents.get(1);
+		headerContent3 += "\t"+contents.get(1);  
 		contents = DefineTask(appName, "04", "P1", taskSize*multiplier, sp);
 		content += "\n"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
 		//content += DefineTask(appName, "01", "P1", 4000, 0.05f);
 		contents = DefineTask(appName, "05", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
-		headerContent3 += "\t"+contents.get(1);
+		headerContent3 += "\t"+contents.get(1);/*
 		contents = DefineTask(appName, "06", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
@@ -524,10 +524,10 @@ public class Application {
 		while(probShared <=1.01){
 			DecimalFormat df = new DecimalFormat("#.##");
 			double d = new Double(df.format(probShared)).doubleValue();
-			String destinationDirectory = "/Users/Brian/SEI-Vshort"+d;
+			String destinationDirectory = "/Users/Brian/SEI-Vbig"+d;
 			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
 			int [] go = {20000,20000};
-			float multi = (float) .01;
+			float multi = (float) 1.0;
 			Application pn1 = new Application(destinationDirectory, 8.0, "redApp",go,0,multi, probShared);
 			pn1.makeSchedule(8.0);
 			 
