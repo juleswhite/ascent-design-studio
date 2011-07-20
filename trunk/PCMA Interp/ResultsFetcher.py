@@ -10,11 +10,57 @@ resultFileNames = []
 from collections import defaultdict
 taskNames = defaultdict(list)
 totalTimeNames =[]
+appNames = []
+
 for fname in dirList:
     if(fname.find("excelOutput-") != -1):
         resultFileNames.append(fname)
     if(fname.find("TotalTimes-") != -1):
         totalTimeNames.append(fname)
+    if(fname.find("Application") != -1 and fname.find(".cpp") != -1):
+        appNames.append(fname)
+        
+taskSizes = defaultdict(list)
+for appName in appNames:
+    appFile = open(appName,"r")
+    appFileLines = appFile.readlines()
+    i = 0
+    while(i < len(appFileLines)):
+        appline = appFileLines[i]
+        #print("looking at line " + appline)
+        assignments = 0
+        reads = 0
+        if(appline.find("void") != -1):
+            print(appline)
+            firstHalf = appline.split("::")[0]
+            secondHalf = appline.split("::")[1]
+            taskName = secondHalf.split("(")[0]
+            appName = firstHalf.split("Application")[1]
+            taskName = appName +"."+taskName
+            #print("found task " + taskName)
+            i = i + 2
+            currentLine = appFileLines[i]
+            while( currentLine.find("}") == -1 and i <len(appFileLines)):
+                currentLine = appFileLines[i]
+                #print(currentLine)
+                assignments = assignments + currentLine.count("=")
+                if(currentLine.count("+") >0):
+                    #print(currentLine)
+                    #print(reads)
+                    #print("Plus count = " + str(currentLine.count("+")))
+                    if(currentLine.count("=") == 0):
+                       reads = reads + currentLine.count("+")
+                    else:
+                        reads = reads + currentLine.count("+") +1
+                    #print(reads)
+                    
+                i = i+1
+            taskSizeInfo = []
+            taskSizeInfo.append(assignments)
+            taskSizeInfo.append(reads)
+            taskSizes[taskName] = taskSizeInfo
+        i= i+1
+print(taskSizes)
 
 for rfn in resultFileNames:
     openedFile = open( rfn, 'r')
@@ -145,11 +191,33 @@ def getCacheInfo(nameKeys):
     return results
 
 print ("$$$")
+
+def getReads(taskList,taskSize):
+    readCount = 0
+    taskList = taskList.strip().split("|")
+    taskList = taskList[1:]
+    print(taskList)
+    for task in taskList:
+        print(task)
+        readCount = taskSize[task][1] + readCount
+    return str(readCount)
+
+def getWrites(taskList, taskSize):
+    writeCount = 0
+    taskList = taskList.strip().split("|")
+    taskList = taskList[1:]
+    print(taskList)
+    for task in taskList:
+        print(task)
+        writeCount = taskSize[task][0] + writeCount
+    return str(writeCount)
+
+
 orderedAgOutput = open("agFile.txt",'w')
 keyCount = 0
 cacheInfo = getCacheInfo(ttdict.keys())
 
-topString = "TRIAL,TASKNAME, AVERAGE EXE TIME, MIN EXE TIME, MAX EXE TIME, TASKS, TASK COUNT, TOTAL TRIAL TIME"
+topString = "TRIAL, TASKNAME, AVERAGE EXE TIME, MIN EXE TIME, MAX EXE TIME, TASKS, TASK COUNT, READS, WRITES, TOTAL TRIAL TIME"
 for cResultTitle in cacheInfo.values():
     avoider = 0
     for crt in cResultTitle[0]:
@@ -179,7 +247,7 @@ for k in taskNames:
                         cacheInfoString = cacheInfoString+str(cacheData) +", "
             cacheInfoString = cacheInfoString + "\n"
             print("Cache info string = " + cacheInfoString)
-            orderedAgOutput.write( time.split(',')[3].split('-')[1]+","+k + ", "+time.split(',')[0]+"," +time.split(',')[1] +","+time.split(',')[2] +","+getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[0] +"," +getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[1] +"," + str(ttdict[time.split(',')[3].split('-')[1]])+cacheInfoString)
+            orderedAgOutput.write( time.split(',')[3].split('-')[1]+","+k + ", "+time.split(',')[0]+"," +time.split(',')[1] +","+time.split(',')[2] +","+getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[0] +"," +getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[1] +","+ getReads(getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[0],taskSizes)+ "," + getWrites(getTasksFromTrial(time.split(',')[3].split('-')[1]+".cpp")[0],taskSizes)+ "," + str(ttdict[time.split(',')[3].split('-')[1]])+cacheInfoString)
         else:
             orderedAgOutput.write( time.split(',')[3].split('-')[1]+","+k + ", "+time.split(',')[0]+"," +time.split(',')[1] +","+time.split(',')[2]+","+str(len(taskNames)) +"," + str(ttdict[time.split(',')[3].split('-')[1]])+"\n")
     orderedAgOutput.write("\n")
