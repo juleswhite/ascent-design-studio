@@ -246,7 +246,7 @@ public class ExecutionMaker {
     	"#include <iostream>\n"+
     	"class Execute{\n\t"+
     	"public:\n\t"+
-    	"void executeTasks(int);\n"+
+    	"void executeTasks(int,int,int);\n"+
     	"};\n"+
     	"#endif";
     	Application.writeFile("Execute.h", executeHeader, projectDirectory);
