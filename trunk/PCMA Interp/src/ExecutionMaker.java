@@ -258,6 +258,8 @@ public class ExecutionMaker {
 			Copy("ResultsFetcher.py",projectDirectory+"/ResultsFetcher.py");
 			Copy("exeExtender.py",projectDirectory+"/exeExtender.py");
 			Copy("VTune-RF.py",projectDirectory+"/VTune-RF.py");
+			Copy("CacheTrasher.h",projectDirectory+"/CacheTrasher.h");
+			Copy("CacheTrasher.cpp",projectDirectory+"/CacheTrasher.cpp");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
