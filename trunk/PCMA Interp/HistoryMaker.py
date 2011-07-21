@@ -2,7 +2,7 @@ import string
 import sys
 import os
 import itertools
-#sys.argv = ['redApp.TaskredApp02();', 0, 1, 6,"TrialRun",  'WorstEx3.cpp'] #Target task, Min history Length, Max History Length, Highest Task Number, OutputFile Name, SourceFile to Reorder
+#sys.argv = ['redApp.TaskredApp02();', 0, 0, 6,"TrialRun",  'WorstEx3.cpp'] #Target task, Min history Length, Max History Length, Highest Task Number, OutputFile Name, SourceFile to Reorder
 maxTaskNum = int(sys.argv[4])
 directory = os.getcwd()+"/"
 sourceName = sys.argv[6]
@@ -31,12 +31,19 @@ for line in inputfile1.readlines():
         if(line.find("while(i < executions){") != -1):
            # print("should be while i < exe ", line)
             throughTop = True
+        if(line.find("Execute::executeTasks(") != -1):
+            line = "void Execute::executeTasks(int executions, int innerTrash, int outterTrash){\n\t"
+        if(line.find("Execute.h") != -1):
+            topContent.append("#include \"CacheTrasher.h\"\n")
+        if(line.find("ofstream myfile") != -1):
+            topContent.append("\tCacheTrasher c;\n\tc.CacheFlusherSetup(12000000,512);\n\tif(outterTrash == 1){\n\t\tc.CacheFlush();\n\t}\n")
         topContent.append(line)
     else:
         if(throughMiddle == False):
             if(line.find("}") != -1):
                 throughMiddle = True
                 bottomContent[-1] = "i++; \n"
+                bottomContent.append("\t\t\tif(innerTrash == 1){\n\t\t\t\tc.CacheFlush();\n\t\t\t}\n")
                 bottomContent.append("\t\t }\n")
         else:
             bottomContent.append(line)
@@ -183,13 +190,13 @@ def makeMakeFiles(otag):
         outputFile = open(''.join(concatList1), 'w')
         print("writing to file " + ''.join(concatList1))
         outputFile.write(outputFileName+".exe: "+outputFileName+".o Launcher.o ApplicationredApp.o ApplicationblueApp.o ApplicationyellowApp.o ApplicationgreenApp.o ApplicationpurpleApp.o \n\t\t\t")
-        outputFile.write("g++ "+outputFileName+".o Launcher.o ApplicationredApp.o ApplicationblueApp.o ApplicationyellowApp.o ApplicationgreenApp.o ApplicationpurpleApp.o  -o "+outputFileName+"\n\n")
+        outputFile.write("g++ "+outputFileName+".o Launcher.o ApplicationredApp.o ApplicationblueApp.o ApplicationyellowApp.o ApplicationgreenApp.o ApplicationpurpleApp.o CacheTrasher.o -o "+outputFileName+"\n\n")
         outputFile.write("ApplicationrblueApp.o: ApplicationblueApp.h\n\t\t\tg++ -c ApplicationblueApp.cpp\n\n")
         outputFile.write("ApplicationredApp.o: ApplicationredApp.h\n\t\t\tg++ -c ApplicationredApp.cpp\n\n")
         outputFile.write("ApplicationpurpleApp.o: ApplicationpurpleApp.h\n\t\t\tg++ -c ApplicationpurpleApp.cpp\n\n")
         outputFile.write("ApplicationyellowApp.o: ApplicationyellowApp.h\n\t\t\tg++ -c ApplicationyellowApp.cpp\n\n")
         outputFile.write("ApplicationgreenApp.o: ApplicationgreenApp.h\n\t\t\tg++ -c ApplicationgreenApp.cpp\n\n")
-        outputFile.write(outputFileName+".o: Execute.h\n\t\t\t g++ -c "+outputFileName+".cpp -o " + outputFileName+".o \n\nLauncher.o: Launcher.cpp Execute.h\n\t\t\t g++ -c Launcher.cpp")
+        outputFile.write(outputFileName+".o: Execute.h\n\t\t\t g++ -c "+outputFileName+".cpp -o " + outputFileName+".o \n\nLauncher.o: Launcher.cpp Execute.h\n\t\t\t g++ -c Launcher.cpp \n\nCacheTrasher.o: CacheTrasher.h\n\t\t\t g++ -c CacheTrasher.cpp")
         outputFile.close()
         outputExeScript.write("sudo amplxe-cl -collect $1 -result-dir  VTuneResult-"+outputFileName+" "+directory+"/"+outputFileName +" $2\n")
         outputMakeScript.write("make -j2 -f "+''.join(concatList1)+"\n")
