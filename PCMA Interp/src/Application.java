@@ -122,7 +122,7 @@ public class Application {
 		contents = DefineTask(appName, "02", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		contents = DefineTask(appName, "03", "P1", taskSize*multiplier, sp);
+		/*contents = DefineTask(appName, "03", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);  
 		contents = DefineTask(appName, "04", "P1", taskSize*multiplier, sp);
@@ -131,7 +131,7 @@ public class Application {
 		//content += DefineTask(appName, "01", "P1", 4000, 0.05f);
 		contents = DefineTask(appName, "05", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
-		headerContent3 += "\t"+contents.get(1);/*
+		headerContent3 += "\t"+contents.get(1);*//*
 		contents = DefineTask(appName, "06", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
@@ -524,30 +524,30 @@ public class Application {
 		while(probShared <=1.01){
 			DecimalFormat df = new DecimalFormat("#.##");
 			double d = new Double(df.format(probShared)).doubleValue();
-			String destinationDirectory = "/Users/Brian/SEI-Vbig"+d;
+			String destinationDirectory = "/Users/Brian/SEI-TM10-2tpa-"+d;
 			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
 			int [] go = {20000,20000};
-			float multi = (float) 1.0;
+			float multi = (float) 10.0;
 			Application pn1 = new Application(destinationDirectory, 8.0, "redApp",go,0,multi, probShared);
 			pn1.makeSchedule(8.0);
 			 
 			
 			//pn1.writeSchedule();
 			System.out.println("Last[0] " +pn1.getLast()[0] +" and the other "+ pn1.getLast()[1]);
-			Application pn2 = new Application(destinationDirectory, 8.0, "blueApp", pn1.getLast(),100000,multi,probShared);
+			Application pn2 = new Application(destinationDirectory, 8.0, "blueApp", pn1.getLast(),1000000,multi,probShared);
 			pn2.makeSchedule(8.0);
 			
-			Application pn3 = new Application(destinationDirectory, 8.0, "yellowApp", pn2.getLast(),200000,multi, probShared);
+			Application pn3 = new Application(destinationDirectory, 8.0, "yellowApp", pn2.getLast(),2000000,multi, probShared);
 			pn3.makeSchedule(8.0);
 			ArrayList<String> appNames = new ArrayList();
 			//pn2.writeSchedule();
 			System.out.println("Last[0] " +pn2.getLast()[0] +" and the other "+ pn3.getLast()[1]);
-			Application pn4 = new Application(destinationDirectory, 8.0, "greenApp", pn3.getLast(),300000, multi, probShared);
+			Application pn4 = new Application(destinationDirectory, 8.0, "greenApp", pn3.getLast(),3000000, multi, probShared);
 			pn4.makeSchedule(8.0); 
 			
 			//pn2.writeSchedule();
 			System.out.println("Last[0] " +pn4.getLast()[0] +" and the other "+ pn4.getLast()[1]);
-			Application pn5 = new Application(destinationDirectory, 8.0, "purpleApp", pn4.getLast(),400000,multi,probShared);
+			Application pn5 = new Application(destinationDirectory, 8.0, "purpleApp", pn4.getLast(),4000000,multi,probShared);
 			pn5.makeSchedule(8.0);
 			if(probShared == 0){
 				allTasks.addAll(pn1.getSchedTasks_());
