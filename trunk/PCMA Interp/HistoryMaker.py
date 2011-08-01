@@ -140,7 +140,7 @@ while permuCount <= maxLength:
         middleContent=["\n\n\t\t\t"]
         for task in perm:
             for i in startTaskContent:
-                middleContent.append(i)
+                middleContent.append("midStartClockTicks = rdtsc();\n\n\t\t\t")
                 tempTask = []
                 tempTask.append(task)
                 tempTask.append("\n\n\t\t\t")
