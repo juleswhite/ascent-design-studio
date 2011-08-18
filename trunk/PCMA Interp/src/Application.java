@@ -525,10 +525,10 @@ public class Application {
 		while(probShared <=0.54){
 			DecimalFormat df = new DecimalFormat("#.##");
 			double d = new Double(df.format(probShared)).doubleValue();
-			String destinationDirectory = "/Users/Brian/SEI-TM10-2tpa-"+d;
+			String destinationDirectory = "/Users/Brian/SEI-TM.2-2tpa-"+d;
 			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
 			int [] go = {2000000,2000000};//multiplied go by 100
-			float multi = (float) 10.0;
+			float multi = (float) 0.2;
 			Application pn1 = new Application(destinationDirectory, 8.0, "redApp",go,0,multi, probShared);
 			pn1.makeSchedule(8.0);
 			 

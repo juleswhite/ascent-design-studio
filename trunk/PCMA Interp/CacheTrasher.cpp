@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 #include "CacheTrasher.h"
 
 void CacheTrasher::CacheFlusherSetup(int CacheSizeBytes, int CacheLineSizeBytes)
