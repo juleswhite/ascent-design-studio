@@ -30,6 +30,8 @@ for line in inputfile1.readlines():
     if(throughTop == False):
         if(line.find("while(i < executions){") != -1):
            # print("should be while i < exe ", line)
+	    topContent.append(line)
+	    topContent.append("\t\t\tif(innerTrash == 1){\n\t\t\t\tc.CacheFlush();\n\t\t\t}\n")
             throughTop = True
         if(line.find("Execute::executeTasks(") != -1):
             line = "void Execute::executeTasks(int executions, int innerTrash, int outterTrash){\n\t"
@@ -37,13 +39,13 @@ for line in inputfile1.readlines():
             topContent.append("#include \"CacheTrasher.h\"\n")
         if(line.find("ofstream myfile") != -1):
             topContent.append("\tCacheTrasher c;\n\tc.CacheFlusherSetup(12000000,512);\n\tif(outterTrash == 1){\n\t\tc.CacheFlush();\n\t}\n")
-        topContent.append(line)
+	if(throughTop == False):
+            topContent.append(line)
     else:
         if(throughMiddle == False):
             if(line.find("}") != -1):
                 throughMiddle = True
                 bottomContent[-1] = "i++; \n"
-                bottomContent.append("\t\t\tif(innerTrash == 1){\n\t\t\t\tc.CacheFlush();\n\t\t\t}\n")
                 bottomContent.append("\t\t }\n")
         else:
             bottomContent.append(line)
@@ -140,21 +142,30 @@ while permuCount <= maxLength:
         middleContent=["\n\n\t\t\t"]
         for task in perm:
             for i in startTaskContent:
-                middleContent.append("midStartClockTicks = rdtsc();\n\n\t\t\t")
-                tempTask = []
-                tempTask.append(task)
-                tempTask.append("\n\n\t\t\t")
-                task = ''.join(task)
-                middleContent.append(task)
-                for i in afterTaskContent:
-                    middleContent.append(i)
-                task =task.rstrip('();')
-                middleContent.append("timeMap[\"%s\"][i] = midElapseClockNs;\n\n\t\t\t"%task)
-                concatList = []
-                concatList.append(directory)
-                concatList.append(outputFileString)
-                concatList.append(str(outputFileTag))
-                outputFile = open(''.join(concatList)+".cpp", 'w')
+		if(task.find(targetTask)!= -1):
+	        	middleContent.append("midStartClockTicks = rdtsc();\n\n\t\t\t")
+	        tempTask = []
+	        tempTask.append(task)
+		if(task.find(targetTask)==-1):
+	        	tempTask.append("\n\n\t\t\t")
+	        task2 = ''.join(tempTask)
+	        middleContent.append(task2)
+		#print("task ="+ task+ " targetTask = " + targetTask)
+		#print(task.find(targetTask))
+		#if(task.find(targetTask) == 0):
+		#print("task ="+ task+ " targetTask = " + targetTask)
+		if(task.find(targetTask)!= -1):
+			for i in afterTaskContent:
+			    middleContent.append(i)
+	        task2 =task.rstrip('();')
+		if(task.find(targetTask)!= -1):
+        		middleContent.append("timeMap[\"%s\"][i] = midElapseClockNs;\n\n\t\t\t"%task2)
+	    	concatList = []
+	    	concatList.append(directory)
+	    	concatList.append(outputFileString)
+	    	concatList.append(str(outputFileTag))
+	    outputFile = open(''.join(concatList)+".cpp", 'w')
+	    #print(middleContent)
             for i in topContent:
                 line =i 
                 if(i.find("excelOutput-") != -1):
@@ -189,7 +200,7 @@ def makeMakeFiles(otag):
         
         outputFile = open(''.join(concatList1), 'w')
         print("writing to file " + ''.join(concatList1))
-        outputFile.write(outputFileName+".exe: "+outputFileName+".o Launcher.o ApplicationredApp.o ApplicationblueApp.o ApplicationyellowApp.o ApplicationgreenApp.o ApplicationpurpleApp.o CacheTrasher.o\n\t\t\t")
+        outputFile.write(outputFileName+".exe: "+outputFileName+".o Launcher.o ApplicationredApp.o ApplicationblueApp.o ApplicationyellowApp.o ApplicationgreenApp.o ApplicationpurpleApp.o \n\t\t\t")
         outputFile.write("g++ "+outputFileName+".o Launcher.o ApplicationredApp.o ApplicationblueApp.o ApplicationyellowApp.o ApplicationgreenApp.o ApplicationpurpleApp.o CacheTrasher.o -o "+outputFileName+"\n\n")
         outputFile.write("ApplicationrblueApp.o: ApplicationblueApp.h\n\t\t\tg++ -c ApplicationblueApp.cpp\n\n")
         outputFile.write("ApplicationredApp.o: ApplicationredApp.h\n\t\t\tg++ -c ApplicationredApp.cpp\n\n")
