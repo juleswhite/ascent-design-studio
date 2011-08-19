@@ -122,9 +122,9 @@ public class Application {
 		contents = DefineTask(appName, "02", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
-		/*contents = DefineTask(appName, "03", "P1", taskSize*multiplier, sp);
+		contents = DefineTask(appName, "03", "P1", taskSize*multiplier, sp);
 		content += "\n\t"+contents.get(0);
-		headerContent3 += "\t"+contents.get(1);  
+		headerContent3 += "\t"+contents.get(1); /* 
 		contents = DefineTask(appName, "04", "P1", taskSize*multiplier, sp);
 		content += "\n"+contents.get(0);
 		headerContent3 += "\t"+contents.get(1);
@@ -518,17 +518,17 @@ public class Application {
     	return outputSchedule;
     }
 	public static void main( String args[]){
-		double probShared = 0.5;
+		double probShared = .5;
 		ArrayList<SchedulableTask> allTasks= new ArrayList();
 		//ArrayList<SchedulableTask> unoptSched = unopt
 		double start = 0.5;
 		while(probShared <=0.54){
 			DecimalFormat df = new DecimalFormat("#.##");
 			double d = new Double(df.format(probShared)).doubleValue();
-			String destinationDirectory = "/Users/Brian/SEI-TM.2-2tpa-"+d;
+			String destinationDirectory = "/Users/Brian/SEI-TM5-3tpa-"+d;
 			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
 			int [] go = {2000000,2000000};//multiplied go by 100
-			float multi = (float) 0.2;
+			float multi = (float) 5;
 			Application pn1 = new Application(destinationDirectory, 8.0, "redApp",go,0,multi, probShared);
 			pn1.makeSchedule(8.0);
 			 
