@@ -260,6 +260,7 @@ public class ExecutionMaker {
 			Copy("VTune-RF.py",projectDirectory+"/VTune-RF.py");
 			Copy("CacheTrasher.h",projectDirectory+"/CacheTrasher.h");
 			Copy("CacheTrasher.cpp",projectDirectory+"/CacheTrasher.cpp");
+			Copy("doItAll.sh",projectDirectory+"/doItAll.sh");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
