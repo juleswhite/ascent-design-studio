@@ -525,7 +525,7 @@ public class Application {
 		while(probShared <=0.54){
 			DecimalFormat df = new DecimalFormat("#.##");
 			double d = new Double(df.format(probShared)).doubleValue();
-			String destinationDirectory = "/Users/Brian/SEI-TM5-3tpa-"+d;
+			String destinationDirectory = "/Users/Brian/SEI-EndofAug"+d;
 			//PartitionNames pn = new PartitionNames("/Users/briandougherty",8.0);
 			int [] go = {2000000,2000000};//multiplied go by 100
 			float multi = (float) 5;
