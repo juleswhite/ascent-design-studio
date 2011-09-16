@@ -261,6 +261,8 @@ public class ExecutionMaker {
 			Copy("CacheTrasher.h",projectDirectory+"/CacheTrasher.h");
 			Copy("CacheTrasher.cpp",projectDirectory+"/CacheTrasher.cpp");
 			Copy("doItAll.sh",projectDirectory+"/doItAll.sh");
+			Copy("makeNonPreempt.py",projectDirectory+"/makeNonPreempt.py");
+			Copy("ILPSchedBones.cpp",projectDirectory+"/ILPSchedBonex.cpp");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
