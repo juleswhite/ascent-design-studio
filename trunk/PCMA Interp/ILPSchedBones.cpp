@@ -59,7 +59,7 @@ void Execute::executeTasks(int executions, int trash1, int trash2){
 
 	std::cout<< " startClock = "<< time1.tv_sec << std::endl;
 	std::map<string, std::map<int, long> > timeMap;
-	ApplicationpurpleApp purpleApp;
+	
 	int i = 0; 
  	 ofstream myfile;
 	myfile.open("outputWorstEx-Overlaps:+0");
@@ -103,11 +103,8 @@ void Execute::executeTasks(int executions, int trash1, int trash2){
 		std::cout<<"nscheudle size = " << nSchedule <<std::endl;
 		for (int j = 0; j < nSchedule; j++) {
 			//std::cout<<"in for loop" << std::endl;
-			string tname =schedule[j].taskName;
-			if(tname.compare("ApplicationpurpleApp")==1){
-				//std::cout<<"got a purple app"<< std::endl;
-				schedule[j].ready = (purpleApp.*schedule[j].nextrelease)(-85, schedule[j].myPeriod);
-			}
+			string tname =schedule[j].taskName;//spot1
+			
 			//else if(PUT OTHER APPS HERE)
 		//	std::cout<<"schedulget[j].ready = ";
 		//	std::cout<<schedule[j].ready;
@@ -133,14 +130,8 @@ Again, we have to check the instance. All these checks shouldn't be that importa
 all we really care about is the how long the task takes to execute right (and that timer does not include any of the checks)?*/			
 				string tname = schedule[j].taskName;
 				if(schedule[j].ready == false){
-					if(tname.compare("ApplicationpurpleApp")==1){
-						schedule[j].ready = (purpleApp.*schedule[j].nextrelease)(0, schedule[j].myPeriod);
-					}
-					//std::cout<<"Task ";
-					//std::cout<<j;
-					//std::cout<<" ready set to ";
-					//std::cout<<schedule[j].ready;
-					//std::cout<<std::endl;
+                    //spot2
+					
 				}
 			}
 			
@@ -171,27 +162,8 @@ all we really care about is the how long the task takes to execute right (and th
 				schedule[highestReadyIndex].ready = false;
 				
 				//std::cout<<"executing now"<<std::endl;
-				if(appname.compare("ApplicationpurpleApp")==0){
-					clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time3);
-					std::cout<<" Executing " << tname<<" at time " << time3.tv_nsec<<std::endl;// " of Application " << appname <<std::endl;
-					midStartClockTicks = rdtsc();
-					(purpleApp.*schedule[highestReadyIndex].task)(schedule[highestReadyIndex].myPeriod);
-					
-					midFinishClockTicks=rdtsc();
-					
-					if(tname.compare("TaskpurpleApp01") == 0){
-						std::cout<< " Adding to tn1 since tname is "<<tname<<std::endl;
-						tn1++;
-					}
-					else{
-						std::cout<< " Adding to tn2 since tname is "<<tname<<std::endl;
-						tn2++;
-					}
-					std::cout<<"done executing task"<<std::endl;
-					totalTaskExecutions--;
-					midElapseClockTicks = midFinishClockTicks - midStartClockTicks;
-					timeMap[fullName][i] = midElapseClockNs/CLOCKS_PER_SEC;
-				}
+                //spot3
+				
 				//else if ( ) PLACE OTHER APPS HERE
 				else{
 					std::cout<<tname<<": Application Type Not FOUND!!!" <<std::endl;
@@ -199,7 +171,9 @@ all we really care about is the how long the task takes to execute right (and th
 				}
 				
 	
-			} else {
+			} 
+            
+            else {
 				/* Sleep in Ubuntu is in microseconds. How long is appropriate? */
 				sleep(400000);
 			}
