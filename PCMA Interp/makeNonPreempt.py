@@ -226,13 +226,14 @@ for line in ILPSchedBones:
                     #application = "Application"+ task.split('Task')[1].split('App')[0] + "App"
                     if(first == 1):
                         
-                        line = line + "\t\tif(appname.compare(\""+application + "\") == 0{\n\t\t\t\t"
+                        line = line + "\t\tif(appname.compare(\""+application + "\") == 0){\n\t\t\t\t"
                         first =0 
                     else:
-                        line = line + "else if(appname.compare(\""+application + "\") == 0{\n\t\t\t\t\t"
-                    line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t\t"
+                        line = line + "else if(appname.compare(\""+application + "\") == 0){\n\t\t\t\t\t"
+                    #line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t\t"
                     line = line + "midStartClockTicks = rdtsc();\n\t\t\t\t\t"
-                    line = line + "(." + application+"*schedule[highestReadyIndex].task)(schedule[highestReadyIndex].myPeriod);\n\t\t\t\t\tmidFinishClockTicks=rdtsc();\n\n\t\t\t\t\t"
+                    #IF we need to add back in the period it's schedule[highestReadyIndex].myPeriod
+                    line = line + "(" + application+".*schedule[highestReadyIndex].task)();\n\t\t\t\t\tmidFinishClockTicks=rdtsc();\n\n\t\t\t\t\t"
                     line = line + "totalTaskExecutions--;\n\t\t\t\t\tmidElapseClockTicks = midFinishClockTicks - midStartClockTicks;\n\t\t\t\t\ttimeMap[fullName][i] = midElapseClockNs/CLOCKS_PER_SEC;\n\t\t\t\t}\n\t\t"
                     doneApps.append(application)
             #application = "Application"+ task.split('Task')[1].split('App')[0] + "App::"
@@ -245,11 +246,11 @@ for line in ILPSchedBones:
 
 makeILPSched = open("makeILPSched", 'w')
 line1 = "ILPSched.exe: ILPSched.o Launcher.o"
-line2 = "\t\t\tg++ -c -lrt ILPSched.o Launcher.o"
+line2 = "\t\t\tg++ -lrt ILPSched.o Launcher.o"
 for appH in appHs:
     line1 = line1 + " " + appH.split('.')[0]+".o"
     line2 = line2 + " " + appH.split('.')[0]+".o"
-makeILPSched.write(line1+"\n")
+makeILPSched.write(line1+"-o ILPSched\n")
 makeILPSched.write(line2+"\n\n")
 
 appLine = ""
