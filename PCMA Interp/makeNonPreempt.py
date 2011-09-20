@@ -161,13 +161,13 @@ for line in ILPSchedBones:
         for task in tasknames:
             application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
             
-            line2 = application +  "  " + application.split('Application')[1] +  " App;\n\t"
+            line2 = application+"App "+  application.split('Application')[1] +  "App;\n\t"
             if(line2 not in doneApps):
                 line = line+line2
                 doneApps.append(line2)
             application = application + "App::"
             line = line + "void ("+application+"*tpa"+task.split('(')[0]+"ptr)()=NULL;\n\t"
-            line = line + "bool ("+application+"*tnr"+task.split('(')[0]+"ptr)()=NULL;\n\t"
+            line = line + "bool ("+application+"*tnr"+task.split('(')[0]+"ptr)(int,int)=NULL;\n\t"
             #print(" application = " + application + " and task split = " + task.split('(')[0])
             line = line + "tpa"+task.split('(')[0]+"ptr = &"+application+task.split('(')[0]+";\n\t"
             line = line + "tnr"+task.split('(')[0]+"ptr = &"+application+"Task"+task.split('(')[0].split('App')[1]+"NextRelease;\n\t"
@@ -242,7 +242,26 @@ for line in ILPSchedBones:
             #line = line + "totalTaskExecutions--;\n\t\tmidElapseClockTicks = midFinishClockTicks - midStartClockTicks;\n\t\ttimeMap[fullName][i] = midElapseClockNs/CLOCKS_PER_SEC;\n\t\t}\n\t\t"
         
     ILPSched.write(line)
-    
+
+makeILPSched = open("makeILPSched", 'w')
+line1 = "ILPSched.exe: ILPSched.o Launcher.o"
+line2 = "\t\t\tg++ -c -lrt ILPSched.o Launcher.o"
+for appH in appHs:
+    line1 = line1 + " " + appH.split('.')[0]+".o"
+    line2 = line2 + " " + appH.split('.')[0]+".o"
+makeILPSched.write(line1+"\n")
+makeILPSched.write(line2+"\n\n")
+
+appLine = ""
+for appH in appHs:
+    appLine = appH.split('.')[0]+".o:" + appH +"\n\t\t\tg++ -c " + appH.split('.')[0]+".cpp\n\n"
+    makeILPSched.write(appLine)
+
+makeILPSched.write("ILPSched.o: Execute.h\n\t\t\tg++ -c ILPSched.cpp -o ILPSched.o\n\n")
+makeILPSched.write("Launcher.o: Launcher.cpp Execute.h\n\t\t\tg++ -c Launcher.cpp")
+
+
+
     
 #print("Making history around task %s",argv[0])
 historyLength = sys.argv[3]
