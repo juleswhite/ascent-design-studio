@@ -24,7 +24,7 @@ typedef struct {
 	int priority;
 	bool ready;
 	bool (ApplicationpurpleApp::*nextrelease)(int,int);
-	void (ApplicationpurpleApp::*task)(int);
+	void (ApplicationpurpleApp::*task)();
 	char* taskName;
 	char* appName;
 	int myPeriod;
