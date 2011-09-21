@@ -270,8 +270,8 @@ line2 = "\t\t\tg++ -lrt ILPSched.o Launcher.o"
 for appH in appHs:
     line1 = line1 + " " + appH.split('.')[0]+".o"
     line2 = line2 + " " + appH.split('.')[0]+".o"
-makeILPSched.write(line1+" -o ILPSched\n")
-makeILPSched.write(line2+"\n\n")
+makeILPSched.write(line1+"\n")
+makeILPSched.write(line2+" -o ILPSched\n\n")
 
 appLine = ""
 for appH in appHs:
