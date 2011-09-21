@@ -98,7 +98,7 @@ for appH in appHs:
     print (" appcolor = " + appColor)
     appHFile = open(appH, 'r')
     for line in appHFile.readlines():
-        if(line.find("class") != -1:
+        if(line.find("class") != -1):
            line = "#include \"Application.h\"\n class Application"+appColor+"App: public Application{\n"
         if(line.find("Task"+appColor) != -1):
             line = "\tvoid Task" +line.split('App')[1].split('(')[0] +"();\nbool Task"+line.split("(")[0].split("App")[1]+"NextRelease(int,int);\n"
@@ -137,6 +137,8 @@ for appCpp in appCpps:
                     line = line +"return false;\n\t"
                     line = line +"}\n\t"
                     line = line +"std::cout<<\"nextRelease = \" << nextRelease<<std::endl;\n}\n\n"
+        if(line.find("(void)") != -1)"
+           line = line.split('Task')[0]+"Task"+line.split('Task')[1].split('App')[1]
         tempFile.write(line)
     tempFile.close()
     appCppfile = open(appCpp,'w')
