@@ -137,7 +137,7 @@ for appCpp in appCpps:
                     line = line +"return false;\n\t"
                     line = line +"}\n\t"
                     line = line +"std::cout<<\"nextRelease = \" << nextRelease<<std::endl;\n}\n\n"
-        if(line.find("(void)") != -1)"
+        if(line.find("(void)") != -1):
            line = line.split('Task')[0]+"Task"+line.split('Task')[1].split('App')[1]
         tempFile.write(line)
     tempFile.close()
@@ -270,7 +270,7 @@ line2 = "\t\t\tg++ -lrt ILPSched.o Launcher.o"
 for appH in appHs:
     line1 = line1 + " " + appH.split('.')[0]+".o"
     line2 = line2 + " " + appH.split('.')[0]+".o"
-makeILPSched.write(line1+"-o ILPSched\n")
+makeILPSched.write(line1+" -o ILPSched\n")
 makeILPSched.write(line2+"\n\n")
 
 appLine = ""
