@@ -98,8 +98,10 @@ for appH in appHs:
     print (" appcolor = " + appColor)
     appHFile = open(appH, 'r')
     for line in appHFile.readlines():
+        if(line.find("class") != -1:
+           line = "#include \"Application.h\"\n class Application"+appColor+"App: public Application{\n"
         if(line.find("Task"+appColor) != -1):
-            line = line.split("(")[0]+"();\n\tbool Task"+line.split("(")[0].split("App")[1]+"NextRelease(int,int);\n\t"
+            line = "\tvoid Task" +line.split('App')[1].split('(')[0] +"();\nbool Task"+line.split("(")[0].split("App")[1]+"NextRelease(int,int);\n"
             
         tempFile.write(line)
     tempFile.close()
@@ -121,6 +123,7 @@ for appCpp in appCpps:
             for task in tasknames:
                 if(task.find(appColor) != -1):
                     line = line +"bool " + appCpp.split('.')[0] + "::Task"+task.split("App")[1].split("(")[0]+"NextRelease( int Clock, int myPeriod)\n{\n"
+                    
                     line = line +"timespec time1;\n\t"
                     line = line +"clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);\n\t"
                     line = line +"static int nextRelease = time1.tv_nsec;\n\t"
@@ -150,9 +153,12 @@ def getSchedule():
 
 ILPSchedBones = open("ILPSchedBones.cpp", "r")
 ILPSched = open("ILPSched.cpp", "w")
-
+doneTaskNums = []
+ApplicationHString = "#include <iostream>\n#ifndef  APPLICATION_H   // preprocessor directive\n#define  APPLICATION_H\nclass Application {\n\tpublic:\n\t\t"
+applicationFile = open("Application.h",'w')
 for line in ILPSchedBones:
     if(line.find("Execute.h") != -1):
+      #  line = line + "#include \"Application.h\"\n"
         for appH in appHs:
             line = line +"#include \""+ appH + "\"\n"
     if(line.find("Where the priorities are met")!=-1):
@@ -160,82 +166,93 @@ for line in ILPSchedBones:
         doneApps =[]
         for task in tasknames:
             application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
-            
             line2 = application+"App "+  application.split('Application')[1] +  "App;\n\t"
             if(line2 not in doneApps):
                 line = line+line2
                 doneApps.append(line2)
+                print str(doneApps)
+       # for appL in doneApps:
+        #    line = line + appL
+        for task in tasknames:
+            application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
             application = application + "App::"
-            line = line + "void ("+application+"*tpa"+task.split('(')[0]+"ptr)()=NULL;\n\t"
-            line = line + "bool ("+application+"*tnr"+task.split('(')[0]+"ptr)(int,int)=NULL;\n\t"
-            #print(" application = " + application + " and task split = " + task.split('(')[0])
-            line = line + "tpa"+task.split('(')[0]+"ptr = &"+application+task.split('(')[0]+";\n\t"
-            line = line + "tnr"+task.split('(')[0]+"ptr = &"+application+"Task"+task.split('(')[0].split('App')[1]+"NextRelease;\n\t"
+            taskNum = task.split('(')[0].split('App')[1]
+            if(taskNum not in doneTaskNums):
+                ApplicationHString = ApplicationHString + "virtual void Task" + taskNum +"(void)=0;\n\t\t"
+                ApplicationHString = ApplicationHString + "virtual bool Task" + taskNum +"NextRelease(int,int)=0;\n\t\t"
+                line = line + "void (Application::*tpaTask"+taskNum+"ptr)()=NULL;\n\t"
+                line = line + "bool (Application::*tnrTask"+taskNum+"ptr)(int,int)=NULL;\n\t"
+                #print(" application = " + application + " and task split = " + task.split('(')[0])
+                line = line + "tpaTask"+taskNum+"ptr = &Application::Task"+taskNum+";\n\t"
+                line = line + "tnrTask"+taskNum+"ptr = &Application::Task"+taskNum+"NextRelease;\n\t"
+                doneTaskNums.append(taskNum)
     if(line.find("ScheduleEntry schedule[] = {") != -1):
         line = line + getSchedule()
-    if(line.find("//spot1") != -1):
-        first = 1
-        application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
-        doneApps = []
-        for appH in appHs:
-            application = appH.split('.')[0].split('Application')[1]
-            print("application =" + application)
-           # line = line + "\t\t\t"
-            for task in tasknames:                
-                if(task.find(application) !=-1 and (application not in doneApps)):
-                    #application = "Application"+ task.split('Task')[1].split('App')[0] + "App"
-                    if(first == 1):
-                        line = line + "\t\t\tif(tname.compare(\""+application+"\")==1){\n\t\t\t\t"
-                        first =0 
-                    else:
-                        line = line + "\telse if(tname.compare(\""+application+"\")==1){\n\t\t\t\t"
-                    line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(-85, schedule[j].myPeriod);\n\t\t\t}\n\n\t\t"
-                    doneApps.append(application)
-    if(line.find("//spot2") != -1):
-        first = 1
-        application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
-        doneApps = []
-        for appH in appHs:
-            application = appH.split('.')[0].split('Application')[1]
-            print("application =" + application)
-           # line = line + "\t\t\t"
-            for task in tasknames:                
-                if(task.find(application) !=-1 and (application not in doneApps)):
-                    #application = "Application"+ task.split('Task')[1].split('App')[0] + "App"
-                    if(first == 1):
-                        line = line + "\t\t\t\t\tif(tname.compare(\""+application+"\")==1){\n\t\t\t\t\t\t"
-                        first =0 
-                    else:
-                        line = line + "\t\telse if(tname.compare(\""+application+"\")==1){\n\t\t\t\t\t\t"
-                    line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t\t}\n\n\t\t\t\t"
-                    doneApps.append(application)
-       # for task in tasknames:
-       #     application = "Application"+ task.split('Task')[1].split('App')[0] + "App::"
-       #     line = line + "if(tname.compare(\"" + application + "\") == 1){\n\t\t\t"
-       #     line = line + "schedule[j].ready = (" + application.split("Application")[1] + ".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t}\n\t\t"
-    if(line.find("//spot3") != -1):
-        first = 1
-        application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
-        doneApps = []
-        for appH in appHs:
-            application = appH.split('.')[0].split('Application')[1]
-            print("application =" + application)
-            line = line + "\t\t"
-            for task in tasknames:                
-                if(task.find(application) !=-1 and (application not in doneApps)):
-                    #application = "Application"+ task.split('Task')[1].split('App')[0] + "App"
-                    if(first == 1):
-                        
-                        line = line + "\t\tif(appname.compare(\""+application + "\") == 0){\n\t\t\t\t"
-                        first =0 
-                    else:
-                        line = line + "else if(appname.compare(\""+application + "\") == 0){\n\t\t\t\t\t"
-                    #line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t\t"
-                    line = line + "midStartClockTicks = rdtsc();\n\t\t\t\t\t"
-                    #IF we need to add back in the period it's schedule[highestReadyIndex].myPeriod
-                    line = line + "(" + application+".*schedule[highestReadyIndex].task)();\n\t\t\t\t\tmidFinishClockTicks=rdtsc();\n\n\t\t\t\t\t"
-                    line = line + "totalTaskExecutions--;\n\t\t\t\t\tmidElapseClockTicks = midFinishClockTicks - midStartClockTicks;\n\t\t\t\t\ttimeMap[fullName][i] = midElapseClockNs/CLOCKS_PER_SEC;\n\t\t\t\t}\n\t\t"
-                    doneApps.append(application)
+   
+    
+##    if(line.find("//spot1") != -1):
+##        first = 1
+##        application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
+##        doneApps = []
+##        for appH in appHs:
+##            application = appH.split('.')[0].split('Application')[1]
+##            print("application =" + application)
+##           # line = line + "\t\t\t"
+##            for task in tasknames:                
+##                if(task.find(application) !=-1 and (application not in doneApps)):
+##                    #application = "Application"+ task.split('Task')[1].split('App')[0] + "App"
+##                    if(first == 1):
+##                        line = line + "\t\t\tif(tname.compare(\""+application+"\")==1){\n\t\t\t\t"
+##                        first =0 
+##                    else:
+##                        line = line + "\telse if(tname.compare(\""+application+"\")==1){\n\t\t\t\t"
+##                    line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(-85, schedule[j].myPeriod);\n\t\t\t}\n\n\t\t"
+##                    doneApps.append(application)
+##    if(line.find("//spot2") != -1):
+##        first = 1
+##        application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
+##        doneApps = []
+##        for appH in appHs:
+##            application = appH.split('.')[0].split('Application')[1]
+##            print("application =" + application)
+##           # line = line + "\t\t\t"
+##            for task in tasknames:                
+##                if(task.find(application) !=-1 and (application not in doneApps)):
+##                    #application = "Application"+ task.split('Task')[1].split('App')[0] + "App"
+##                    if(first == 1):
+##                        line = line + "\t\t\t\t\tif(tname.compare(\""+application+"\")==1){\n\t\t\t\t\t\t"
+##                        first =0 
+##                    else:
+##                        line = line + "\t\telse if(tname.compare(\""+application+"\")==1){\n\t\t\t\t\t\t"
+##                    line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t\t}\n\n\t\t\t\t"
+##                    doneApps.append(application)
+##       # for task in tasknames:
+##       #     application = "Application"+ task.split('Task')[1].split('App')[0] + "App::"
+##       #     line = line + "if(tname.compare(\"" + application + "\") == 1){\n\t\t\t"
+##       #     line = line + "schedule[j].ready = (" + application.split("Application")[1] + ".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t}\n\t\t"
+##    if(line.find("//spot3") != -1):
+##        first = 1
+##        application = "Application"+ task.split('Task')[1].split('App')[0] #+ "App::"
+##        doneApps = []
+##        for appH in appHs:
+##            application = appH.split('.')[0].split('Application')[1]
+##            print("application =" + application)
+##            line = line + "\t\t"
+##            for task in tasknames:                
+##                if(task.find(application) !=-1 and (application not in doneApps)):
+##                    #application = "Application"+ task.split('Task')[1].split('App')[0] + "App"
+##                    if(first == 1):
+##                        
+##                        line = line + "\t\tif(appname.compare(\""+application + "\") == 0){\n\t\t\t\t"
+##                        first =0 
+##                    else:
+##                        line = line + "else if(appname.compare(\""+application + "\") == 0){\n\t\t\t\t\t"
+##                    #line = line + "schedule[j].ready = ("+application+".*schedule[j].nextrelease)(0, schedule[j].myPeriod);\n\t\t\t\t\t"
+##                    line = line + "midStartClockTicks = rdtsc();\n\t\t\t\t\t"
+##                    #IF we need to add back in the period it's schedule[highestReadyIndex].myPeriod
+##                    line = line + "(" + application+".*schedule[highestReadyIndex].task)();\n\t\t\t\t\tmidFinishClockTicks=rdtsc();\n\n\t\t\t\t\t"
+##                    line = line + "totalTaskExecutions--;\n\t\t\t\t\tmidElapseClockTicks = midFinishClockTicks - midStartClockTicks;\n\t\t\t\t\ttimeMap[fullName][i] = midElapseClockNs/CLOCKS_PER_SEC;\n\t\t\t\t}\n\t\t"
+##                    doneApps.append(application)
             #application = "Application"+ task.split('Task')[1].split('App')[0] + "App::"
             #line = line + "if(appname.compare(\""+application + "\") == 0{\n\t\t\t"
             #line = line + "midStartClockTicks = rdtsc();\n\t\t\t"
@@ -243,7 +260,8 @@ for line in ILPSchedBones:
             #line = line + "totalTaskExecutions--;\n\t\tmidElapseClockTicks = midFinishClockTicks - midStartClockTicks;\n\t\ttimeMap[fullName][i] = midElapseClockNs/CLOCKS_PER_SEC;\n\t\t}\n\t\t"
         
     ILPSched.write(line)
-
+ApplicationHString = ApplicationHString + " };\n#endif"
+applicationFile.write(ApplicationHString)
 makeILPSched = open("makeILPSched", 'w')
 line1 = "ILPSched.exe: ILPSched.o Launcher.o"
 line2 = "\t\t\tg++ -lrt ILPSched.o Launcher.o"
@@ -255,7 +273,7 @@ makeILPSched.write(line2+"\n\n")
 
 appLine = ""
 for appH in appHs:
-    appLine = appH.split('.')[0]+".o:" + appH +"\n\t\t\tg++ -c " + appH.split('.')[0]+".cpp\n\n"
+    appLine = appH.split('.')[0]+".o:" + appH +" Application.h\n\t\t\tg++ -c " + appH.split('.')[0]+".cpp\n\n"
     makeILPSched.write(appLine)
 
 makeILPSched.write("ILPSched.o: Execute.h\n\t\t\tg++ -c ILPSched.cpp -o ILPSched.o\n\n")
