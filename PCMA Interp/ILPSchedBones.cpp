@@ -23,12 +23,15 @@ but I think I've got them taken care of. A second pair of eyes would be good tho
 typedef struct {
 	int priority;
 	bool ready;
-	bool (ApplicationpurpleApp::*nextrelease)(int,int);
-	void (ApplicationpurpleApp::*task)();
+	bool (Application::*nextrelease)(int,int);
+	void (Application::*task)();
 	char* taskName;
 	char* appName;
 	int myPeriod;
+	Application* app;
+	int numExecutions;
 } ScheduleEntry;
+
 
 /*Following function and use of clock_gettime was found in http://www.guyrutenberg.com/2007/09/22/profiling-code-using-clock_gettime/ courtesy of Guy rutenburg*/
 
@@ -104,7 +107,7 @@ void Execute::executeTasks(int executions, int trash1, int trash2){
 		for (int j = 0; j < nSchedule; j++) {
 			//std::cout<<"in for loop" << std::endl;
 			string tname =schedule[j].taskName;//spot1
-			
+			schedule[j].ready = (*schedule[j].app.*schedule[j].nextrelease)(-85, schedule[j].myPeriod); 
 			//else if(PUT OTHER APPS HERE)
 		//	std::cout<<"schedulget[j].ready = ";
 		//	std::cout<<schedule[j].ready;
@@ -131,7 +134,7 @@ all we really care about is the how long the task takes to execute right (and th
 				string tname = schedule[j].taskName;
 				if(schedule[j].ready == false){
                     //spot2
-					
+					schedule[j].ready = (*schedule[j].app.*schedule[j].nextrelease)(0, schedule[j].myPeriod);
 				}
 			}
 			
@@ -163,12 +166,17 @@ all we really care about is the how long the task takes to execute right (and th
 				
 				//std::cout<<"executing now"<<std::endl;
                 //spot3
+                midStartClockTicks = rdtsc();
+                (*schedule[highestReadyIndex].app.*schedule[highestReadyIndex].task)();
+                std::cout<<" the task has been executed " << schedule[highestReadyIndex].numExecutions<<std::endl;
+                schedule[highestReadyIndex].numExecutions++;
+                midFinishClockTicks=rdtsc();
+                
+                totalTaskExecutions--;
+                midElapseClockTicks = midFinishClockTicks - midStartClockTicks;
+                timeMap[fullName][i] = midElapseClockNs/CLOCKS_PER_SEC;
 				
-				//else if ( ) PLACE OTHER APPS HERE
-				else{
-					std::cout<<tname<<": Application Type Not FOUND!!!" <<std::endl;
-					
-				}
+				
 				
 	
 			} 
