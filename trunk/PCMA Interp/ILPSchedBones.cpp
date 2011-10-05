@@ -197,6 +197,9 @@ all we really care about is the how long the task takes to execute right (and th
 		 myfile<<(finishClock-startClock)/1000<<std::endl;
 		totalExec--;
 	}
+    for(int k = 0; k < nSchedule; k ++){
+		std::cout<<" Task "<< schedule[k].appName << " "<< schedule[k].taskName << " executed " << schedule[k].numExecutions << " times" <<std::endl;
+	}
 	cout << "TN1 = "<< tn1 << " and TN2 = " <<tn2 << std::endl;
 	std::map<std::string, std::map<int,long> >::iterator iter;
 	std::map<int,long>::iterator insideIter;
