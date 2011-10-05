@@ -44,7 +44,7 @@ for file in filesToOpen:
                 historyPiece.append(executionSchedules[task.strip()][-1])
             historyList.append(historyPiece)
     print( " history list = " +str(historyList))
-    ILPFileContent = ILPFileContent + str(executionSchedules[file][-1]) +"\n" + str(executionSchedules[file][-4]) +" "+ str(executionSchedules[file][-3])+"\nperiodicoffset 0\n"
+    ILPFileContent = ILPFileContent + str(executionSchedules[file][-1]) +"\n" + str(executionSchedules[file][-4]) +" "+ str(executionSchedules[file][-3])+"\nperiodic\n"
     ILPFileContent = ILPFileContent + str(len(historyList)) + "\n"
     for history in historyList:
         for item in history:
