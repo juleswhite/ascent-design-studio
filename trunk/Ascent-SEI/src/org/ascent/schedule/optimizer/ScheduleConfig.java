@@ -24,6 +24,7 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	protected SchedulableTask [] tasks_;
 	protected Application[] applications_;
 	private List<Application> appList_ = new ArrayList();
+	
 	private List<SchedulableTask> taskList_ = new ArrayList();
 	
 	public ScheduleConfig(){
@@ -33,7 +34,8 @@ public class ScheduleConfig extends ProblemConfigImpl {
 		super(tasks.length-1, 0, tasks.length-1);
 		tasks_ = tasks;
 		applications_ = applications;
-		
+		addTasks(tasks);
+		addApplications(applications);
 		orderElements();
 	}
 	
@@ -65,8 +67,8 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	}
 	
 	protected void orderElements() {
-		Arrays.sort(tasks_);
-		Arrays.sort(applications_);
+		//Arrays.sort(tasks_);
+		//Arrays.sort(applications_);
 		
 	}
 	public int scoreSchedule(Schedule plan) {
@@ -77,6 +79,18 @@ public class ScheduleConfig extends ProblemConfigImpl {
 		return new Schedule(this, sol);
 	}
 	
+	public List<SchedulableTask> getTaskList_() {
+		return taskList_;
+	}
+	public void setTaskList_(List<SchedulableTask> taskList_) {
+		this.taskList_ = taskList_;
+	}
+	public List<Application> getAppList_() {
+		return appList_;
+	}
+	public void setAppList_(List<Application> appList_) {
+		this.appList_ = appList_;
+	}
 	
 
 }

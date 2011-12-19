@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ascent.VectorSolution;
-import org.ascent.deployment.DeploymentConfig;
+
 
 public class Schedule {
 	private List<Application> applications_ = new ArrayList();
@@ -16,6 +16,8 @@ public class Schedule {
 		super();
 		solution_ = solution;
 		scheduleConfiguration_ = config;
+		tasks_ = scheduleConfiguration_.getTaskList_();
+		applications_ = scheduleConfiguration_.getAppList_();
 	}
 	
 	public ScheduleConfig getScheduleConfiguration() {
@@ -24,5 +26,13 @@ public class Schedule {
 	
 	public VectorSolution getSolution() {
 		return solution_;
+	}
+	
+	public List<SchedulableTask> getTasks_() {
+		return tasks_;
+	}
+
+	public void setTasks_(List<SchedulableTask> tasks_) {
+		this.tasks_ = tasks_;
 	}
 }
