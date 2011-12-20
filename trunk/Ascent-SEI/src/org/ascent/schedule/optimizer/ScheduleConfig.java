@@ -48,7 +48,7 @@ public class ScheduleConfig extends ProblemConfigImpl {
 		super(0,0,0);
 	}
 	public ScheduleConfig(SchedulableTask[] tasks, Application[] applications) {
-		super(tasks.length-1, 0, tasks.length-1);
+		super(tasks.length, 0, tasks.length-1);
 		tasks_ = tasks;
 		applications_ = applications;
 		addTasks(tasks);
@@ -241,15 +241,22 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	public boolean isFeasible(VectorSolution sol) {
 		boolean feasible = true;
 		ArrayList found = new ArrayList();
+		String reportString = "";
+		//System.out.println("VS in isFeasible = " + sol);
+		//System.out.println(" sol.length = " + sol.getPosition().length);
 		for( int i =0; i < sol.getPosition().length-1; i++){
+			
 			int foundInt = sol.getPosition()[i]; 
+			reportString = reportString + " Checking position "+ i+ " to see if " + foundInt +" is in "+ found+"with Result "+found.contains(foundInt) +"\n";
 			if(!found.contains(foundInt)){
-				found.add(sol.getPosition()[i]);
+				found.add(foundInt);
 			}
 			else{
-				feasible=false;
+				//System.out.println(reportString);
+				return false;
 			}
 		}
+		//System.out.println(reportString);
 		return feasible;
 	}
 	

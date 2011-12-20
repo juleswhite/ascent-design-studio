@@ -110,4 +110,15 @@ public class Schedule {
 	public void setTaskArray_(SchedulableTask[] taskArray_) {
 		this.taskArray_ = taskArray_;
 	}
+	
+	public String toString(){
+		int counter = 0; 
+		String returnString = "";
+		for(SchedulableTask st : tasks_){
+			counter++;
+			returnString = returnString + counter + ".)  " +st.getApplication_().getName_()+":"+st.getLabel() +"\n";
+					
+		}
+		return returnString;
+	}
 }
