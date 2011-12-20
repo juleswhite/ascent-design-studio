@@ -53,6 +53,7 @@ public class Pso {
 		super();
 		configuration_ = config;
 		positionBoundaries_ = config.getPositionBoundaries();
+		
 	}
 
 	public Pso() {
@@ -125,7 +126,7 @@ public class Pso {
 			
 		}
 
-//	    printState("Initial Positions", particles);
+	   // printState("Initial Positions", particles);
 
 		int iter = iterations_;
 		while (iter > 0) {
@@ -147,7 +148,7 @@ public class Pso {
 
 			iter--;
 			postIterate(iter);
-//			printState("Iterations "+iterations_, particles);
+			//printState("Iterations "+iterations_, particles);
 		}
 		
 		if (!isFeasible(globalBest_))
