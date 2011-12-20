@@ -11,18 +11,20 @@ public class PSOScheduler implements SchedulePlanner {
 	private double intertia_ = 1;
 	private int maxVelocity_ = 4;
 	private int totalParticles_ = 20;
-	private int searchIterations_ = 20;
+	private int searchIterations_ = 10;
 	private boolean useNetworkGravity_ = false;
 
 	
 	public Schedule schedule(ScheduleConfig problem) {
 
+		System.out.println(" ScheduleConfig problem taskList size() = " + problem.getSchedule().getTaskList_());
 		Pso pso = new Pso(problem);
 		pso.setTotalParticles(totalParticles_);
 		pso.setVelocityMax(maxVelocity_);
 		pso.setLocalLearningRate(localLearningRate_);
 		pso.setGlobalLearningRate(globalLearningRate_);
 		pso.setIterations(searchIterations_);
+		pso.setGlobalBestMustBeFeasible(true);
 		
 		VectorSolution sol = pso.solve(problem.getFitnessFunction());
 		

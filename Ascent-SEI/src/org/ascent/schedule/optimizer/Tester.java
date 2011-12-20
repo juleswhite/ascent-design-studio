@@ -23,9 +23,9 @@ public class Tester {
 		SchedulableTask task7 = new SchedulableTask(7 , "Task7",  new int []{0,0,0}, redApp, 2986, 2106);
 		SchedulableTask task8 = new SchedulableTask(8 , "Task8",  new int []{0,0,0}, blueApp, 1893,1275);
 		ScheduleConfig sc = new ScheduleConfig( new SchedulableTask[] {task1, task2, task3, task4, task5, task6, task7, task8},new Application [] {redApp,blueApp});
-		//System.out.println(" SC = " + sc.getTaskList_());
+		System.out.println(" SC = " + sc.getTaskList_());
 		CAMSSchedulePlanner cms = new CAMSSchedulePlanner(sc);
-		System.out.println(" cms tasklist = " + cms.getSchedule().getTaskList_().size());
+		System.out.println(" cms tasklist = " + cms.getTaskList_().size());
 		
 		PSOScheduler pso = new PSOScheduler();
 		
@@ -52,6 +52,7 @@ public class Tester {
 		pso.setIterations(20);*/
 		//VectorSolution sol = pso.solve(cms.getFitnessFunction());
 	//	System.out.println("Vector solution = " + sol);
+		//System.out.println("cms tasklist = " + cms.getTaskList_());
 		Schedule sched = pso.schedule(cms); 
 		System.out.println(" Schedule = " + sched);
 		

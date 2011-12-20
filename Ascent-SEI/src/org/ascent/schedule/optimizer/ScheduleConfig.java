@@ -29,6 +29,7 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	private ValueFunction<VectorSolution> scoringFunction_ = new ValueFunction<VectorSolution>() {
 
 		public double getValue(VectorSolution src) {
+			System.out.println(" In get value of ScheduleConfig");
 			if (src.getArtifact() == null) {
 				int score = scoreSchedule(getSchedule(src));
 				src.setArtifact(score);
@@ -40,8 +41,8 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	protected SchedulableTask [] tasks_;
 	protected Application[] applications_;
 	private List<Application> appList_ = new ArrayList();
-	
 	private List<SchedulableTask> taskList_ = new ArrayList();
+	
 	
 	public ScheduleConfig(){
 		super(0,0,0);
@@ -204,6 +205,10 @@ public class ScheduleConfig extends ProblemConfigImpl {
 		return new Schedule(this, sol);
 	}
 	
+	public ScheduleConfig getSchedule(){
+		return this;
+	}
+	
 	public List<SchedulableTask> getTaskList_() {
 		return taskList_;
 	}
@@ -218,6 +223,33 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	}
 	public ValueFunction<VectorSolution> getFitnessFunction() {
 		return scoringFunction_;
+	}
+	public SchedulableTask[] getTasks_() {
+		return tasks_;
+	}
+	public void setTasks_(SchedulableTask[] tasks_) {
+		this.tasks_ = tasks_;
+	}
+	public Application[] getApplications_() {
+		return applications_;
+	}
+	public void setApplications_(Application[] applications_) {
+		this.applications_ = applications_;
+	}
+	
+	public boolean isFeasible(VectorSolution sol) {
+		boolean feasible = true;
+		ArrayList found = new ArrayList();
+		for( int i =0; i < sol.getPosition().length-1; i++){
+			int foundInt = sol.getPosition()[i]; 
+			if(!found.contains(foundInt)){
+				found.add(sol.getPosition()[i]);
+			}
+			else{
+				feasible=false;
+			}
+		}
+		return feasible;
 	}
 	
 
