@@ -244,7 +244,7 @@ public class ScheduleConfig extends ProblemConfigImpl {
 		String reportString = "";
 		//System.out.println("VS in isFeasible = " + sol);
 		//System.out.println(" sol.length = " + sol.getPosition().length);
-		for( int i =0; i < sol.getPosition().length-1; i++){
+		for( int i =0; i < sol.getPosition().length; i++){
 			
 			int foundInt = sol.getPosition()[i]; 
 			reportString = reportString + " Checking position "+ i+ " to see if " + foundInt +" is in "+ found+"with Result "+found.contains(foundInt) +"\n";
