@@ -43,7 +43,7 @@ public class Pso {
 	private double globalBestValue_ = Integer.MIN_VALUE;
 	private VectorSolution globalBest_;
 	private ValueFunction<VectorSolution> fitnessFunction_;
-	private int iterations_ = 10;
+	private int iterations_ = 10000;
 	private int totalParticles_ = 20;
 	private int[][] positionBoundaries_;
 	private int particlesPerGroup_ = 5;
@@ -114,11 +114,12 @@ public class Pso {
 	protected VectorSolution solveImpl(ValueFunction<VectorSolution> goal) {
 
 		Particle[] particles = createParticles(totalParticles_);
-
+		
 		for (Particle p : particles) {
 			// if (p.position_.getOverflow() == 0) {
 			double val = goal.getValue(p.getPosition());
-			if (val > globalBestValue_) {
+			if (val > globalBestValue_ ) {
+				
 				globalBest_ = p.getPosition().cloneSolution();
 				globalBestValue_ = val;
 				leader_ = p;
@@ -151,8 +152,10 @@ public class Pso {
 			//printState("Iterations "+iterations_, particles);
 		}
 		
-		if (!isFeasible(globalBest_))
+		if (!isFeasible(globalBest_)){
+			//System.out.println("globalBest_ = " + globalBest_);
 			return null;
+		}
 
 		return globalBest_;
 	}

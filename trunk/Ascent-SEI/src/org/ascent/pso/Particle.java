@@ -65,6 +65,7 @@ public class Particle {
 
 	public int[] calclateNewVelocity(VectorSolution gbest, VectorSolution lbest,
 			VectorSolution curr) {
+		//System.out.println("gBest" + gbest.getPosition());
 		int[] veloc = new int[gbest.getPosition().length];
 		for (int i = 0; i < veloc.length; i++) {
 			if (curr.getPosition().length > i) {
