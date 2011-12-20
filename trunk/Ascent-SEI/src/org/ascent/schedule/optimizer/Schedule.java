@@ -35,4 +35,8 @@ public class Schedule {
 	public void setTasks_(List<SchedulableTask> tasks_) {
 		this.tasks_ = tasks_;
 	}
+	
+	public String toString(){
+		
+	}
 }

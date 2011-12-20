@@ -9,14 +9,14 @@ import org.ascent.deployment.DeploymentPlan;
 
 
 
-public class CAMSSchedule extends ScheduleConfig {
+public class CAMSSchedulePlanner extends ScheduleConfig {
 	
 	private ValueFunction<VectorSolution> fitnessFunction_ = new ValueFunction<VectorSolution>() {
 
 		public double getValue(VectorSolution src) {
 			if (src.getArtifact() == null) {
 				Schedule sched = new Schedule(
-						CAMSSchedule.this, src);
+						CAMSSchedulePlanner.this, src);
 				int score = scoreSchedule(sched);
 				src.setArtifact(score);
 			}
@@ -31,7 +31,7 @@ public class CAMSSchedule extends ScheduleConfig {
 	private int cacheSizeKB_ = 4096;
 	private ScheduleConfig sched_;
 	
-	public CAMSSchedule(ScheduleConfig sched){
+	public CAMSSchedulePlanner(ScheduleConfig sched){
 		sched_ = sched;
 		
 	}
@@ -42,12 +42,16 @@ public class CAMSSchedule extends ScheduleConfig {
 		
 	}
 	
+	public ScheduleConfig getSchedule(){
+		return sched_;
+	}
 	private int calculateCAMSM(Schedule sched) {//Calculates the Cache Aware MetaSchedule Metric for the given schedule
 		// TODO Auto-generated method stub
 		List<SchedulableTask> tasks =  sched.getTasks_();
 		System.out.println(" in Calculate CAMSM");
 		int start = 0;
 		int CAMSM = 0;
+		//System.out.println(" Tasks length = " + tasks.size());
 		for(SchedulableTask task : tasks){
 			int dataWritten = 0; 
 			double sharingPercentage  = task.getApplication_().getSharedPercentage();
