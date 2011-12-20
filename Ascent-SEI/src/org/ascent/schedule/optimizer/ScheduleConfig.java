@@ -2,11 +2,27 @@ package org.ascent.schedule.optimizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ascent.ProblemConfigImpl;
 import org.ascent.VectorSolution;
+import org.ascent.binpacking.Bin;
+import org.ascent.binpacking.BinPackingProblem;
+import org.ascent.binpacking.FFDBinPacker;
+import org.ascent.binpacking.RandomItemPacker;
 import org.ascent.binpacking.ValueFunction;
+import org.ascent.deployment.Colocated;
+import org.ascent.deployment.Component;
+import org.ascent.deployment.DeploymentConstraint;
+import org.ascent.deployment.HardwareNode;
+import org.ascent.deployment.Interaction;
+import org.ascent.deployment.NetworkLink;
+import org.ascent.deployment.Node;
+import org.ascent.deployment.NotColocated;
+import org.ascent.deployment.PlacementConstraint;
+import org.ascent.deployment.SoftwareComponent;
 
 public class ScheduleConfig extends ProblemConfigImpl {
 	
@@ -37,17 +53,19 @@ public class ScheduleConfig extends ProblemConfigImpl {
 		addTasks(tasks);
 		addApplications(applications);
 		orderElements();
+		System.out.println(" Applist size = " + appList_.size());
+		System.out.println(" Tasklistsize  = " + taskList_.size() );
 	}
 	
 	public List<SchedulableTask> addTasks (SchedulableTask[] tasks){
-		for(int i= 0; i < tasks.length-1; i++){
+		for(int i= 0; i < tasks.length; i++){
 			taskList_.add(tasks[i]);
 		}
 		return taskList_;
 	}
 	
 	public List<Application> addApplications (Application[] apps){
-		for(int i= 0; i < apps.length-1; i++){
+		for(int i= 0; i < apps.length; i++){
 			appList_.add(apps[i]);
 		}
 		return appList_;
@@ -65,6 +83,113 @@ public class ScheduleConfig extends ProblemConfigImpl {
 		taskList_.add(task);
 		return task;
 	}
+	
+	public void init() {
+		
+
+		if (boundaries_.length != tasks_.length) {
+			boundaries_ = new int[tasks_.length][1];
+			for (int i = 0; i < boundaries_.length; i++) {
+				boundaries_[i] = new int[] {0};
+			}
+		}
+	}
+
+	public VectorSolution[] createInitialSolutions(int count) {
+		/*if (seedWithBinPacking_) {
+			Map mapping = new HashMap();
+			BinPackingProblem bp = new BinPackingProblem();
+			bp.getResourcePolicies().putAll(getResourceConsumptionPolicies());
+			for (Node n : getNodes()) {
+				HardwareNode hn = new HardwareNode(n.getLabel(), n
+						.getResources());
+				bp.getBins().add(hn);
+				mapping.put(hn, n);
+				mapping.put(n, hn);
+			}
+			for (Component c : getComponents()) {
+				SoftwareComponent cn = new SoftwareComponent(c.getLabel(), c
+						.getResources());
+				cn.setRealTimeTasks(c.getRealTimeTasks());
+				bp.getItems().add(cn);
+				mapping.put(c, cn);
+			}
+
+			for (DeploymentConstraint con : constraints_) {
+				if (con instanceof NotColocated) {
+					NotColocated ncon = (NotColocated) con;
+					SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
+							.getSource());
+
+					for (Component c : ncon.getTargets()) {
+						SoftwareComponent tc = (SoftwareComponent) mapping
+								.get(c);
+						sc.getExclusions().add(tc);
+					}
+				}
+				if (con instanceof Colocated) {
+					Colocated ncon = (Colocated) con;
+					SoftwareComponent sc = (SoftwareComponent) mapping.get(ncon
+							.getSource());
+
+					for (Component c : ncon.getTargets()) {
+						SoftwareComponent tc = (SoftwareComponent) mapping
+								.get(c);
+						sc.getDependencies().add(tc);
+					}
+				}
+
+				if (con instanceof PlacementConstraint) {
+					PlacementConstraint pcon = (PlacementConstraint) con;
+					SoftwareComponent sc = (SoftwareComponent) mapping.get(pcon
+							.getSource());
+					sc.setValidBins(new ArrayList<Bin>());
+					for (Node n : pcon.getValidHosts()) {
+						HardwareNode hn = (HardwareNode) mapping.get(n);
+						sc.getValidBins().add(hn);
+					}
+				}
+			}
+
+			List<Map<Object, List>> binsols = new ArrayList<Map<Object, List>>();
+			for (int i = 0; i < count - 2; i++) {
+				RandomItemPacker packer = new RandomItemPacker(bp);
+				Map<Object, List> sol = packer.nextMapping();
+				binsols.add(sol);
+			}
+			binsols.add((new FFDBinPacker(bp)).nextMapping());
+
+			int stotal = Math.min(binsols.size(), count);
+			VectorSolution[] sols = new VectorSolution[stotal];
+
+			for (int i = 0; i < stotal; i++) {
+				int[] pos = new int[getComponents().length];
+				Map<Object, List> sol = binsols.get(i);
+
+				for (int j = 0; j < getComponents().length; j++) {
+					SoftwareComponent c = (SoftwareComponent) mapping
+							.get(getComponents()[j]);
+					if (c != null && sol != null && sol.get(c) != null) {
+
+						HardwareNode host = (HardwareNode) sol.get(c).get(0);
+						Node node = (Node) mapping.get(host);
+						for (int k = 0; k < getNodes().length; k++) {
+							if (getNodes()[k] == node) {
+								pos[j] = k;
+								break;
+							}
+						}
+					}
+				}
+				sols[i] = new VectorSolution(pos);
+			}
+
+			return sols;
+		} else {*/
+			return super.createInitialSolutions(count);
+		//}
+	}
+	
 	
 	protected void orderElements() {
 		//Arrays.sort(tasks_);
@@ -90,6 +215,9 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	}
 	public void setAppList_(List<Application> appList_) {
 		this.appList_ = appList_;
+	}
+	public ValueFunction<VectorSolution> getFitnessFunction() {
+		return scoringFunction_;
 	}
 	
 
