@@ -10,8 +10,8 @@ public class PSOScheduler implements SchedulePlanner {
 	private double localLearningRate_ = 0.5;
 	private double intertia_ = 1;
 	private int maxVelocity_ = 4;
-	private int totalParticles_ = 20;
-	private int searchIterations_ = 10;
+	private int totalParticles_ = 200;
+	private int searchIterations_ = 1000;
 	private boolean useNetworkGravity_ = false;
 
 	
