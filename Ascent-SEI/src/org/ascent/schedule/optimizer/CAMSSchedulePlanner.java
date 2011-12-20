@@ -46,17 +46,32 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 	public int scoreSchedule(Schedule sched) {
 		// TODO Auto-generated method stub
 		int score = calculateCAMSM(sched);
-		System.out.println(" $$$$$$$ SCORE IS " +score );
+		//System.out.println(" $$$$$$$ SCORE IS " +score );
 		return score;
 	}
 	
 	
 	private int calculateCAMSM(Schedule sched) {//Calculates the Cache Aware MetaSchedule Metric for the given schedule
+		
+		/*
+		 * Scoring Mechanism should give a large penalty when solution is infeasible. 
+		 * 
+		 */
 		// TODO Auto-generated method stub
 		List<SchedulableTask> tasks =  sched.getTasks_();
 		//System.out.println(" in Calculate CAMSM");
 		int start = 0;
 		int CAMSM = 0;
+		int repeats =1;
+		ArrayList added = new ArrayList();
+		for(SchedulableTask st : tasks){
+			if(!added.contains(st.getId())){
+				added.add(st.getId());
+			}
+			else{
+				repeats++;
+			}
+		}
 		//System.out.println(" Tasks are " + tasks);
 		for(SchedulableTask task : tasks){
 			int dataWritten = 0; 
@@ -84,7 +99,7 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 			//System.out.println("Total CAMSM found " + (CAMSM - oldCAMSM));
 			start++;
 		}
-		return CAMSM;
+		return CAMSM/repeats;
 	}
 
 	public ValueFunction<VectorSolution> getFitnessFunction() {
