@@ -202,6 +202,7 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	}
 	
 	public Schedule getSchedule(VectorSolution sol) {
+		System.out.println(" VS = "+ sol);
 		return new Schedule(this, sol);
 	}
 	
