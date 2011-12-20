@@ -28,6 +28,7 @@ public class PSOScheduler implements SchedulePlanner {
 		
 		VectorSolution sol = pso.solve(problem.getFitnessFunction());
 		
+		System.out.println(" Returned solution = " + sol);
 		Schedule schedule = problem.getSchedule(sol);
 		System.out.println(" in PSOScheduler and config tasklist size = " + problem.getTaskList_().size());
 		/*if(useNetworkGravity_){

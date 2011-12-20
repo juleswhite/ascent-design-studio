@@ -31,18 +31,28 @@ public class Schedule {
 		scheduleConfiguration_ = sched;
 		//applications_ = scheduleConfiguration_.getAppList_();
 		setApplicationList_(scheduleConfiguration_.getApplications_());
-		int [] vsPositions = vs.getPosition();
-		
-		System.out.println(" VS Positions = " + vs);
-		
-		SchedulableTask [] sts = new SchedulableTask [vsPositions.length];
-		tasks_ = new ArrayList<SchedulableTask>();
-		for(int i = 0; i < vsPositions.length; i++){
-			taskArray_[i] = sched.getTaskList_().get(vsPositions[i]);
-			System.out.println("taskArray [i] = "+ taskArray_[i]);
-			tasks_.add(sts[i]);
+		if( vs != null){
+				int [] vsPositions = vs.getPosition();
+			
+			//System.out.println(" VS Positions = " + vs);
+			
+			SchedulableTask [] sts = new SchedulableTask [vsPositions.length];
+			taskArray_ = new SchedulableTask[vsPositions.length];
+			for(int i = 0; i < vsPositions.length; i++){
+				taskArray_[i] = sched.getTaskList_().get(vsPositions[i]);
+			//	System.out.println("taskArray [i] = "+ taskArray_[i]);
+			}
+			
+			tasks_ = new ArrayList<SchedulableTask>();
+			for(int i = 0; i < taskArray_.length; i++){
+				tasks_.add(taskArray_[i]);
+			}
 		}
-	    
+		else{
+			tasks_ = scheduleConfiguration_.getTaskList_();
+			applications_ = scheduleConfiguration_.getAppList_();
+			fillArrays();
+		}
 	}
 	private void fillArrays(){
 		

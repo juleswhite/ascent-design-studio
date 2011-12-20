@@ -15,9 +15,9 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 	private ValueFunction<VectorSolution> fitnessFunction_ = new ValueFunction<VectorSolution>() {
 
 		public double getValue(VectorSolution src) {
-			System.out.println(" In get value of CAMSSChedulePlanner");
+			//System.out.println(" In get value of CAMSSChedulePlanner");
 			if (src.getArtifact() == null) {
-				System.out.println(" Got an artifact");
+			//	System.out.println(" Got an artifact");
 				Schedule sched = new Schedule(
 						CAMSSchedulePlanner.this, src);
 				int score = scoreSchedule(sched);
@@ -45,8 +45,9 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 	
 	public int scoreSchedule(Schedule sched) {
 		// TODO Auto-generated method stub
-		return calculateCAMSM(sched);
-		
+		int score = calculateCAMSM(sched);
+		System.out.println(" $$$$$$$ SCORE IS " +score );
+		return score;
 	}
 	
 	
