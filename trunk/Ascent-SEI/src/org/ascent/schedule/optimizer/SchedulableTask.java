@@ -13,7 +13,7 @@ public class SchedulableTask extends ModelElement{
 	private double size_ =0 ;
 	private int taskID_ = -1;
 	private String taskName_;
-	
+	 
 	public SchedulableTask(int id, String label, int[] resources) {
 		super(id, label, resources);
 		taskID_ = id;
@@ -54,6 +54,10 @@ public class SchedulableTask extends ModelElement{
 		this.application_ = application_;
 	}
 	
+	public String toString(){
+		String s = "Name:"+taskName_ + " App: " + application_.getName_() + " DataRead: " + dataRead_ + " DataWritten: " + dataWritten_;
+		return s;
+	}
 	
 
 	
