@@ -58,7 +58,29 @@ public class SchedulableTask extends ModelElement{
 		String s = "Name:"+taskName_ + " App: " + application_.getName_() + " DataRead: " + dataRead_ + " DataWritten: " + dataWritten_;
 		return s;
 	}
-	
 
-	
+	public double getSize_() {
+		return size_;
+	}
+
+	public void setSize_(double size_) {
+		this.size_ = size_;
+	}
+
+	public int getTaskID_() {
+		return taskID_;
+	}
+
+	public void setTaskID_(int taskID_) {
+		this.taskID_ = taskID_;
+	}
+
+	public String getTaskName_() {
+		return taskName_;
+	}
+
+	public void setTaskName_(String taskName_) {
+		this.taskName_ = taskName_;
+	}
+
 }
