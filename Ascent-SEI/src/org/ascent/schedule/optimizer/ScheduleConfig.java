@@ -8,21 +8,7 @@ import java.util.Map;
 
 import org.ascent.ProblemConfigImpl;
 import org.ascent.VectorSolution;
-import org.ascent.binpacking.Bin;
-import org.ascent.binpacking.BinPackingProblem;
-import org.ascent.binpacking.FFDBinPacker;
-import org.ascent.binpacking.RandomItemPacker;
 import org.ascent.binpacking.ValueFunction;
-import org.ascent.deployment.Colocated;
-import org.ascent.deployment.Component;
-import org.ascent.deployment.DeploymentConstraint;
-import org.ascent.deployment.HardwareNode;
-import org.ascent.deployment.Interaction;
-import org.ascent.deployment.NetworkLink;
-import org.ascent.deployment.Node;
-import org.ascent.deployment.NotColocated;
-import org.ascent.deployment.PlacementConstraint;
-import org.ascent.deployment.SoftwareComponent;
 
 public class ScheduleConfig extends ProblemConfigImpl {
 	
@@ -40,8 +26,8 @@ public class ScheduleConfig extends ProblemConfigImpl {
 	
 	protected SchedulableTask [] tasks_;
 	protected Application[] applications_;
-	private List<Application> appList_ = new ArrayList();
-	private List<SchedulableTask> taskList_ = new ArrayList();
+	protected List<Application> appList_ = new ArrayList();
+	protected List<SchedulableTask> taskList_ = new ArrayList();
 	
 	
 	public ScheduleConfig(){
