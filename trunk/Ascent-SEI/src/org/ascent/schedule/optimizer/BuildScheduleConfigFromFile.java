@@ -12,10 +12,10 @@ public class BuildScheduleConfigFromFile {
 
 	private String directory_;
 	private ArrayList<Application> applications_;
-	private ArrayList<SchedulableTask> tasks_;
+	private HashMap<String,SchedulableTask> tasks_;
 	public BuildScheduleConfigFromFile(String d){
 		
-		tasks_ = new ArrayList();
+		tasks_ = new HashMap();
 		applications_ = new ArrayList();
 		directory_ = d;
 		
@@ -108,9 +108,8 @@ public class BuildScheduleConfigFromFile {
 		
 	}
 	
-	public ArrayList<SchedulableTask> makeTasksAndApps(ArrayList<String> appFileNames){
-		ArrayList<SchedulableTask> sts = new ArrayList();
-		ArrayList<String> taskNames = new ArrayList();
+	public void makeTasksAndApps(ArrayList<String> appFileNames){
+	
 		int taskCount =0;
 		int appCount = 0;
 		ArrayList<Application> apps = new ArrayList();
@@ -144,16 +143,46 @@ public class BuildScheduleConfigFromFile {
 						//System.out.println("Line including \"Task\": "+ afl);
 						String taskLabel = afl.split("\\:\\:")[1].split("\\(")[0];
 						SchedulableTask st = new SchedulableTask(taskCount, taskLabel, new int []{0,0,0},appMap.get(appName),-1,-1);
-						taskNames.add(taskLabel);
-						sts.add(st);
+						tasks_.put(taskLabel, st);
+						
 						//System.out.println(taskLabel);
 					}
 				}
 			}
 		}
-		tasks_=sts;
-		return sts;
 		
+		
+	}
+	
+	public void addRates(double baseRate, String baseScheduleFileName){
+		try {
+			ArrayList<String> fileLines = readFileLines(directory_ + baseScheduleFileName);
+			
+			for(String fileLine: fileLines){
+				if( fileLine.contains("//TASKTAG")){
+					String taskLabel = fileLine.split("\\(")[0].split("\\.")[0];
+					String rate = fileLine.split("\\/N\\/")[1];
+					Double dRate = Double.valueOf(rate);
+					System.out.println(" Looking up tag "+ taskLabel +" to add "+ dRate);
+					if(tasks_.containsKey(taskLabel)){
+						System.out.println("Tasks " + taskLabel +" FOUND");
+						SchedulableTask st = tasks_.get(taskLabel);
+						PeriodicTask pt = new PeriodicTask(st);
+						pt.setRate_(baseRate/dRate);
+						tasks_.put(taskLabel, pt);
+					}
+					else{
+						System.out.println("TASK " + taskLabel + " MISSING FROM TASK MAP");
+					}
+					
+				}
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.print(" Error reading file" + e);
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -161,16 +190,16 @@ public class BuildScheduleConfigFromFile {
 		return applications_;
 	}
 
-	public void setApplications_(ArrayList<Application> applications_) {
-		this.applications_ = applications_;
+	public void setApplications_(ArrayList<Application> applications) {
+		this.applications_ = applications;
 	}
 
-	public ArrayList<SchedulableTask> getTasks_() {
+	public HashMap<String,SchedulableTask> getTasks_() {
 		return tasks_;
 	}
 
-	public void setTasks_(ArrayList<SchedulableTask> tasks_) {
-		this.tasks_ = tasks_;
+	public void setTasks_(HashMap<String,SchedulableTask> tasks) {
+		this.tasks_ = tasks;
 	}
 
 	public static void main( String args[]){
@@ -207,7 +236,9 @@ public class BuildScheduleConfigFromFile {
 		//System.out.println(" Task 2 reads " + task2.getDataRead_() +"vars and writes "+task2.getDataWritten_() + " vars" );
 		System.out.println("appFileNames = " + appFileNames);
 		builder.makeTasksAndApps(appFileNames);
-		for(SchedulableTask st: builder.getTasks_()){
+		HashMap<String, SchedulableTask> bTasks = builder.getTasks_();
+		for(String  stName: bTasks.keySet()){
+			SchedulableTask st = bTasks.get(stName);
 			dataStats = builder.getDataWrittenRead(appFileNames, st);
 			st.setDataRead_(dataStats[1]);
 			st.setDataWritten_(dataStats[0]);
@@ -217,7 +248,8 @@ public class BuildScheduleConfigFromFile {
 		System.out.println("Applications_= " + builder.getApplications_());		
 		SchedulableTask [] stArray= new SchedulableTask[builder.getTasks_().size()];
 		int index =0;
-		for(SchedulableTask st : builder.getTasks_()){
+		for(String  stName: bTasks.keySet()){
+			SchedulableTask st = bTasks.get(stName);
 			stArray[index]= st;
 			index++;
 		}
