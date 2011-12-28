@@ -13,6 +13,7 @@ public class SchedulableTask extends ModelElement{
 	private double size_ =0 ;
 	private int taskID_ = -1;
 	private String taskName_;
+	
 	 
 	public SchedulableTask(int id, String label, int[] resources) {
 		super(id, label, resources);

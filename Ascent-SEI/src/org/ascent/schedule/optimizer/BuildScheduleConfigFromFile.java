@@ -10,9 +10,9 @@ import java.util.HashMap;
 
 public class BuildScheduleConfigFromFile {
 
-	private String directory_;
+	protected String directory_;
 	private ArrayList<Application> applications_;
-	private HashMap<String,SchedulableTask> tasks_;
+	protected HashMap<String,SchedulableTask> tasks_;
 	public BuildScheduleConfigFromFile(String d){
 		
 		tasks_ = new HashMap();
@@ -156,10 +156,10 @@ public class BuildScheduleConfigFromFile {
 	
 	public void addRates(double baseRate, String baseScheduleFileName){
 		try {
-			ArrayList<String> fileLines = readFileLines(directory_ + baseScheduleFileName);
+			ArrayList<String> fileLines = readFileLines(directory_ + "/" + baseScheduleFileName);
 			
 			for(String fileLine: fileLines){
-				if( fileLine.contains("//TASKTAG")){
+				if( fileLine.contains("//TASK_TAG")){
 					String taskLabel = fileLine.split("\\(")[0].split("\\.")[0];
 					String rate = fileLine.split("\\/N\\/")[1];
 					Double dRate = Double.valueOf(rate);
@@ -171,10 +171,11 @@ public class BuildScheduleConfigFromFile {
 						pt.setRate_(baseRate/dRate);
 						tasks_.put(taskLabel, pt);
 					}
-					else{
-						System.out.println("TASK " + taskLabel + " MISSING FROM TASK MAP");
-					}
 					
+					
+				}
+				else{
+				//	System.out.println("NO TASK TAG FOUND IN FILE");
 				}
 			}
 			
@@ -194,18 +195,18 @@ public class BuildScheduleConfigFromFile {
 		this.applications_ = applications;
 	}
 
-	public HashMap<String,SchedulableTask> getTasks_() {
+	public HashMap<String, SchedulableTask> getTasks_() {
 		return tasks_;
 	}
 
-	public void setTasks_(HashMap<String,SchedulableTask> tasks) {
+	public void setTasks_(HashMap<String, SchedulableTask> tasks) {
 		this.tasks_ = tasks;
 	}
 
 	public static void main( String args[]){
 		
 		String directory = "/Users/brian/home/brian/Old/SEI-WithVTune";
-		BuildScheduleConfigFromFile builder = new BuildScheduleConfigFromFile(directory);
+		BuildPeriodicScheduleConfigFromFile builder = new BuildPeriodicScheduleConfigFromFile(directory);
 		
 		String fileToRead = "/Users/brian/home/brian/Old/SEI-WithVTune/TrialRun1.cpp";
 		ArrayList<String> linesFromFile = new ArrayList();
@@ -260,8 +261,16 @@ public class BuildScheduleConfigFromFile {
 			appArray[index]= app;
 			index++;
 		}
+		builder.addRates(1, "TrialRun2-Tester.cpp");
+		HashMap<String, PeriodicTask> pTasks = builder.getPeriodicTasks_();
+		for(String  stName: pTasks.keySet()){
+			System.out.println("About to attempt to cast " + pTasks.get(stName));
+			PeriodicTask st = (PeriodicTask) pTasks.get(stName);
+			System.out.println(" The periodic task rate is " + st.getRate_());
+		}
 		ScheduleConfig builtScheduleConfig = new ScheduleConfig(stArray, appArray);
 		System.out.println(" Schedule config = " + builtScheduleConfig);
+		
 		
 	}
 }
