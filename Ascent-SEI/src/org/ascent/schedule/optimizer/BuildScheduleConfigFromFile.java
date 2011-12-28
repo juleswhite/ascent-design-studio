@@ -123,6 +123,7 @@ public class BuildScheduleConfigFromFile {
 			System.out.println(" App name = " + appName);
 			if(!appNameString.contains(appName)){
 				Application app = new Application (appCount, appName);
+				app.setSharedPercentage(calculateSharedPercentage(app));
 				applications_.add(app);
 				apps.add(app);
 				appMap.put(appName, app);
@@ -144,6 +145,7 @@ public class BuildScheduleConfigFromFile {
 						String taskLabel = afl.split("\\:\\:")[1].split("\\(")[0];
 						SchedulableTask st = new SchedulableTask(taskCount, taskLabel, new int []{0,0,0},appMap.get(appName),-1,-1);
 						tasks_.put(taskLabel, st);
+						taskCount++;
 						
 						//System.out.println(taskLabel);
 					}
@@ -154,6 +156,11 @@ public class BuildScheduleConfigFromFile {
 		
 	}
 	
+	private double calculateSharedPercentage(Application app) {
+		// TODO Auto-generated method stub
+		return .33;
+	}
+
 	public void addRates(double baseRate, String baseScheduleFileName){
 		try {
 			ArrayList<String> fileLines = readFileLines(directory_ + "/" + baseScheduleFileName);
@@ -247,30 +254,60 @@ public class BuildScheduleConfigFromFile {
 		
 		System.out.println("Tasks_ = " + builder.getTasks_());
 		System.out.println("Applications_= " + builder.getApplications_());		
-		SchedulableTask [] stArray= new SchedulableTask[builder.getTasks_().size()];
+		
 		int index =0;
-		for(String  stName: bTasks.keySet()){
-			SchedulableTask st = bTasks.get(stName);
-			stArray[index]= st;
-			index++;
-		}
-		index =0;
+		SchedulableTask [] stArray = new SchedulableTask[builder.getTasks_().size()];
 		Application [] appArray= new Application[builder.getApplications_().size()];
 		
+		for(String taskName : builder.getTasks_().keySet()){
+			SchedulableTask st = builder.getTasks_().get(taskName);
+			stArray[index] = st;
+			index ++;
+			
+		}
+		index =0;
 		for(Application app : builder.getApplications_()){
 			appArray[index]= app;
 			index++;
 		}
+		
+		
 		builder.addRates(1, "TrialRun2-Tester.cpp");
 		HashMap<String, PeriodicTask> pTasks = builder.getPeriodicTasks_();
+		PeriodicTask [] ptArray= new PeriodicTask[builder.getTasks_().size()];
+		index =0;
+		for(String pTaskname : pTasks.keySet()){
+			ptArray[index]= pTasks.get(pTaskname);
+			index++;
+		}
+		
+		
+		
+		
 		for(String  stName: pTasks.keySet()){
 			System.out.println("About to attempt to cast " + pTasks.get(stName));
 			PeriodicTask st = (PeriodicTask) pTasks.get(stName);
 			System.out.println(" The periodic task rate is " + st.getRate_());
 		}
 		ScheduleConfig builtScheduleConfig = new ScheduleConfig(stArray, appArray);
-		System.out.println(" Schedule config = " + builtScheduleConfig);
+		for(int i = 0; i < ptArray.length; i++ ){
+			
+			System.out.println( "ptArray[i] = " + ptArray[i]);
+		}
+		PeriodicScheduleConfig builtPeriodicScheduleConfig = new PeriodicScheduleConfig(ptArray, appArray);
+		System.out.println(" Schedule config tasks = " + builtScheduleConfig.getTasks_().length);
 		
+		CAMSSchedulePlanner cms = new CAMSSchedulePlanner(builtPeriodicScheduleConfig);
+		System.out.println(" cms tasklist = " + cms.getTaskList_().size());
+		
+		PSOScheduler pso = new PSOScheduler();
+		
+		
+		Schedule sched = pso.schedule(cms); 
+		System.out.println(" Schedule = " + sched +" and has score "+ cms.scoreSchedule(sched));
+		
+		
+		//System.out.println(" CAMS result = " + cms.scoreSchedule(sched));
 		
 	}
 }

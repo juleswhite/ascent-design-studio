@@ -20,6 +20,7 @@ public class PeriodicScheduleConfig extends ScheduleConfig {
 	};
 	
 	protected ArrayList<PeriodicTask> pTasks_ = new ArrayList();
+	
 	public PeriodicScheduleConfig(){
 		super();
 	}
@@ -31,7 +32,10 @@ public class PeriodicScheduleConfig extends ScheduleConfig {
 	public PeriodicScheduleConfig(PeriodicTask[] tasks, Application[] applications) {
 		super(tasks,applications);
 		tasks_ = tasks;
+		taskList_ = new ArrayList();
+		appList_ = new ArrayList();
 		applications_ = applications;
+		
 		addTasks(tasks);
 		addApplications(applications);
 		orderElements();

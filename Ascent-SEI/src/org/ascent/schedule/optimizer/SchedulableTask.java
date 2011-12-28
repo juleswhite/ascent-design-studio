@@ -56,7 +56,7 @@ public class SchedulableTask extends ModelElement{
 	}
 	
 	public String toString(){
-		String s = "Name:"+taskName_ + " App: " + application_.getName_() + " DataRead: " + dataRead_ + " DataWritten: " + dataWritten_;
+		String s = "ID: " + taskID_+"Name:"+taskName_ + " App: " + application_.getName_() + " DataRead: " + dataRead_ + " DataWritten: " + dataWritten_;
 		return s;
 	}
 

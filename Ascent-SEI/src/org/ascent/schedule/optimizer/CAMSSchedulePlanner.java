@@ -18,6 +18,7 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 			//System.out.println(" In get value of CAMSSChedulePlanner");
 			if (src.getArtifact() == null) {
 			//	System.out.println(" Got an artifact");
+				//System.out.println("VectorSolution = " + src);
 				Schedule sched = new Schedule(
 						CAMSSchedulePlanner.this, src);
 				int score = scoreSchedule(sched);
@@ -31,7 +32,7 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 	
 	
 	
-	private int cacheSizeKB_ = 4096;
+	private int cacheSize_ = 250000;
 	private ScheduleConfig sched_;
 	
 	public CAMSSchedulePlanner(ScheduleConfig sched){
@@ -76,14 +77,17 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 		for(SchedulableTask task : tasks){
 			int dataWritten = 0; 
 			double sharingPercentage  = task.getApplication_().getSharedPercentage();
+			//System.out.println("sharing percentage = " +sharingPercentage);
+			
 			//System.out.println("####Analyzing task " + task.getLabel());
 			int oldCAMSM = CAMSM;
 			for(int i = start; i < tasks.size()-1; i++){
-				if(dataWritten > cacheSizeKB_){
+				if(dataWritten > cacheSize_){
 					break;
 				}
 				SchedulableTask currentTask = tasks.get(i);
-				if(task.getApplication_().getName_().equalsIgnoreCase(currentTask.getApplication_().getName_())){
+				//System.out.println(" Task.getApplication.getName = "+ task.getApplication_().getName_() + " and currentTask.getApplication_().getName_() is " + currentTask.getApplication_().getName_());
+				if(task.getApplication_().getName_().trim().equalsIgnoreCase(currentTask.getApplication_().getName_().trim())){
 					
 					int additionalHits = (int) (sharingPercentage * currentTask.getDataRead_());
 					//System.out.println(" Applications match and data is shared. Adding  " + additionalHits + " to CAMSM");
@@ -99,6 +103,7 @@ public class CAMSSchedulePlanner extends ScheduleConfig {
 			//System.out.println("Total CAMSM found " + (CAMSM - oldCAMSM));
 			start++;
 		}
+		//System.out.println(" Final CAMSM/repeats = " + CAMSM/repeats);
 		return CAMSM/repeats;
 	}
 

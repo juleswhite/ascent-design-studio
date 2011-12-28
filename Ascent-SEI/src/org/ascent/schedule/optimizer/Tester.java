@@ -29,29 +29,6 @@ public class Tester {
 		
 		PSOScheduler pso = new PSOScheduler();
 		
-		/*
-		System.out.println(" pso.getPositionBoundariesLength = " + pso.getPositionBoundaries().length);
-		for(int i = 0; i < pso.getPositionBoundaries().length; i++){
-			for(int j =0; j < pso.getPositionBoundaries()[i].length; j++){
-				System.out.print (pso.getPositionBoundaries()[i][j] +", ");
-			}
-			System.out.println();
-		}
-		//System.out.println(" PSO position boundaries" + pso.getPositionBoundaries());
-		
-		double grate = 2;// the global learning rate
-		double lrate = 0.5;// the local learning rate
-		double intertia = 1;// the particle intertia impact
-		int maxv = 4;// the max particle velocity
-		int particles = 200;// the total number of particles
-		int iterations = 20;// the total number of iterations per solver
-		pso.setTotalParticles(particles);
-		pso.setVelocityMax(maxv);
-		pso.setLocalLearningRate(lrate);
-		pso.setGlobalLearningRate(grate);
-		pso.setIterations(20);*/
-		//VectorSolution sol = pso.solve(cms.getFitnessFunction());
-	//	System.out.println("Vector solution = " + sol);
 		//System.out.println("cms tasklist = " + cms.getTaskList_());
 		Schedule sched = pso.schedule(cms); 
 		System.out.println(" Schedule = " + sched);
