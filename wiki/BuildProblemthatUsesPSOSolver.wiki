@@ -25,7 +25,7 @@ The base package, org.ascent, includes the building blocks for setting up proble
 
 To make your own problem instance compatible with PSO, you need the following:
 
-1.) A base problemTypeConfig that extends ProblemConfigImpl. See DeploymentConfig.java in org.ascent.deployment for an example.
+1.) A base ProblemConfig that extends ProblemConfigImpl. See DeploymentConfig.java in org.ascent.deployment for an example.
 
 2.)  An instance of your problem. In this case, look at DeploymentPlan for an example. It should include the problemTypeConfig and vectorsolution in the constructor.
 
