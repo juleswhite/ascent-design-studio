@@ -29,6 +29,7 @@ public class PSODeployer implements DeploymentPlanner {
 	private int searchIterations_ = 20;
 	private boolean useNetworkGravity_ = false;
 
+	
 	public DeploymentPlan deploy(DeploymentConfig problem) {
 
 		Pso pso = new Pso(problem);
@@ -37,7 +38,7 @@ public class PSODeployer implements DeploymentPlanner {
 		pso.setLocalLearningRate(localLearningRate_);
 		pso.setGlobalLearningRate(globalLearningRate_);
 		pso.setIterations(searchIterations_);
-
+		
 		
 		VectorSolution sol = pso.solve(problem.getFitnessFunction());
 		
